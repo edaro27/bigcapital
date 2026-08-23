@@ -127,6 +127,7 @@ export function useEditableItemsEntriesColumns() {
         Header: intl.get('rate'),
         accessor: 'rate',
         Cell: MoneyFieldCell,
+        moneyInputGroupProps: { decimalsLimit: 4 },
         disableSortBy: true,
         width: 70,
         align: Align.Right,
