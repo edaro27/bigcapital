@@ -1,198 +1,240 @@
-# This is a production version of the Bigcapital docker-compose.yml file.
-
-version: '3.3'
+name: bigcapital-local
 
 services:
   proxy:
-    image: envoyproxy/envoy:v1.30-latest
+    image: envoyproxy/envoy:v1.35-latest@sha256:a707c3821b4cecb5db43d8e86e983e0f57b81010fefbabc01feeb071fb8cc08e
+    user: "101:101"
     depends_on:
-      - server
-      - webapp
+      server:
+        condition: service_healthy
+      webapp:
+        condition: service_healthy
     ports:
-      - '${PUBLIC_PROXY_PORT:-80}:80'
-      - '${PUBLIC_PROXY_SSL_PORT:-443}:443'
-    tty: true
+      - "${BIND_ADDRESS:-127.0.0.1}:${PUBLIC_PROXY_PORT:-8080}:8080"
     volumes:
-      - ./docker/envoy/envoy.yaml:/etc/envoy/envoy.yaml
-    restart: on-failure
+      - ./docker/envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro
+    restart: unless-stopped
     networks:
       - bigcapital_network
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
 
   webapp:
-    container_name: bigcapital-webapp
-    image: bigcapitalhq/webapp:latest
-    restart: on-failure
+    image: bigcapital-local/webapp:v0.25.32-hardened
+    pull_policy: never
+    build:
+      context: .
+      dockerfile: packages/webapp/Dockerfile
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
     networks:
       - bigcapital_network
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
 
   server:
-    container_name: bigcapital-server
-    image: bigcapitalhq/server:latest
+    image: bigcapital-local/server:v0.25.32-hardened
+    pull_policy: never
+    build:
+      context: .
+      dockerfile: packages/server/Dockerfile
     expose:
-      - '3000'
-    links:
-      - mysql
-      - redis
+      - "3000"
     depends_on:
-      - mysql
-      - redis
-    restart: on-failure
+      database_migration:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://127.0.0.1:3000/api/system_db',r=>process.exit(r.statusCode>=200&&r.statusCode<300?0:1)).on('error',()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      start_period: 30s
+      retries: 10
+    restart: unless-stopped
     networks:
       - bigcapital_network
-    environment:
-      # Mail
-      - MAIL_HOST=${MAIL_HOST}
-      - MAIL_USERNAME=${MAIL_USERNAME}
-      - MAIL_PASSWORD=${MAIL_PASSWORD}
-      - MAIL_PORT=${MAIL_PORT}
-      - MAIL_SECURE=${MAIL_SECURE}
-      - MAIL_FROM_NAME=${MAIL_FROM_NAME}
-      - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}
-
-      # Database
-      - DB_HOST=mysql
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_CHARSET=${DB_CHARSET}
-
-      # System database
-      - SYSTEM_DB_NAME=${SYSTEM_DB_NAME}
-
-      # Redis
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - QUEUE_HOST=redis
-      - QUEUE_PORT=6379
-
-      # Tenants databases
-      - TENANT_DB_NAME_PERFIX=${TENANT_DB_NAME_PERFIX}
-
-      # Authentication
-      - JWT_SECRET=${JWT_SECRET}
-
-      # Application
-      - BASE_URL=${BASE_URL}
-
-      # Sign-up restrictions
-      - SIGNUP_DISABLED=${SIGNUP_DISABLED}
-      - SIGNUP_ALLOWED_DOMAINS=${SIGNUP_ALLOWED_DOMAINS}
-      - SIGNUP_ALLOWED_EMAILS=${SIGNUP_ALLOWED_EMAILS}
-
-      # Sign-up email confirmation
-      - SIGNUP_EMAIL_CONFIRMATION=${SIGNUP_EMAIL_CONFIRMATION}
-
-      # Gotenberg (Pdf generator)
-      - GOTENBERG_URL=${GOTENBERG_URL}
-      - GOTENBERG_DOCS_URL=${GOTENBERG_DOCS_URL}
-
-      # Exchange Rate
-      - EXCHANGE_RATE_SERVICE=${EXCHANGE_RATE_SERVICE}
-      - OPEN_EXCHANGE_RATE_APP_ID-${OPEN_EXCHANGE_RATE_APP_ID}
-
-      # Bank Sync
-      - BANK_FEED_ENABLED=${BANK_FEED_ENABLED}
-
-      # Plaid
-      - PLAID_ENV=${PLAID_ENV}
-      - PLAID_CLIENT_ID=${PLAID_CLIENT_ID}
-      - PLAID_SECRET=${PLAID_SECRET}
-      - PLAID_LINK_WEBHOOK=${PLAID_LINK_WEBHOOK}
-
-      # Lemon Squeez
-      - LEMONSQUEEZY_API_KEY=${LEMONSQUEEZY_API_KEY}
-      - LEMONSQUEEZY_STORE_ID=${LEMONSQUEEZY_STORE_ID}
-      - LEMONSQUEEZY_WEBHOOK_SECRET=${LEMONSQUEEZY_WEBHOOK_SECRET}
-      - HOSTED_ON_BIGCAPITAL_CLOUD=${HOSTED_ON_BIGCAPITAL_CLOUD}
-
-      # New Relic matrics tracking.
-      - NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=${NEW_RELIC_DISTRIBUTED_TRACING_ENABLED}
-      - NEW_RELIC_LOG=${NEW_RELIC_LOG}
-      - NEW_RELIC_AI_MONITORING_ENABLED=${NEW_RELIC_AI_MONITORING_ENABLED}
-      - NEW_RELIC_CUSTOM_INSIGHTS_EVENTS_MAX_SAMPLES_STORED=${NEW_RELIC_CUSTOM_INSIGHTS_EVENTS_MAX_SAMPLES_STORED}
-      - NEW_RELIC_SPAN_EVENTS_MAX_SAMPLES_STORED=${NEW_RELIC_SPAN_EVENTS_MAX_SAMPLES_STORED}
-      - NEW_RELIC_LICENSE_KEY=${NEW_RELIC_LICENSE_KEY}
-      - NEW_RELIC_APP_NAME=${NEW_RELIC_APP_NAME}
-
-      # S3
-      - S3_REGION=${S3_REGION}
-      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
-      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
-      - S3_ENDPOINT=${S3_ENDPOINT}
-      - S3_BUCKET=${S3_BUCKET}
-
-      # Stripe
-      - STRIPE_PAYMENT_SECRET_KEY=${STRIPE_PAYMENT_SECRET_KEY}
-      - STRIPE_PAYMENT_PUBLISHABLE_KEY=${STRIPE_PAYMENT_PUBLISHABLE_KEY}
-      - STRIPE_PAYMENT_CLIENT_ID=${STRIPE_PAYMENT_CLIENT_ID}
-      - STRIPE_PAYMENT_WEBHOOKS_SECRET=${STRIPE_PAYMENT_WEBHOOKS_SECRET}
-      - STRIPE_PAYMENT_REDIRECT_URL=${STRIPE_PAYMENT_REDIRECT_URL}
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    environment: &server_environment
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_SECURE: ${MAIL_SECURE}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS}
+      DB_HOST: mysql
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_CHARSET: ${DB_CHARSET}
+      SYSTEM_DB_NAME: ${SYSTEM_DB_NAME}
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      QUEUE_HOST: redis
+      QUEUE_PORT: "6379"
+      QUEUE_PASSWORD: ${REDIS_PASSWORD}
+      TENANT_DB_NAME_PERFIX: ${TENANT_DB_NAME_PERFIX}
+      APP_JWT_SECRET: ${APP_JWT_SECRET}
+      HOST: 0.0.0.0
+      SWAGGER_ENABLED: "false"
+      BASE_URL: ${BASE_URL}
+      SIGNUP_DISABLED: ${SIGNUP_DISABLED}
+      SIGNUP_ALLOWED_DOMAINS: ${SIGNUP_ALLOWED_DOMAINS}
+      SIGNUP_ALLOWED_EMAILS: ${SIGNUP_ALLOWED_EMAILS}
+      SIGNUP_EMAIL_CONFIRMATION: ${SIGNUP_EMAIL_CONFIRMATION}
+      THROTTLE_GLOBAL_TTL: ${THROTTLE_GLOBAL_TTL}
+      THROTTLE_GLOBAL_LIMIT: ${THROTTLE_GLOBAL_LIMIT}
+      THROTTLE_AUTH_TTL: ${THROTTLE_AUTH_TTL}
+      THROTTLE_AUTH_LIMIT: ${THROTTLE_AUTH_LIMIT}
+      GOTENBERG_URL: ${GOTENBERG_URL}
+      GOTENBERG_DOCS_URL: ${GOTENBERG_DOCS_URL}
+      EXCHANGE_RATE_SERVICE: ${EXCHANGE_RATE_SERVICE}
+      OPEN_EXCHANGE_RATE_APP_ID: ${OPEN_EXCHANGE_RATE_APP_ID}
+      BANK_FEED_ENABLED: ${BANK_FEED_ENABLED:-false}
+      PLAID_ENV: ${PLAID_ENV}
+      PLAID_CLIENT_ID: ${PLAID_CLIENT_ID}
+      PLAID_SECRET: ${PLAID_SECRET}
+      PLAID_LINK_WEBHOOK: ${PLAID_LINK_WEBHOOK}
+      LEMONSQUEEZY_API_KEY: ${LEMONSQUEEZY_API_KEY}
+      LEMONSQUEEZY_STORE_ID: ${LEMONSQUEEZY_STORE_ID}
+      LEMONSQUEEZY_WEBHOOK_SECRET: ${LEMONSQUEEZY_WEBHOOK_SECRET}
+      HOSTED_ON_BIGCAPITAL_CLOUD: "false"
+      S3_REGION: ${S3_REGION}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY}
+      S3_ENDPOINT: ${S3_ENDPOINT}
+      S3_BUCKET: ${S3_BUCKET}
+      POSTHOG_API_KEY: ""
+      POSTHOG_HOST: ""
+      LOOPS_API_KEY: ""
+      STRIPE_PAYMENT_SECRET_KEY: ${STRIPE_PAYMENT_SECRET_KEY}
+      STRIPE_PAYMENT_PUBLISHABLE_KEY: ${STRIPE_PAYMENT_PUBLISHABLE_KEY}
+      STRIPE_PAYMENT_CLIENT_ID: ${STRIPE_PAYMENT_CLIENT_ID}
+      STRIPE_PAYMENT_WEBHOOKS_SECRET: ${STRIPE_PAYMENT_WEBHOOKS_SECRET}
+      STRIPE_PAYMENT_REDIRECT_URL: ${STRIPE_PAYMENT_REDIRECT_URL}
+      STRIPE_PAYMENT_ACCOUNT_RETURN_URL: ${STRIPE_PAYMENT_ACCOUNT_RETURN_URL}
+      STRIPE_PAYMENT_ACCOUNT_REFRESH_URL: ${STRIPE_PAYMENT_ACCOUNT_REFRESH_URL}
 
   database_migration:
-    container_name: bigcapital-database-migration
-    build:
-      context: ./
-      dockerfile: docker/migration/Dockerfile
-    environment:
-      # Database
-      - DB_HOST=mysql
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_CHARSET=${DB_CHARSET}
-      - SYSTEM_DB_NAME=${SYSTEM_DB_NAME}
-      # Tenants databases
-      - TENANT_DB_NAME_PERFIX=${TENANT_DB_NAME_PERFIX}
+    image: bigcapital-local/server:v0.25.32-hardened
+    pull_policy: never
+    working_dir: /app/packages/server
+    command:
+      - sh
+      - -ec
+      - node dist/cli.js system:migrate:latest && node dist/cli.js tenants:migrate:latest
+    environment: *server_environment
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - bigcapital_network
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: "no"
 
   mysql:
-    container_name: bigcapital-mysql
-    restart: on-failure
     build:
       context: ./docker/mariadb
     environment:
-      - MYSQL_DATABASE=${SYSTEM_DB_NAME}
-      - MYSQL_USER=${DB_USER}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${SYSTEM_DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      TENANT_DB_NAME_PERFIX: ${TENANT_DB_NAME_PERFIX}
     volumes:
       - mysql:/var/lib/mysql
-    expose:
-      - '3306'
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'mariadb-admin ping --silent --host=localhost --user=root --password="$$MYSQL_ROOT_PASSWORD"',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    restart: unless-stopped
     networks:
       - bigcapital_network
+    security_opt:
+      - no-new-privileges:true
 
   redis:
-    container_name: bigcapital-redis
-    restart: on-failure
     build:
       context: ./docker/redis
-    expose:
-      - '6379'
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    command:
+      - sh
+      - -ec
+      - exec redis-server /usr/local/etc/redis/redis.conf --requirepass "$$REDIS_PASSWORD"
     volumes:
       - redis:/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'redis-cli --no-auth-warning -a "$$REDIS_PASSWORD" ping | grep -q PONG',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
     networks:
       - bigcapital_network
+    security_opt:
+      - no-new-privileges:true
 
   gotenberg:
-    image: gotenberg/gotenberg:7
+    profiles:
+      - pdf
+    image: gotenberg/gotenberg:8.36.0-chromium@sha256:a40f92d7419adbf98fd2ab2e4211f6186c9fd44f196a5aadbd2769bf237faae6
     expose:
-      - '9000'
+      - "3000"
+    read_only: true
+    tmpfs:
+      - /tmp:size=512m,mode=1777
+      - /home/gotenberg:size=128m,uid=1001,gid=1001
+    pids_limit: 256
+    mem_limit: 1g
+    restart: unless-stopped
     networks:
       - bigcapital_network
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
 
-# Volumes
 volumes:
   mysql:
     name: bigcapital_prod_mysql
-    driver: local
-
   redis:
     name: bigcapital_prod_redis
-    driver: local
 
-# Networks
 networks:
   bigcapital_network:
     driver: bridge

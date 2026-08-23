@@ -2,8 +2,6 @@ import { Injectable, Scope } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import stripe from 'stripe';
 
-const origin = 'https://cfdf-102-164-97-88.ngrok-free.app';
-
 @Injectable({ scope: Scope.DEFAULT })
 export class StripePaymentService {
   public stripe: stripe;
@@ -47,10 +45,20 @@ export class StripePaymentService {
    */
   public async createAccountLink(accountId: string) {
     try {
+      const returnUrl = this.config.get<string>(
+        'stripePayment.accountReturnUrl',
+      );
+      const refreshUrl = this.config.get<string>(
+        'stripePayment.accountRefreshUrl',
+      );
+
+      if (!returnUrl || !refreshUrl) {
+        throw new Error('Stripe onboarding return URLs are not configured');
+      }
       const accountLink = await this.stripe.accountLinks.create({
         account: accountId,
-        return_url: `${origin}/return/${accountId}`,
-        refresh_url: `${origin}/refresh/${accountId}`,
+        return_url: returnUrl,
+        refresh_url: refreshUrl,
         type: 'account_onboarding',
       });
       return accountLink;

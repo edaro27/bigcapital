@@ -1,7 +1,7 @@
-import { CacheProvider, ThemeProvider } from '@emotion/react';
-import { EmotionCache } from '@emotion/cache';
-import { defaultTheme } from '@xstyled/system';
-import { createGlobalStyle, Preflight } from '@xstyled/emotion';
+import { CacheProvider, ThemeProvider } from "@emotion/react";
+import { EmotionCache } from "@emotion/cache";
+import { defaultTheme } from "@xstyled/system";
+import { createGlobalStyle, Preflight } from "@xstyled/emotion";
 
 const theme = {
   ...defaultTheme,
@@ -57,8 +57,7 @@ body{
   -webkit-tap-highlight-color: transparent;
 }
 body, h1, h2, h3, h4, h5, h6{
-  font-family: "Open Sans", sans-serif;
-  font-optical-sizing: auto;
+  font-family: Arial, Helvetica, sans-serif;
   font-style: normal;
 }
 strong {

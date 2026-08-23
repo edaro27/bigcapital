@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as xlsx from 'xlsx';
+import { Workbook } from 'exceljs';
 import * as R from 'ramda';
 import { get } from 'lodash';
 import { sanitizeResourceName } from '../Import/_utils';
@@ -204,15 +204,14 @@ export class ExportResourceService {
    * @param {any[]} exportableColumns - The columns to be included in the workbook.
    * @returns The created workbook.
    */
-  private createWorkbook(data: any[], exportableColumns: any[]) {
-    const workbook = xlsx.utils.book_new();
+  private createWorkbook(data: any[], exportableColumns: any[]): Workbook {
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet('Exported Data');
     const worksheetData = data.map((item) =>
       exportableColumns.map((col) => get(item, getDataAccessor(col))),
     );
     worksheetData.unshift(exportableColumns.map((col) => col.name));
-
-    const worksheet = xlsx.utils.aoa_to_sheet(worksheetData);
-    xlsx.utils.book_append_sheet(workbook, worksheet, 'Exported Data');
+    worksheet.addRows(worksheetData);
 
     return workbook;
   }
@@ -223,11 +222,14 @@ export class ExportResourceService {
    * @param {string} format - The format to export the workbook in.
    * @returns The exported workbook data.
    */
-  private exportWorkbook(workbook: any, format: string) {
+  private async exportWorkbook(
+    workbook: Workbook,
+    format: string,
+  ): Promise<Buffer | undefined> {
     if (format.toLowerCase() === 'csv') {
-      return xlsx.write(workbook, { type: 'buffer', bookType: 'csv' });
+      return Buffer.from(await workbook.csv.writeBuffer());
     } else if (format.toLowerCase() === 'xlsx') {
-      return xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+      return Buffer.from(await workbook.xlsx.writeBuffer());
     }
   }
 }

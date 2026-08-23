@@ -1,5 +1,6 @@
 // @ts-nocheck
 import 'regenerator-runtime/runtime';
+import 'flexboxgrid/dist/flexboxgrid.min.css';
 import './wdyr';
 import React from 'react';
 import ReactDOM from 'react-dom';

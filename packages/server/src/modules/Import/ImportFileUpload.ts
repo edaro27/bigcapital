@@ -73,7 +73,7 @@ export class ImportFileUploadService {
     await validateImportFileMagicBytes(buffer);
 
     // Parse the buffer file to array data.
-    const [sheetData, sheetColumns] = parseSheetData(buffer);
+    const [sheetData, sheetColumns] = await parseSheetData(buffer);
     const coumnsStringified = JSON.stringify(sheetColumns);
 
     // Throws service error if the sheet data is empty.

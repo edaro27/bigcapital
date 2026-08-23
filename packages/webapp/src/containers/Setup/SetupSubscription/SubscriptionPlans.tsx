@@ -61,7 +61,7 @@ const SubscriptionPlanMapped = R.compose(
     getLemonCheckout({ variantId })
       .then((res) => {
         const checkoutUrl = res.data.data.attributes.url;
-        window.LemonSqueezy?.Url.Open(checkoutUrl);
+        window.open(checkoutUrl, '_blank', 'noopener,noreferrer');
       })
       .catch(() => {
         AppToaster.show({

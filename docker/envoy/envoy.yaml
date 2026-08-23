@@ -4,25 +4,42 @@ static_resources:
       address:
         socket_address:
           address: 0.0.0.0
-          port_value: 80
+          port_value: 8080
       filter_chains:
         - filters:
             - name: envoy.filters.network.http_connection_manager
               typed_config:
-                '@type': type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
                 stat_prefix: ingress_http
                 route_config:
                   name: local_route
                   virtual_hosts:
                     - name: backend
-                      domains: ['*']
+                      domains: ["*"]
+                      response_headers_to_add:
+                        - header:
+                            key: X-Content-Type-Options
+                            value: nosniff
+                          append_action: OVERWRITE_IF_EXISTS_OR_ADD
+                        - header:
+                            key: Referrer-Policy
+                            value: no-referrer
+                          append_action: OVERWRITE_IF_EXISTS_OR_ADD
+                        - header:
+                            key: Permissions-Policy
+                            value: camera=(), microphone=(), geolocation=()
+                          append_action: OVERWRITE_IF_EXISTS_OR_ADD
+                        - header:
+                            key: Content-Security-Policy
+                            value: "default-src 'self'; base-uri 'self'; connect-src 'self' ws: wss:; font-src 'self' data:; form-action 'self'; frame-ancestors 'none'; frame-src 'self' https://*.plaid.com https://connect.stripe.com; img-src 'self' data: blob:; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'"
+                          append_action: OVERWRITE_IF_EXISTS_OR_ADD
                       routes:
                         - match:
-                            prefix: '/api'
+                            prefix: "/api"
                           route:
                             cluster: dynamic_server
                         - match:
-                            prefix: '/'
+                            prefix: "/"
                           route:
                             cluster: webapp
                 http_filters:
@@ -59,4 +76,4 @@ static_resources:
                   address:
                     socket_address:
                       address: webapp
-                      port_value: 80
+                      port_value: 8080

@@ -1,53 +1,68 @@
-# WARNING!
-# This is a development version of THE Bigcapital docker-compose.yml file.
-# Avoid using this file in your production environment.
-# We're exposing here sensitive ports and mounting code volumes for rapid development and debugging of the server stack.
-
-version: '3.3'
+name: bigcapital-dev-infrastructure
 
 services:
   mariadb:
     build:
       context: ./docker/mariadb
     environment:
-      - MYSQL_DATABASE=${SYSTEM_DB_NAME}
-      - MYSQL_USER=${DB_USER}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${SYSTEM_DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      TENANT_DB_NAME_PERFIX: ${TENANT_DB_NAME_PERFIX}
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:3306:3306"
     volumes:
       - mysql:/var/lib/mysql
-    expose:
-      - '3306'
-    ports:
-      - '3306:3306'
-    deploy:
-      restart_policy:
-        condition: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'mariadb-admin ping --silent --host=localhost --user=root --password="$$MYSQL_ROOT_PASSWORD"',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
   redis:
     build:
       context: ./docker/redis
-    expose:
-      - '6379'
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    command:
+      - sh
+      - -ec
+      - exec redis-server /usr/local/etc/redis/redis.conf --requirepass "$$REDIS_PASSWORD"
     ports:
-      - '6379:6379'
+      - "${BIND_ADDRESS:-127.0.0.1}:6379:6379"
     volumes:
       - redis:/data
-    deploy:
-      restart_policy:
-        condition: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'redis-cli --no-auth-warning -a "$$REDIS_PASSWORD" ping | grep -q PONG',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
   gotenberg:
-    image: gotenberg/gotenberg:7
+    image: gotenberg/gotenberg:8@sha256:87c16b9f364279d321bc9772d31fa58aa6abe036423c270698bd636c3a8e9466
     ports:
-      - '9000:3000'
+      - "${BIND_ADDRESS:-127.0.0.1}:9000:3000"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
-# Volumes
 volumes:
   mysql:
     name: bigcapital_dev_mysql
-    driver: local
-
   redis:
     name: bigcapital_dev_redis
-    driver: local

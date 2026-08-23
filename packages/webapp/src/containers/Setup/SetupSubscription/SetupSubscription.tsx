@@ -18,16 +18,6 @@ function SetupSubscriptionInner({
     initSubscriptionPlans();
   }, [initSubscriptionPlans]);
 
-  useEffect(() => {
-    window.LemonSqueezy?.Setup({
-      eventHandler: (event) => {
-        // Do whatever you want with this event data
-        if (event.event === 'Checkout.Success') {
-        }
-      },
-    });
-  }, []);
-
   return (
     <Box className={styles.root}>
       <SubscriptionPlansSection />

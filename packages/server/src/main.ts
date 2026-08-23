@@ -5,6 +5,7 @@ import * as path from 'path';
 import './utils/moment-mysql';
 import { AppModule } from './modules/App/App.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import helmet from 'helmet';
 
 global.__public_dirname = path.join(__dirname, '..', 'public');
 global.__static_dirname = path.join(__dirname, '../static');
@@ -17,19 +18,25 @@ async function bootstrap() {
   });
   app.set('query parser', 'extended');
   app.setGlobalPrefix('/api');
+  app.use(helmet());
 
   // create and mount the middleware manually here
   app.use(new ClsMiddleware({}).use);
 
-  const config = new DocumentBuilder()
-    .setTitle('Bigcapital')
-    .setDescription('Financial accounting software')
-    .setVersion('1.0')
-    .build();
+  if (process.env.SWAGGER_ENABLED === 'true') {
+    const config = new DocumentBuilder()
+      .setTitle('Bigcapital')
+      .setDescription('Financial accounting software')
+      .setVersion('1.0')
+      .build();
 
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger', app, documentFactory);
+    const documentFactory = () => SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('swagger', app, documentFactory);
+  }
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(
+    Number(process.env.PORT ?? 3000),
+    process.env.HOST ?? '127.0.0.1',
+  );
 }
 bootstrap();

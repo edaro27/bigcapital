@@ -7,7 +7,7 @@ import {
   ThemeProvider as StyleComponentsThemeProvider,
   StyleSheetManager,
 } from 'styled-components';
-import rtlcss from 'stylis-rtlcss';
+import rtlPlugin from 'stylis-plugin-rtl';
 import { useAppIntlContext } from '../AppIntlProvider';
 
 const theme = {
@@ -26,7 +26,7 @@ export function DashboardThemeProvider({
 
   return (
     <StyleSheetManager
-      {...(direction === 'rtl' ? { stylisPlugins: [rtlcss] } : {})}
+      {...(direction === 'rtl' ? { stylisPlugins: [rtlPlugin as any] } : {})}
     >
       <StyleComponentsThemeProvider theme={{ dir: direction }}>
         <XStyledEmotionThemeProvider theme={theme}>

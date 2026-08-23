@@ -21,8 +21,13 @@ export const normalizeApiPath = (path) => (path || '').replace(/^\//, '');
 export const getCookie = (name, defaultValue?) =>
   _.defaultTo(jsCookie.get(name), defaultValue);
 
-export const setCookie = (name, value, expiry = 365, secure = false) => {
-  jsCookie.set(name, value, { expires: expiry, path: '/', secure });
+export const setCookie = (name, value, expiry = 1) => {
+  jsCookie.set(name, value, {
+    expires: expiry,
+    path: '/',
+    sameSite: 'strict',
+    secure: window.location.protocol === 'https:',
+  });
 };
 
 export const removeCookie = (name) => {

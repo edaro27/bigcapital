@@ -1,56 +1,76 @@
-import * as XLSX from 'xlsx';
-import { first } from 'lodash';
+import { Readable } from 'stream';
+import { CellValue, Workbook, Worksheet } from 'exceljs';
 
-/**
- * Parses the given sheet buffer to worksheet.
- * @param {Buffer} buffer
- * @returns {XLSX.WorkSheet}
- */
-export function parseFirstSheet(buffer: Buffer): XLSX.WorkSheet {
-  const workbook = XLSX.read(buffer, { type: 'buffer', raw: true });
+const isXlsxBuffer = (buffer: Buffer) =>
+  buffer.length >= 4 &&
+  buffer[0] === 0x50 &&
+  buffer[1] === 0x4b &&
+  buffer[2] === 0x03 &&
+  buffer[3] === 0x04;
 
-  const firstSheetName = workbook.SheetNames[0];
-  const worksheet = workbook.Sheets[firstSheetName];
+const normalizeCellValue = (value: CellValue): unknown => {
+  if (value === null || value === undefined) return '';
+  if (value instanceof Date) return value;
+  if (typeof value !== 'object') return value;
+  if ('result' in value) return normalizeCellValue(value.result as CellValue);
+  if ('text' in value) return value.text;
+  if ('richText' in value) {
+    return value.richText.map((part) => part.text).join('');
+  }
+  if ('error' in value) return value.error;
+  return String(value);
+};
 
-  return worksheet;
+/** Parses a CSV or XLSX buffer and returns its first worksheet. */
+export async function parseFirstSheet(buffer: Buffer): Promise<Worksheet> {
+  const workbook = new Workbook();
+
+  if (isXlsxBuffer(buffer)) {
+    await workbook.xlsx.load(buffer);
+    const worksheet = workbook.worksheets[0];
+
+    if (!worksheet) throw new Error('The workbook does not contain a sheet');
+    return worksheet;
+  }
+  return workbook.csv.read(Readable.from(buffer));
 }
 
-/**
- * Extracts the given worksheet to columns.
- * @param {XLSX.WorkSheet} worksheet
- * @returns {Array<string>}
- */
-export function extractSheetColumns(worksheet: XLSX.WorkSheet): Array<string> {
-  // By default, sheet_to_json scans the first row and uses the values as headers.
-  // With the header: 1 option, the function exports an array of arrays of values.
-  const sheetCells = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-  const sheetCols = first(sheetCells) as Array<string>;
+/** Extracts non-empty labels from the first row. */
+export function extractSheetColumns(worksheet: Worksheet): string[] {
+  const values = worksheet.getRow(1).values;
+  const cells = Array.isArray(values) ? values.slice(1) : [];
 
-  return sheetCols.filter((col) => col);
+  return cells
+    .map((value) => String(normalizeCellValue(value as CellValue)).trim())
+    .filter(Boolean);
 }
 
-/**
- * Parses the given worksheet to json values. the keys are columns labels.
- * @param {XLSX.WorkSheet} worksheet
- * @returns {Array<Record<string, string>>}
- */
+/** Converts worksheet rows to objects keyed by the first-row labels. */
 export function parseSheetToJson(
-  worksheet: XLSX.WorkSheet,
-): Array<Record<string, string>> {
-  return XLSX.utils.sheet_to_json(worksheet, {});
+  worksheet: Worksheet,
+): Array<Record<string, unknown>> {
+  const columns = extractSheetColumns(worksheet);
+  const rows: Array<Record<string, unknown>> = [];
+
+  worksheet.eachRow((row, rowNumber) => {
+    if (rowNumber === 1) return;
+
+    const record = columns.reduce<Record<string, unknown>>(
+      (result, column, index) => {
+        result[column] = normalizeCellValue(row.getCell(index + 1).value);
+        return result;
+      },
+      {},
+    );
+    if (Object.values(record).some((value) => value !== '')) rows.push(record);
+  });
+  return rows;
 }
 
-/**
- * Parses the given sheet buffer then retrieves the sheet data and columns.
- * @param {Buffer} buffer
- */
-export function parseSheetData(
+/** Parses a sheet buffer and returns its row data and column labels. */
+export async function parseSheetData(
   buffer: Buffer,
-): [Array<Record<string, string>>, string[]] {
-  const worksheet = parseFirstSheet(buffer);
-
-  const columns = extractSheetColumns(worksheet);
-  const data = parseSheetToJson(worksheet);
-
-  return [data, columns];
+): Promise<[Array<Record<string, unknown>>, string[]]> {
+  const worksheet = await parseFirstSheet(buffer);
+  return [parseSheetToJson(worksheet), extractSheetColumns(worksheet)];
 }

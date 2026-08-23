@@ -1,137 +1,70 @@
-import * as xlsx from 'xlsx';
+import { Workbook } from 'exceljs';
 import { ITableData } from '../types/Table.types';
 import { FinancialTableStructure } from './FinancialTableStructure';
 
 interface ITableSheet {
-  convertToXLSX(): xlsx.WorkBook;
+  convertToXLSX(): Workbook;
   convertToCSV(): string;
-  convertToBuffer(workbook: xlsx.WorkBook, fileType: string): Buffer;
+  convertToBuffer(
+    workbook: Workbook,
+    fileType: 'xlsx' | 'csv',
+  ): Promise<Buffer>;
 }
 
+const escapeCsvValue = (value: unknown): string => {
+  const text = value === null || value === undefined ? '' : String(value);
+  return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+};
+
 export class TableSheet implements ITableSheet {
-  private table: ITableData;
+  constructor(private readonly table: ITableData) {}
 
-  constructor(table: ITableData) {
-    this.table = table;
-  }
-
-  /**
-   * Retrieves the columns labels.
-   * @returns {string[]}
-   */
   private get columns() {
     return this.table.columns.map((col) => col.label);
   }
 
-  /**
-   * Retrieves the columns accessors.
-   * @returns {string[]}
-   */
-  private get columnsAccessors() {
-    return this.table.columns.map((col, index) => {
-      return `${index}`;
-    });
-  }
-
-  /**
-   * Retrieves the rows data cellIndex/Value.
-   * @returns {Record<string, string>}
-   */
-  private get rows() {
-    const computedRows = FinancialTableStructure.flatNestedTree(
-      this.table.rows,
+  private get rowValues() {
+    return FinancialTableStructure.flatNestedTree(this.table.rows).map((row) =>
+      row.cells.map((cell) => cell.value),
     );
-    return computedRows.map((row) => {
-      const entries = row.cells.map((cell, index) => {
-        return [`${index}`, cell.value];
-      });
-      return Object.fromEntries(entries);
-    });
   }
 
-  /**
-   * Converts the table to a CSV string.
-   * @returns {string}
-   */
   public convertToCSV(): string {
-    // Define custom headers
-    const headers = this.columns;
-
-    // Convert data to worksheet with headers
-    const worksheet = xlsx.utils.json_to_sheet(this.rows, {
-      header: this.columnsAccessors,
-    });
-    // Add custom headers to the worksheet
-    xlsx.utils.sheet_add_aoa(worksheet, [headers], { origin: 'A1' });
-
-    // Convert worksheet to CSV format
-    const csvOutput = xlsx.utils.sheet_to_csv(worksheet);
-
-    return csvOutput;
+    return [this.columns, ...this.rowValues]
+      .map((row) => row.map(escapeCsvValue).join(','))
+      .join('\n');
   }
 
-  /**
-   * Convert the array of objects to an XLSX file with styled headers
-   * @returns {xlsx.WorkBook}
-   */
-  public convertToXLSX(): xlsx.WorkBook {
-    // Create a new workbook and a worksheet
-    const workbook = xlsx.utils.book_new();
-    const worksheet = xlsx.utils.json_to_sheet(this.rows, {
-      header: this.columnsAccessors,
-    });
-    // Add custom headers to the worksheet
-    xlsx.utils.sheet_add_aoa(worksheet, [this.columns], {
-      origin: 'A1',
-    });
-    // Adjust column width.
-    worksheet['!cols'] = this.computeXlsxColumnsWidths(this.rows);
+  public convertToXLSX(): Workbook {
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet('Sheet1');
+    const rows = this.rowValues;
 
-    // Append the worksheet to the workbook
-    xlsx.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-
+    worksheet.addRow(this.columns);
+    rows.forEach((row) => worksheet.addRow(row));
+    worksheet.columns = this.computeXlsxColumnsWidths(rows).map((width) => ({
+      width,
+    }));
     return workbook;
   }
 
-  /**
-   * Converts the given workbook to buffer of the given file type
-   * @param {xlsx.WorkBook} workbook
-   * @param {string} fileType
-   * @returns {Promise<Buffer>}
-   */
-  public convertToBuffer(
-    workbook: xlsx.WorkBook,
+  public async convertToBuffer(
+    workbook: Workbook,
     fileType: 'xlsx' | 'csv',
-  ): Buffer {
-    return xlsx.write(workbook, {
-      type: 'buffer',
-      bookType: fileType,
-      cellStyles: true,
-    });
+  ): Promise<Buffer> {
+    if (fileType === 'csv') {
+      return Buffer.from(await workbook.csv.writeBuffer());
+    }
+    return Buffer.from(await workbook.xlsx.writeBuffer());
   }
 
-  /**
-   * Adjusts and computes the columns width.
-   * @param {} rows
-   * @returns {{wch: number}[]}
-   */
-  private computeXlsxColumnsWidths = (rows): { wch: number }[] => {
-    const cols = [{ wch: 60 }];
-
-    this.columns.map((column) => {
-      cols.push({ wch: column.length });
+  private computeXlsxColumnsWidths(rows: unknown[][]): number[] {
+    return this.columns.map((column, index) => {
+      const longestValue = rows.reduce(
+        (longest, row) => Math.max(longest, String(row[index] ?? '').length),
+        column.length,
+      );
+      return Math.min(Math.max(longestValue + 2, 10), index === 0 ? 60 : 40);
     });
-    rows.forEach((row) => {
-      const entries = Object.entries(row);
-
-      entries.forEach(([key, value]) => {
-        if (cols[key]) {
-          cols[key].wch = Math.max(cols[key].wch, String(value).length);
-        } else {
-          cols[key] = { wch: String(value).length };
-        }
-      });
-    });
-    return cols;
-  };
+  }
 }

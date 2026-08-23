@@ -1,41 +1,30 @@
-import * as XLSX from 'xlsx';
+import { Workbook } from 'exceljs';
 import { sanitizeResourceName } from './_utils';
 import { Injectable } from '@nestjs/common';
-import { getImportableService } from './decorators/Import.decorator';
 import { ImportableRegistry } from './ImportableRegistry';
 
 @Injectable()
 export class ImportSampleService {
   constructor(private readonly importableRegistry: ImportableRegistry) {}
-  /**
-   * Retrieves the sample sheet of the given resource.
-   * @param {string} resource
-   * @param {string} format
-   * @returns {Buffer | string}
-   */
+
   public async sample(
     resource: string,
     format: 'csv' | 'xlsx',
   ): Promise<Buffer | string> {
-    const _resource = sanitizeResourceName(resource);
-    const importable = await this.importableRegistry.getImportable(_resource);
-
+    const importable = await this.importableRegistry.getImportable(
+      sanitizeResourceName(resource),
+    );
     const data = importable.sampleData();
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet('Sheet1');
+    const columns = data.length > 0 ? Object.keys(data[0]) : [];
 
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    worksheet.addRow(columns);
+    data.forEach((row) => worksheet.addRow(columns.map((key) => row[key])));
 
-    // Determine the output format
     if (format === 'csv') {
-      const csvOutput = XLSX.utils.sheet_to_csv(worksheet);
-      return csvOutput;
-    } else {
-      const xlsxOutput = XLSX.write(workbook, {
-        bookType: 'xlsx',
-        type: 'buffer',
-      });
-      return xlsxOutput;
+      return Buffer.from(await workbook.csv.writeBuffer()).toString('utf8');
     }
+    return Buffer.from(await workbook.xlsx.writeBuffer());
   }
 }

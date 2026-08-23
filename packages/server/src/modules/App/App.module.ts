@@ -81,7 +81,7 @@ import { PaymentLinksModule } from '../PaymentLinks/PaymentLinks.module';
 import { RolesModule } from '../Roles/Roles.module';
 import { SubscriptionModule } from '../Subscription/Subscription.module';
 import { OrganizationModule } from '../Organization/Organization.module';
-import { WorkspacesModule } from '../ee/Workspaces/Workspaces.module';
+import { WorkspacesModule } from '../EE/Workspaces/Workspaces.module';
 import { TenantDBManagerModule } from '../TenantDBManager/TenantDBManager.module';
 import { PaymentServicesModule } from '../PaymentServices/PaymentServices.module';
 import { AuthModule } from '../Auth/Auth.module';
@@ -145,6 +145,7 @@ import { AppThrottleModule } from './AppThrottle.module';
         connection: {
           host: configService.get('queue.host'),
           port: configService.get('queue.port'),
+          password: configService.get('queue.password'),
         },
       }),
       inject: [ConfigService],
@@ -184,6 +185,7 @@ import { AppThrottleModule } from './AppThrottle.module';
         config: {
           host: configService.get('redis.host'),
           port: configService.get('redis.port'),
+          password: configService.get('redis.password'),
         },
       }),
       inject: [ConfigService],
