@@ -73,8 +73,10 @@ export class ComputeItemCostProcessor extends WorkerHost {
       );
       // Reset cost_compute_running when job fails so it does not stay true indefinitely
       try {
+        const hasMoreJobs =
+          await this.inventoryComputeCostService.hasOtherPendingCostJobsForCurrentTenant();
         await this.inventoryComputeCostService.markItemsCostComputeRunning(
-          false,
+          hasMoreJobs,
         );
       } catch (markError) {
         console.error(

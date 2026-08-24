@@ -14,6 +14,21 @@ import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelD
 import { CreditNoteDefaultViews } from '../constants';
 import { InjectAttachable } from '@/modules/Attachments/decorators/InjectAttachable.decorator';
 
+const creditNoteTotalSql = `GREATEST(
+  COALESCE(AMOUNT, 0)
+  - CASE
+      WHEN DISCOUNT_TYPE = 'amount' THEN COALESCE(DISCOUNT, 0)
+      ELSE COALESCE(AMOUNT, 0) * COALESCE(DISCOUNT, 0) / 100
+    END
+  + COALESCE(ADJUSTMENT, 0)
+  + CASE
+      WHEN COALESCE(IS_INCLUSIVE_TAX, 0) = 0
+      THEN COALESCE(TAX_AMOUNT_WITHHELD, 0)
+      ELSE 0
+    END,
+  0
+)`;
+
 @InjectAttachable()
 @ExportableModel()
 @ImportableModel()
@@ -26,6 +41,8 @@ export class CreditNote extends TenantBaseModel {
   public discount: number;
   public discountType: DiscountType;
   public adjustment: number;
+  public isInclusiveTax: boolean;
+  public taxAmountWithheld: number;
   public refundedAmount: number;
   public invoicesAmount: number;
   public creditNoteDate: Date;
@@ -78,6 +95,8 @@ export class CreditNote extends TenantBaseModel {
 
       'subtotal',
       'subtotalLocal',
+      'subtotalExcludingTax',
+      'taxAmountWithheldLocal',
 
       'discountAmount',
       'discountAmountLocal',
@@ -112,6 +131,18 @@ export class CreditNote extends TenantBaseModel {
    */
   get subtotalLocal() {
     return this.subtotal * this.exchangeRate;
+  }
+
+  /** Credit-note subtotal before tax. */
+  get subtotalExcludingTax() {
+    return this.isInclusiveTax
+      ? this.subtotal - (this.taxAmountWithheld || 0)
+      : this.subtotal;
+  }
+
+  /** Credit-note tax in organization base currency. */
+  get taxAmountWithheldLocal() {
+    return (this.taxAmountWithheld || 0) * this.exchangeRate;
   }
 
   /**
@@ -153,7 +184,14 @@ export class CreditNote extends TenantBaseModel {
    * @returns {number}
    */
   get total() {
-    return this.subtotal - this.discountAmount + this.adjustment;
+    const exclusiveTax = this.isInclusiveTax ? 0 : this.taxAmountWithheld || 0;
+
+    return (
+      this.subtotal -
+      this.discountAmount +
+      (this.adjustment || 0) +
+      exclusiveTax
+    );
   }
 
   /**
@@ -200,7 +238,7 @@ export class CreditNote extends TenantBaseModel {
    * Retrieve the credits remaining.
    */
   get creditsRemaining() {
-    return Math.max(this.amount - this.refundedAmount - this.invoicesAmount, 0);
+    return Math.max(this.total - this.refundedAmount - this.invoicesAmount, 0);
   }
 
   /**
@@ -235,8 +273,8 @@ export class CreditNote extends TenantBaseModel {
       open(query) {
         query
           .where(
-            raw(`COALESCE(REFUNDED_AMOUNT) + COALESCE(INVOICES_AMOUNT) <
-            COALESCE(AMOUNT)`),
+            raw(`COALESCE(REFUNDED_AMOUNT, 0) + COALESCE(INVOICES_AMOUNT, 0)
+              < ${creditNoteTotalSql}`),
           )
           .modify('published');
       },
@@ -247,8 +285,8 @@ export class CreditNote extends TenantBaseModel {
       closed(query) {
         query
           .where(
-            raw(`COALESCE(REFUNDED_AMOUNT) + COALESCE(INVOICES_AMOUNT) =
-            COALESCE(AMOUNT)`),
+            raw(`COALESCE(REFUNDED_AMOUNT, 0) + COALESCE(INVOICES_AMOUNT, 0)
+              >= ${creditNoteTotalSql}`),
           )
           .modify('published');
       },
@@ -280,7 +318,8 @@ export class CreditNote extends TenantBaseModel {
       sortByStatus(query, order) {
         const dir = sanitizeSortDirection(order);
         query.orderByRaw(
-          `COALESCE(REFUNDED_AMOUNT) + COALESCE(INVOICES_AMOUNT) = COALESCE(AMOUNT) ${dir}`,
+          `COALESCE(REFUNDED_AMOUNT, 0) + COALESCE(INVOICES_AMOUNT, 0)
+            >= ${creditNoteTotalSql} ${dir}`,
         );
       },
     };

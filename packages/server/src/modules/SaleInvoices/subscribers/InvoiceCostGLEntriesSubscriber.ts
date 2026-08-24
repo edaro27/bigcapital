@@ -16,9 +16,11 @@ export class InvoiceCostGLEntriesSubscriber {
   async writeInvoicesCostEntriesOnCostLotsWritten({
     trx,
     startingDate,
+    itemId,
   }: IInventoryCostLotsGLEntriesWriteEvent) {
     await this.invoiceCostEntries.writeInventoryCostJournalEntries(
       startingDate,
+      itemId,
       trx,
     );
   }

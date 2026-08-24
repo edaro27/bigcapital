@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { TenantModelProxy } from '../../System/models/TenantBaseModel';
 import { InventoryCostLotTracker } from '../models/InventoryCostLotTracker';
+import { Knex } from 'knex';
 
 @Injectable()
 export class InventoryItemOpeningAvgCostService {
@@ -21,7 +22,11 @@ export class InventoryItemOpeningAvgCostService {
    *    openingQuantity: number,
    * }>}
    */
-  public async getOpeningAverageCost(closingDate: Date, itemId: number) {
+  public async getOpeningAverageCost(
+    closingDate: Date,
+    itemId: number,
+    trx?: Knex.Transaction,
+  ) {
     const commonBuilder = (builder: any) => {
       if (closingDate) {
         builder.where('date', '<', closingDate);
@@ -38,13 +43,13 @@ export class InventoryItemOpeningAvgCostService {
     }
     // Calculates the total inventory total quantity and rate `IN` transactions.
     const inInvSumationOper = this.inventoryCostLotTrackerModel()
-      .query()
+      .query(trx)
       .onBuild(commonBuilder)
       .where('direction', 'IN');
 
     // Calculates the total inventory total quantity and rate `OUT` transactions.
     const outInvSumationOper = this.inventoryCostLotTrackerModel()
-      .query()
+      .query(trx)
       .onBuild(commonBuilder)
       .where('direction', 'OUT');
 

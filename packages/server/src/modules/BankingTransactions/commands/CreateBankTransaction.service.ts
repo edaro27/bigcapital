@@ -118,16 +118,17 @@ export class CreateBankTransactionService {
   public newCashflowTransaction = async (
     newTransactionDTO: CreateBankTransactionDto,
     userId?: number,
+    trx?: Knex.Transaction,
   ): Promise<BankTransaction> => {
     // Retrieves the cashflow account or throw not found error.
     const cashflowAccount = await this.accountModel()
-      .query()
+      .query(trx)
       .findById(newTransactionDTO.cashflowAccountId)
       .throwIfNotFound();
 
     // Retrieves the credit account or throw not found error.
     const creditAccount = await this.accountModel()
-      .query()
+      .query(trx)
       .findById(newTransactionDTO.creditAccountId)
       .throwIfNotFound();
 
@@ -165,6 +166,6 @@ export class CreateBankTransactionService {
         } as ICommandCashflowCreatedPayload,
       );
       return cashflowTransaction;
-    });
+    }, trx);
   };
 }

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  ArrayMinSize,
   IsArray,
   IsBoolean,
   IsDateString,
@@ -9,6 +10,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   ValidateNested,
 } from 'class-validator';
@@ -40,12 +42,22 @@ export class CommandVendorCreditDto {
 
   @ToNumber()
   @IsNumber()
+  @IsPositive()
   @IsOptional()
   @ApiProperty({
     description: 'The exchange rate of the vendor credit',
     example: 1,
   })
   exchangeRate?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    description: 'Whether line-item tax is included in the entered rates',
+    required: false,
+    example: false,
+  })
+  isInclusiveTax: boolean = false;
 
   @IsString()
   @IsOptional()
@@ -103,6 +115,7 @@ export class CommandVendorCreditDto {
   branchId?: number;
 
   @IsArray()
+  @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => VendorCreditEntryDto)
   @ApiProperty({

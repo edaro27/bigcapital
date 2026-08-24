@@ -108,7 +108,7 @@ export class BillPaymentGL {
             accountId: this.gainLossAccountId,
             index: 2,
             indexGroup: 20,
-            accountNormal: AccountNormal.DEBIT,
+            accountNormal: AccountNormal.CREDIT,
           },
           {
             ...commonEntry,

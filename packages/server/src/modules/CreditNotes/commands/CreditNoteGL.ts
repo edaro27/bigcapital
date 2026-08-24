@@ -9,6 +9,7 @@ export class CreditNoteGL {
   ARAccountId: number;
   discountAccountId: number;
   adjustmentAccountId: number;
+  taxPayableAccountId: number;
 
   /**
    * @param {CreditNote} creditNoteModel - Credit note model.
@@ -41,6 +42,11 @@ export class CreditNoteGL {
    */
   public setAdjustmentAccountId(adjustmentAccountId: number) {
     this.adjustmentAccountId = adjustmentAccountId;
+    return this;
+  }
+
+  public setTaxPayableAccountId(taxPayableAccountId: number) {
+    this.taxPayableAccountId = taxPayableAccountId;
     return this;
   }
 
@@ -115,6 +121,20 @@ export class CreditNoteGL {
     };
   }
 
+  /** Reverses the sales-tax liability for a returned/credited line. */
+  private getCreditNoteTaxEntry(entry: ItemEntry, index: number): ILedgerEntry {
+    return {
+      ...this.creditNoteCommonEntry,
+      debit: entry.taxAmount * this.creditNoteModel.exchangeRate,
+      accountId: this.taxPayableAccountId,
+      index: index + 1,
+      indexGroup: 30,
+      accountNormal: AccountNormal.CREDIT,
+      taxRateId: entry.taxRateId,
+      taxRate: entry.taxRate,
+    };
+  }
+
   /**
    * Retrieves the credit note discount entry.
    * @param {ICreditNote} creditNote
@@ -165,10 +185,19 @@ export class CreditNoteGL {
     const itemsEntries = this.creditNoteModel.entries.map((entry, index) =>
       this.getCreditNoteItemEntry(entry, index),
     );
+    const taxEntries = this.creditNoteModel.entries
+      .filter((entry) => entry.taxAmount > 0)
+      .map((entry, index) => this.getCreditNoteTaxEntry(entry, index));
     const discountEntry = this.discountEntry;
     const adjustmentEntry = this.adjustmentEntry;
 
-    return [AREntry, discountEntry, adjustmentEntry, ...itemsEntries];
+    return [
+      AREntry,
+      discountEntry,
+      adjustmentEntry,
+      ...itemsEntries,
+      ...taxEntries,
+    ];
   }
 
   /**

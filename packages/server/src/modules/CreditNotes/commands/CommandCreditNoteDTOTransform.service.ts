@@ -13,11 +13,8 @@ import { assocItemEntriesDefaultIndex } from '@/utils/associate-item-entries-ind
 import { formatDateFields } from '@/utils/format-date-fields';
 import { CreditNoteAutoIncrementService } from './CreditNoteAutoIncrement.service';
 import { CreditNote } from '../models/CreditNote';
-import {
-  CreateCreditNoteDto,
-  CreditNoteEntryDto,
-  EditCreditNoteDto,
-} from '../dtos/CreditNote.dto';
+import { ItemEntriesTaxTransactions } from '@/modules/TaxRates/ItemEntriesTaxTransactions.service';
+import { CreateCreditNoteDto, EditCreditNoteDto } from '../dtos/CreditNote.dto';
 
 @Injectable()
 export class CommandCreditNoteDTOTransform {
@@ -34,6 +31,7 @@ export class CommandCreditNoteDTOTransform {
     private readonly warehouseDTOTransform: WarehouseTransactionDTOTransform,
     private readonly brandingTemplatesTransformer: BrandingTemplateDTOTransformer,
     private readonly creditNoteAutoIncrement: CreditNoteAutoIncrementService,
+    private readonly taxDTOTransformer: ItemEntriesTaxTransactions,
   ) {}
 
   /**
@@ -50,16 +48,21 @@ export class CommandCreditNoteDTOTransform {
     const amount = this.itemsEntriesService.getTotalItemsEntries(
       creditNoteDTO.entries,
     );
+    const initialEntries = creditNoteDTO.entries.map((entry) => ({
+      ...entry,
+      referenceType: 'CreditNote',
+      isInclusiveTax: creditNoteDTO.isInclusiveTax,
+    }));
+    const asyncEntries = await composeAsync(
+      this.taxDTOTransformer.assocTaxRateFromTaxIdToEntries,
+      this.taxDTOTransformer.assocTaxRateIdFromCodeToEntries,
+      this.itemsEntriesService.setItemsEntriesDefaultAccounts,
+    )(initialEntries);
     const entries = R.compose(
+      R.map(R.omit(['taxCode'])),
       // Associate the default index to each item entry.
       assocItemEntriesDefaultIndex,
-
-      // Associate the reference type to credit note entries.
-      R.map((entry: CreditNoteEntryDto) => ({
-        ...entry,
-        referenceType: 'CreditNote',
-      })),
-    )(creditNoteDTO.entries);
+    )(asyncEntries);
 
     // Retrieves the next credit note number.
     const autoNextNumber = this.creditNoteAutoIncrement.getNextCreditNumber();
@@ -99,7 +102,7 @@ export class CommandCreditNoteDTOTransform {
       ),
     )(initialDTO)) as CreditNote;
 
-    return asyncDto;
+    return this.taxDTOTransformer.assocTaxAmountWithheldFromEntries(asyncDto);
   };
 
   /**
@@ -124,11 +127,11 @@ export class CommandCreditNoteDTOTransform {
    */
   public validateCreditAmountNotBelowUsed = (
     creditNote: CreditNote,
-    newAmount: number,
+    newTotal: number,
   ) => {
     const usedAmount = creditNote.refundedAmount + creditNote.invoicesAmount;
 
-    if (newAmount < usedAmount) {
+    if (newTotal < usedAmount) {
       throw new ServiceError(ERRORS.CREDIT_NOTE_AMOUNT_SMALLER_THAN_USED);
     }
   };

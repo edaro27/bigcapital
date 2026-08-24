@@ -40,7 +40,7 @@ export class DeleteManualJournalService {
   }> => {
     // Validate the manual journal exists on the storage.
     const oldManualJournal = await this.manualJournalModel()
-      .query()
+      .query(trx)
       .findById(manualJournalId)
       .throwIfNotFound();
 

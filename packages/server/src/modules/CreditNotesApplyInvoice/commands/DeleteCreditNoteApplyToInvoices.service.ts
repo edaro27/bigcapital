@@ -39,22 +39,23 @@ export class DeleteCreditNoteApplyToInvoices {
   public deleteApplyCreditNoteToInvoices = async (
     applyCreditToInvoicesId: number,
   ): Promise<void> => {
-    const creditNoteAppliedToInvoice =
-      await this.creditNoteAppliedInvoiceModel()
-        .query()
-        .findById(applyCreditToInvoicesId);
-
-    if (!creditNoteAppliedToInvoice) {
-      throw new ServiceError(ERRORS.CREDIT_NOTE_APPLY_TO_INVOICES_NOT_FOUND);
-    }
-    // Retrieve the credit note or throw not found service error.
-    const creditNote = await this.creditNoteModel()
-      .query()
-      .findById(creditNoteAppliedToInvoice.creditNoteId)
-      .throwIfNotFound();
-
     // Creates credit note apply to invoice transaction.
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+      const creditNoteAppliedToInvoice =
+        await this.creditNoteAppliedInvoiceModel()
+          .query(trx)
+          .findById(applyCreditToInvoicesId)
+          .forUpdate();
+
+      if (!creditNoteAppliedToInvoice) {
+        throw new ServiceError(ERRORS.CREDIT_NOTE_APPLY_TO_INVOICES_NOT_FOUND);
+      }
+      const creditNote = await this.creditNoteModel()
+        .query(trx)
+        .findById(creditNoteAppliedToInvoice.creditNoteId)
+        .forUpdate()
+        .throwIfNotFound();
+
       // Delete credit note applied to invoices.
       await this.creditNoteAppliedInvoiceModel()
         .query(trx)

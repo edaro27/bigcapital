@@ -37,7 +37,7 @@ export class DeleteSaleReceipt {
     trx?: Knex.Transaction,
   ) {
     const oldSaleReceipt = await this.saleReceiptModel()
-      .query()
+      .query(trx)
       .findById(saleReceiptId)
       .withGraphFetched('entries');
 

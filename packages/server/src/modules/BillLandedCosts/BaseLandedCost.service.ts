@@ -12,6 +12,7 @@ import { ServiceError } from '../Items/ServiceError';
 import { CONFIG, ERRORS } from './utils';
 import { ItemEntry } from '../TransactionItemEntry/models/ItemEntry';
 import { Bill } from '../Bills/models/Bill';
+import { Knex } from 'knex';
 import { TransactionLandedCost } from './commands/TransctionLandedCost.service';
 import {
   AllocateBillLandedCostDto,
@@ -42,8 +43,8 @@ export class BaseLandedCostService {
 
     // Not found items ids.
     const notFoundItemsIds = difference(
-      purchaseInvoiceItems,
       landedCostItemsIds,
+      purchaseInvoiceItems,
     );
     // Throw items ids not found service error.
     if (notFoundItemsIds.length > 0) {
@@ -95,9 +96,12 @@ export class BaseLandedCostService {
   public getLandedCostOrThrowError = async (
     transactionType: LandedCostTransactionType,
     transactionId: number,
+    trx?: Knex.Transaction,
   ) => {
     const Model = await this.transactionLandedCost.getModel(transactionType);
-    const model = await Model().query().findById(transactionId);
+    const modelQuery = Model().query(trx).findById(transactionId);
+    if (trx) modelQuery.forUpdate();
+    const model = await modelQuery;
 
     if (!model) {
       throw new ServiceError(ERRORS.LANDED_COST_TRANSACTION_NOT_FOUND);
@@ -119,12 +123,13 @@ export class BaseLandedCostService {
     transactionType: string,
     transactionId: number,
     transactionEntryId: number,
+    trx?: Knex.Transaction,
   ): Promise<any> => {
     const Model = await this.transactionLandedCost.getModel(transactionType);
     const relation = CONFIG.COST_TYPES[transactionType].entries;
 
-    const entry = await Model()
-      .relatedQuery(relation)
+    const entryQuery = Model()
+      .relatedQuery(relation, trx)
       .for(transactionId)
       .findOne('id', transactionEntryId)
       .where('landedCost', true)
@@ -135,6 +140,8 @@ export class BaseLandedCostService {
           q.withGraphFetched('expenseAccount');
         }
       });
+    if (trx) entryQuery.forUpdate();
+    const entry = await entryQuery;
 
     if (!entry) {
       throw new ServiceError(ERRORS.LANDED_COST_ENTRY_NOT_FOUND);

@@ -19,7 +19,7 @@ export class UnitOfWork {
   public withTransaction = async <T>(
     work: (knex: Knex.Transaction) => Promise<T> | T,
     trx?: Transaction,
-    isolationLevel: IsolationLevel = IsolationLevel.READ_UNCOMMITTED,
+    isolationLevel: IsolationLevel = IsolationLevel.READ_COMMITTED,
   ): Promise<T> => {
     const knex = this.tenantKex();
     let _trx = trx;
@@ -31,12 +31,12 @@ export class UnitOfWork {
       const result = await work(_trx);
 
       if (!trx) {
-        _trx.commit();
+        await _trx.commit();
       }
       return result;
     } catch (error) {
       if (!trx) {
-        _trx.rollback();
+        await _trx.rollback();
       }
       throw error;
     }

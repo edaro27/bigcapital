@@ -20,7 +20,7 @@ export class BulkDeleteBillsService {
       .for(billsIds)
       .process(async (billId: number) => {
         try {
-          await this.deleteBillService.deleteBill(billId);
+          await this.deleteBillService.deleteBill(billId, trx);
         } catch (error) {
           if (!skipUndeletable) {
             throw error;

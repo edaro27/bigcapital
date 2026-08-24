@@ -14,6 +14,9 @@ import { CreditNote } from '@/modules/CreditNotes/models/CreditNote';
 import { events } from '@/common/events/events';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { CreditNoteRefundDto } from '../dto/CreditNoteRefund.dto';
+import { ACCOUNT_TYPE } from '@/constants/accounts';
+import { ServiceError } from '@/modules/Items/ServiceError';
+import { ERRORS } from '@/modules/CreditNotes/constants';
 
 @Injectable()
 export class CreateRefundCreditNoteService {
@@ -100,10 +103,15 @@ export class CreateRefundCreditNoteService {
       .findById(newCreditNoteDTO.fromAccountId)
       .throwIfNotFound();
 
-    // Validate the refund withdrawal account type.
-    // this.commandCreditNoteDTOTransform.validateRefundWithdrawwalAccountType(
-    //   fromAccount,
-    // );
+    if (
+      !fromAccount.isAccountType([
+        ACCOUNT_TYPE.BANK,
+        ACCOUNT_TYPE.CASH,
+        ACCOUNT_TYPE.OTHER_CURRENT_ASSET,
+      ])
+    ) {
+      throw new ServiceError(ERRORS.ACCOUNT_INVALID_TYPE);
+    }
     // Retrieve the credit note with a row lock or throw not found service error.
     const creditNote = await this.creditNoteModel()
       .query(trx)

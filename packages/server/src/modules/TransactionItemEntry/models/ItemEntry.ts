@@ -90,7 +90,7 @@ export class ItemEntry extends BaseModel {
    * @returns {number}
    */
   get total() {
-    return this.subtotal - this.discountAmount;
+    return this.subtotal;
   }
 
   /**
@@ -98,7 +98,7 @@ export class ItemEntry extends BaseModel {
    * @returns {number}
    */
   get totalExcludingTax() {
-    return this.subtotalExcludingTax - this.discountAmount;
+    return this.subtotalExcludingTax;
   }
 
   /**
@@ -123,7 +123,9 @@ export class ItemEntry extends BaseModel {
    * @returns {number}
    */
   get subtotalInclusingTax() {
-    return this.isInclusiveTax ? this.amount : this.amount + this.taxAmount;
+    return this.isInclusiveTax
+      ? this.amountAfterDiscount
+      : this.amountAfterDiscount + this.taxAmount;
   }
 
   /**
@@ -131,7 +133,9 @@ export class ItemEntry extends BaseModel {
    * @returns {number}
    */
   get subtotalExcludingTax() {
-    return this.isInclusiveTax ? this.amount - this.taxAmount : this.amount;
+    return this.isInclusiveTax
+      ? this.amountAfterDiscount - this.taxAmount
+      : this.amountAfterDiscount;
   }
 
   /**
@@ -142,6 +146,11 @@ export class ItemEntry extends BaseModel {
     return this.discountType === DiscountType.Percentage
       ? this.amount * (this.discount / 100)
       : this.discount;
+  }
+
+  /** Line amount after either a percentage or fixed-amount discount. */
+  get amountAfterDiscount() {
+    return this.amount - (this.discountAmount || 0);
   }
 
   /**
@@ -158,8 +167,8 @@ export class ItemEntry extends BaseModel {
    */
   get taxAmount() {
     return this.isInclusiveTax
-      ? getInclusiveTaxAmount(this.amount, this.taxRate)
-      : getExlusiveTaxAmount(this.amount, this.taxRate);
+      ? getInclusiveTaxAmount(this.amountAfterDiscount, this.taxRate)
+      : getExlusiveTaxAmount(this.amountAfterDiscount, this.taxRate);
   }
 
   /**
@@ -171,10 +180,14 @@ export class ItemEntry extends BaseModel {
   }
 
   static calcAmount(itemEntry) {
-    const { discount, quantity, rate } = itemEntry;
+    const { discount, discountType, quantity, rate } = itemEntry;
     const total = quantity * rate;
 
-    return discount ? total - total * discount * 0.01 : total;
+    if (!discount) return total;
+
+    return discountType === DiscountType.Amount
+      ? total - discount
+      : total - total * discount * 0.01;
   }
 
   /**

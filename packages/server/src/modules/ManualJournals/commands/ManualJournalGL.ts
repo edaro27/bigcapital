@@ -54,8 +54,8 @@ export class ManualJournalGL {
 
     return {
       ...commonEntry,
-      debit: entry.debit,
-      credit: entry.credit,
+      debit: entry.debit * (this.manualJournal.exchangeRate || 1),
+      credit: entry.credit * (this.manualJournal.exchangeRate || 1),
       accountId: entry.accountId,
 
       contactId: entry.contactId,

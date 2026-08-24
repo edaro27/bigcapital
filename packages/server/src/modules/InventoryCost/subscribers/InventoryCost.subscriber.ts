@@ -69,7 +69,9 @@ export class InventoryCostSubscriber {
    */
   @OnEvent(events.inventory.onInventoryCostEntriesWritten)
   async markGlobalSettingsComputeItemsCompeted({}) {
-    await this.inventoryService.markItemsCostComputeRunning(false);
+    const hasMoreJobs =
+      await this.inventoryService.hasOtherPendingCostJobsForCurrentTenant();
+    await this.inventoryService.markItemsCostComputeRunning(hasMoreJobs);
   }
 
   /**
@@ -85,7 +87,7 @@ export class InventoryCostSubscriber {
       startingDate instanceof Date ? startingDate : new Date(startingDate);
 
     // Write GL entries for inventory cost lots after cost computation completes
-    await this.saleInvoicesCost.writeCostLotsGLEntries(startingDateObj);
+    await this.saleInvoicesCost.writeCostLotsGLEntries(startingDateObj, itemId);
   }
 
   /**

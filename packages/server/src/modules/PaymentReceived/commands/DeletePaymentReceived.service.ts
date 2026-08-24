@@ -51,7 +51,7 @@ export class DeletePaymentReceivedService {
   ) {
     // Retreive payment receive or throw not found service error.
     const oldPaymentReceive = await this.paymentReceiveModel()
-      .query()
+      .query(trx)
       .withGraphFetched('entries')
       .findById(paymentReceiveId)
       .throwIfNotFound();

@@ -56,9 +56,12 @@ export class BillPaymentValidators {
    * @param {number} paymentAccountId
    * @return {Promise<IAccountType>}
    */
-  public async getPaymentAccountOrThrowError(paymentAccountId: number) {
+  public async getPaymentAccountOrThrowError(
+    paymentAccountId: number,
+    trx?: Knex.Transaction,
+  ) {
     const paymentAccount = await this.accountModel()
-      .query()
+      .query(trx)
       .findById(paymentAccountId);
 
     if (!paymentAccount) {
@@ -86,9 +89,10 @@ export class BillPaymentValidators {
   public async validatePaymentNumber(
     paymentMadeNumber: string,
     notPaymentMadeId?: number,
+    trx?: Knex.Transaction,
   ) {
     const foundBillPayment = await this.billPaymentModel()
-      .query()
+      .query(trx)
       .onBuild((builder: any) => {
         builder.findOne('payment_number', paymentMadeNumber);
 
@@ -113,6 +117,10 @@ export class BillPaymentValidators {
     trx?: Knex.Transaction,
   ) {
     const entriesBillsIds = billPaymentEntries.map((e: any) => e.billId);
+
+    if (new Set(entriesBillsIds).size !== entriesBillsIds.length) {
+      throw new ServiceError(ERRORS.INVALID_BILL_PAYMENT_AMOUNT);
+    }
 
     const storedBillsQuery = this.billModel()
       .query(trx)
@@ -206,13 +214,14 @@ export class BillPaymentValidators {
   public async validateEntriesIdsExistance(
     billPaymentId: number,
     billPaymentEntries: BillPaymentEntry[],
+    trx?: Knex.Transaction,
   ) {
     const entriesIds = billPaymentEntries
       .filter((entry: any) => entry.id)
       .map((entry: any) => entry.id);
 
     const storedEntries = await this.billPaymentEntryModel()
-      .query()
+      .query(trx)
       .where('bill_payment_id', billPaymentId);
 
     const storedEntriesIds = storedEntries.map((entry: any) => entry.id);

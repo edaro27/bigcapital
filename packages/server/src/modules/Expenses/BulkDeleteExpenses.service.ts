@@ -20,7 +20,7 @@ export class BulkDeleteExpensesService {
       .for(expensesIds)
       .process(async (expenseId: number) => {
         try {
-          await this.deleteExpenseService.deleteExpense(expenseId);
+          await this.deleteExpenseService.deleteExpense(expenseId, trx);
         } catch (error) {
           if (!skipUndeletable) {
             throw error;

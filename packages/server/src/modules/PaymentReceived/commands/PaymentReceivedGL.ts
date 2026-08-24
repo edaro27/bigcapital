@@ -112,7 +112,7 @@ export class PaymentReceivedGL {
             accountId: this.ARAccountId,
             contactId: this.paymentReceived.customerId,
             index: 3,
-            accountNormal: AccountNormal.CREDIT,
+            accountNormal: AccountNormal.DEBIT,
           },
           {
             ...commonJournal,

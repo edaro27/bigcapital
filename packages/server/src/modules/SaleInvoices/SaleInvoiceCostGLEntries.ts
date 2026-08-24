@@ -28,13 +28,15 @@ export class SaleInvoiceCostGLEntries {
    */
   public writeInventoryCostJournalEntries = async (
     startingDate: Date,
+    itemId: number,
     trx?: Knex.Transaction,
   ): Promise<void> => {
     const inventoryCostLotTrans = await this.inventoryCostLotTracker()
-      .query()
+      .query(trx)
       .where('direction', 'OUT')
       .where('transaction_type', 'SaleInvoice')
       .where('cost', '>', 0)
+      .where('item_id', itemId)
       .modify('filterDateRange', startingDate)
       .orderBy('date', 'ASC')
       .withGraphFetched('invoice')

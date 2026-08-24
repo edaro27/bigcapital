@@ -136,6 +136,7 @@ export class DeleteSaleInvoice {
       await this.eventPublisher.emitAsync(events.saleInvoice.onDelete, {
         oldSaleInvoice,
         saleInvoiceId,
+        trx,
       } as ISaleInvoiceDeletePayload);
 
       // Triggers `onSaleInvoiceDeleting` event.

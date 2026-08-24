@@ -58,7 +58,10 @@ export class CreditNoteGLEntriesSubscriber {
     // Can't continue if the credit note is not published yet.
     if (!oldCreditNote.isPublished) return;
 
-    await this.creditNoteGLEntries.revertVendorCreditGLEntries(creditNoteId);
+    await this.creditNoteGLEntries.revertVendorCreditGLEntries(
+      creditNoteId,
+      trx,
+    );
   }
 
   /**

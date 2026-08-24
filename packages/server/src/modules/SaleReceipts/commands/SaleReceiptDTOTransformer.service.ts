@@ -15,6 +15,7 @@ import { assocItemEntriesDefaultIndex } from '@/utils/associate-item-entries-ind
 import { SaleReceipt } from '../models/SaleReceipt';
 import { Customer } from '@/modules/Customers/models/Customer';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import { ItemEntriesTaxTransactions } from '@/modules/TaxRates/ItemEntriesTaxTransactions.service';
 import {
   CreateSaleReceiptDto,
   EditSaleReceiptDto,
@@ -38,6 +39,7 @@ export class SaleReceiptDTOTransformer {
     private readonly validators: SaleReceiptValidators,
     private readonly receiptIncrement: SaleReceiptIncrement,
     private readonly brandingTemplatesTransformer: BrandingTemplateDTOTransformer,
+    private readonly taxDTOTransformer: ItemEntriesTaxTransactions,
 
     @Inject(ItemEntry.name)
     private readonly itemEntryModel: TenantModelProxy<typeof ItemEntry>,
@@ -70,15 +72,19 @@ export class SaleReceiptDTOTransformer {
     this.validators.validateReceiptNoRequire(receiptNumber);
 
     const initialEntries = saleReceiptDTO.entries.map((entry) => ({
-      reference_type: 'SaleReceipt',
+      referenceType: 'SaleReceipt',
+      isInclusiveTax: saleReceiptDTO.isInclusiveTax,
       ...entry,
     }));
     const asyncEntries = await composeAsync(
+      this.taxDTOTransformer.assocTaxRateFromTaxIdToEntries,
+      this.taxDTOTransformer.assocTaxRateIdFromCodeToEntries,
       // Sets default cost and sell account to receipt items entries.
       this.itemsEntriesService.setItemsEntriesDefaultAccounts,
     )(initialEntries);
 
     const entries = R.compose(
+      R.map(R.omit(['taxCode'])),
       // Associate the default index for each item entry.
       assocItemEntriesDefaultIndex,
     )(asyncEntries);
@@ -109,6 +115,6 @@ export class SaleReceiptDTOTransformer {
       ),
     )(initialDTO);
 
-    return asyncDto;
+    return this.taxDTOTransformer.assocTaxAmountWithheldFromEntries(asyncDto);
   }
 }

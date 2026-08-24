@@ -15,6 +15,7 @@ import {
   MaxLength,
   Min,
   ValidateNested,
+  ArrayMinSize,
 } from 'class-validator';
 
 export class ManualJournalEntryDto {
@@ -127,6 +128,7 @@ export class CommandManualJournalDto {
     type: [ManualJournalEntryDto],
   })
   @IsArray()
+  @ArrayMinSize(2)
   @ValidateNested({ each: true })
   @Type(() => ManualJournalEntryDto)
   entries: ManualJournalEntryDto[];

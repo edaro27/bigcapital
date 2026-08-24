@@ -144,16 +144,19 @@ export class EditPaymentReceivedService {
       await this.validators.validatePaymentReceiveNoExistance(
         paymentReceiveDTO.paymentReceiveNo,
         paymentReceiveId,
+        trx,
       );
     }
     // Validate the deposit account existance and type.
     const depositAccount = await this.validators.getDepositAccountOrThrowError(
       paymentReceiveDTO.depositAccountId,
+      trx,
     );
     // Validate the entries ids existance on payment receive type.
     await this.validators.validateEntriesIdsExistance(
       paymentReceiveId,
       paymentReceiveDTO.entries,
+      trx,
     );
     // Validates the payment account currency code.
     this.validators.validatePaymentAccountCurrency(

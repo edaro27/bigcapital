@@ -9,6 +9,7 @@ import { SystemUser } from '../models/SystemUser';
 import { TenantMetadata } from '../models/TenantMetadataModel';
 import { UserTenant } from '../models/UserTenant.model';
 import { TenantRepository } from '../repositories/Tenant.repository';
+import { StripeWebhookEvent } from '@/modules/StripePayment/models/StripeWebhookEvent.model';
 
 const models = [
   SystemUser,
@@ -16,6 +17,7 @@ const models = [
   TenantModel,
   TenantMetadata,
   UserTenant,
+  StripeWebhookEvent,
 ];
 
 const modelProviders = models.map((model) => {

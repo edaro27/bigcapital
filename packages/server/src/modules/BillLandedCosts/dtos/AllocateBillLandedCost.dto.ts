@@ -6,6 +6,8 @@ import {
   ValidateNested,
   IsString,
   IsNumber,
+  IsPositive,
+  ArrayMinSize,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ToNumber } from '@/common/decorators/Validators';
@@ -17,6 +19,7 @@ export class AllocateBillLandedCostItemDto {
   entryId: number;
 
   @IsNumber()
+  @IsPositive()
   @ToNumber()
   cost: number;
 }
@@ -30,6 +33,7 @@ export class AllocateBillLandedCostDto {
   transactionType: LandedCostTransactionType;
 
   @IsInt()
+  @ToNumber()
   transactionEntryId: number;
 
   @IsIn(['value', 'quantity'])
@@ -40,6 +44,7 @@ export class AllocateBillLandedCostDto {
   description?: string | null;
 
   @IsArray()
+  @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => AllocateBillLandedCostItemDto)
   items: AllocateBillLandedCostItemDto[];

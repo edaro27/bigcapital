@@ -145,8 +145,8 @@ export class EditBillService {
     // Validate bill total amount should be bigger than paid amount
     // against the locked row.
     this.validators.validateBillAmountBiggerPaidAmount(
-      billObj.amount,
-      oldBill.paymentAmount,
+      billObj.total,
+      oldBill.paymentAmount + oldBill.creditedAmount,
     );
     return { oldBill, billObj };
   }

@@ -32,9 +32,10 @@ export class InventoryAverageCostMethodService {
     itemId: number,
     openingQuantity: number,
     openingCost: number,
+    trx?: Knex.Transaction,
   ) {
     const afterInvTransactions = await this.inventoryTransactionModel()
-      .query()
+      .query(trx)
       .modify('filterDateRange', startingDate)
       .orderBy('date', 'ASC')
       .orderByRaw("FIELD(direction, 'IN', 'OUT')")
@@ -74,6 +75,7 @@ export class InventoryAverageCostMethodService {
       await this.itemOpeningAvgCostService.getOpeningAverageCost(
         startingDate,
         itemId,
+        trx,
       );
     // Retrieves the new calculated inventory cost lots.
     const inventoryCostLots = await this.getInventoryCostLots(
@@ -81,6 +83,7 @@ export class InventoryAverageCostMethodService {
       itemId,
       openingQuantity,
       openingCost,
+      trx,
     );
     // Revert the inveout out lots transactions
     await this.storeInventoryLotsCostService.revertInventoryCostLotTransactions(

@@ -10,12 +10,14 @@ import { UnitOfWork } from '@/modules/Tenancy/TenancyDB/UnitOfWork.service';
 import { events } from '@/common/events/events';
 import { UncategorizedBankTransaction } from '../../BankingTransactions/models/UncategorizedBankTransaction';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import { DeleteExpense } from '@/modules/Expenses/commands/DeleteExpense.service';
 
 @Injectable()
 export class UncategorizeBankTransactionService {
   constructor(
     private readonly eventPublisher: EventEmitter2,
     private readonly uow: UnitOfWork,
+    private readonly deleteExpense: DeleteExpense,
 
     @Inject(UncategorizedBankTransaction.name)
     private readonly uncategorizedBankTransactionModel: TenantModelProxy<
@@ -31,37 +33,37 @@ export class UncategorizeBankTransactionService {
   public async uncategorize(
     uncategorizedTransactionId: number,
   ): Promise<Array<number>> {
-    const oldMainUncategorizedTransaction =
-      await this.uncategorizedBankTransactionModel()
-        .query()
-        .findById(uncategorizedTransactionId)
-        .throwIfNotFound();
-
-    validateTransactionShouldBeCategorized(oldMainUncategorizedTransaction);
-
-    const associatedUncategorizedTransactions =
-      await this.uncategorizedBankTransactionModel()
-        .query()
-        .where(
-          'categorizeRefId',
-          oldMainUncategorizedTransaction.categorizeRefId,
-        )
-        .where(
-          'categorizeRefType',
-          oldMainUncategorizedTransaction.categorizeRefType,
-        )
-        // Exclude the main transaction.
-        .whereNot('id', uncategorizedTransactionId);
-
-    const oldUncategorizedTransactions = [
-      oldMainUncategorizedTransaction,
-      ...associatedUncategorizedTransactions,
-    ];
-    const oldUncategoirzedTransactionsIds = oldUncategorizedTransactions.map(
-      (t) => t.id,
-    );
     // Updates the transaction under UOW.
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+      const oldMainUncategorizedTransaction =
+        await this.uncategorizedBankTransactionModel()
+          .query(trx)
+          .findById(uncategorizedTransactionId)
+          .forUpdate()
+          .throwIfNotFound();
+
+      validateTransactionShouldBeCategorized(oldMainUncategorizedTransaction);
+      const associatedUncategorizedTransactions =
+        await this.uncategorizedBankTransactionModel()
+          .query(trx)
+          .where(
+            'categorizeRefId',
+            oldMainUncategorizedTransaction.categorizeRefId,
+          )
+          .where(
+            'categorizeRefType',
+            oldMainUncategorizedTransaction.categorizeRefType,
+          )
+          .whereNot('id', uncategorizedTransactionId)
+          .forUpdate();
+      const oldUncategorizedTransactions = [
+        oldMainUncategorizedTransaction,
+        ...associatedUncategorizedTransactions,
+      ];
+      const oldUncategoirzedTransactionsIds = oldUncategorizedTransactions.map(
+        (transaction) => transaction.id,
+      );
+
       // Triggers `onTransactionUncategorizing` event.
       await this.eventPublisher.emitAsync(
         events.cashflow.onTransactionUncategorizing,
@@ -71,6 +73,12 @@ export class UncategorizeBankTransactionService {
           trx,
         } as ICashflowTransactionUncategorizingPayload,
       );
+      if (oldMainUncategorizedTransaction.categorizeRefType === 'Expense') {
+        await this.deleteExpense.deleteExpense(
+          oldMainUncategorizedTransaction.categorizeRefId,
+          trx,
+        );
+      }
       // Removes the ref relation with the related transaction.
       await this.uncategorizedBankTransactionModel()
         .query(trx)

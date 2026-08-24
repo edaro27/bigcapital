@@ -9,6 +9,8 @@ import {
   IsNotEmpty,
   IsInt,
   ValidateNested,
+  IsPositive,
+  ArrayMinSize,
 } from 'class-validator';
 import { ToNumber } from '@/common/decorators/Validators';
 import { AttachmentLinkDto } from '@/modules/Attachments/dtos/Attachment.dto';
@@ -36,6 +38,7 @@ export class PaymentReceivedEntryDto {
 
   @ToNumber()
   @IsNumber()
+  @IsPositive()
   @IsNotEmpty()
   paymentAmount: number;
 }
@@ -57,6 +60,7 @@ export class CommandPaymentReceivedDto {
   @IsOptional()
   @ToNumber()
   @IsNumber()
+  @IsPositive()
   @ApiProperty({
     description: 'The amount of the payment received',
     example: 100,
@@ -66,6 +70,7 @@ export class CommandPaymentReceivedDto {
   @IsOptional()
   @ToNumber()
   @IsNumber()
+  @IsPositive()
   @ApiProperty({
     description: 'The exchange rate of the payment received',
     example: 1,
@@ -107,6 +112,7 @@ export class CommandPaymentReceivedDto {
   statement?: string;
 
   @IsArray()
+  @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => PaymentReceivedEntryDto)
   @ApiProperty({

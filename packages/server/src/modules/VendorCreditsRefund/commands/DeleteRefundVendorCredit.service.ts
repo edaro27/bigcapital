@@ -37,20 +37,20 @@ export class DeleteRefundVendorCreditService {
   public async deleteRefundVendorCreditRefund(
     refundCreditId: number,
   ): Promise<void> {
-    // Retrieve the old credit note or throw not found service error.
-    const oldRefundCredit = await this.refundVendorCreditModel()
-      .query()
-      .findById(refundCreditId)
-      .throwIfNotFound();
-
-    // Triggers `onVendorCreditRefundDelete` event.
-    await this.eventPublisher.emitAsync(events.vendorCredit.onRefundDelete, {
-      refundCreditId,
-      oldRefundCredit,
-    } as IRefundVendorCreditDeletePayload);
-
     // Deletes the refund vendor credit under unit-of-work environment.
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+      const oldRefundCredit = await this.refundVendorCreditModel()
+        .query(trx)
+        .findById(refundCreditId)
+        .forUpdate()
+        .throwIfNotFound();
+
+      await this.eventPublisher.emitAsync(events.vendorCredit.onRefundDelete, {
+        refundCreditId,
+        oldRefundCredit,
+        trx,
+      } as IRefundVendorCreditDeletePayload);
+
       const eventPayload = {
         trx,
         refundCreditId,

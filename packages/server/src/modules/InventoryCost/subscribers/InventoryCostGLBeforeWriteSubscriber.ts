@@ -18,9 +18,11 @@ export class InventoryCostGLBeforeWriteSubscriber {
   public async revertsInventoryCostGLEntries({
     trx,
     startingDate,
+    itemId,
   }: IInventoryCostLotsGLEntriesWriteEvent) {
     await this.inventoryCostGLStorage.revertInventoryCostGLEntries(
       startingDate,
+      itemId,
       trx,
     );
   }

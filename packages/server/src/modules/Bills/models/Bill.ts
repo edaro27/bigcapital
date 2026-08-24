@@ -187,7 +187,7 @@ export class Bill extends TenantBaseModel {
     return R.compose(
       R.add(adjustmentAmount),
       R.subtract(R.__, this.discountAmount),
-      R.when(R.always(this.isInclusiveTax), R.add(this.taxAmountWithheld)),
+      R.when(R.always(!this.isInclusiveTax), R.add(this.taxAmountWithheld)),
     )(this.subtotal);
   }
 

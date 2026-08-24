@@ -194,7 +194,7 @@ export const SeedAccounts = [
   },
   {
     name: 'Loan',
-    slug: 'owner-drawings',
+    slug: 'loan',
     account_type: 'other-current-liability',
     code: '20003',
     description: 'Money that has been borrowed from a creditor.',

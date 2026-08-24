@@ -44,11 +44,14 @@ export class VendorCreditGLEntries {
     // Retrieve the other expenses account.
     const otherExpensesAccount =
       await this.accountRepository.findOrCreateOtherExpensesAccount({}, trx);
+    const taxPayableAccount =
+      await this.accountRepository.findOrCreateTaxPayable({}, trx);
 
     const vendorCreditLedger = new VendorCreditGL(vendorCredit)
       .setAPAccountId(APAccount.id)
       .setPurchaseDiscountAccountId(purchaseDiscountAccount.id)
       .setOtherExpensesAccountId(otherExpensesAccount.id)
+      .setTaxPayableAccountId(taxPayableAccount.id)
       .getVendorCreditLedger();
 
     // Commits the ledger entries to the storage.

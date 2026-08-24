@@ -149,8 +149,10 @@ export class EditSaleInvoice {
     // Validate the invoice amount is not smaller than the invoice payment amount
     // against the locked row.
     this.validators.validateInvoiceAmountBiggerPaymentAmount(
-      saleInvoiceObj.balance,
-      oldSaleInvoice.paymentAmount,
+      saleInvoiceObj.total,
+      oldSaleInvoice.paymentAmount +
+        oldSaleInvoice.creditedAmount +
+        oldSaleInvoice.writtenoffAmount,
     );
     return { oldSaleInvoice, saleInvoiceObj };
   }

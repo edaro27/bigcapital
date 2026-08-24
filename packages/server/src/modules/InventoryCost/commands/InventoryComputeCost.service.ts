@@ -73,7 +73,9 @@ export class InventoryComputeCostService {
     trx?: Knex.Transaction,
   ) {
     // Fetches the item with associated item category.
-    const item = await this.itemModel().query().findById(itemId);
+    // Lock the item for the duration of the recomputation. This serializes cost
+    // rewrites for the same item across workers and application instances.
+    const item = await this.itemModel().query(trx).findById(itemId).forUpdate();
 
     // Cannot continue if the given item was not inventory item.
     if (item.type !== 'inventory') {
@@ -101,6 +103,7 @@ export class InventoryComputeCostService {
     // Check if there's an existing debounced job
     const existingJobId = await this.redisClient.get(debounceKey);
 
+    let earliestStartingDate = new Date(startingDate);
     if (existingJobId) {
       // Attempt to remove or mark the previous job as skippable
       const existingJob =
@@ -108,6 +111,10 @@ export class InventoryComputeCostService {
       const state = await existingJob?.getState();
 
       if (existingJob && ['waiting', 'delayed'].includes(state)) {
+        const existingStartingDate = new Date(existingJob.data.startingDate);
+        if (existingStartingDate < earliestStartingDate) {
+          earliestStartingDate = existingStartingDate;
+        }
         await existingJob.remove(); // Remove the previous job if it's still waiting
       }
     }
@@ -117,7 +124,13 @@ export class InventoryComputeCostService {
     // Add the new job with a delay (debounce period)
     const job = await this.computeItemCostProcessor.add(
       ComputeItemCostQueueJob,
-      { itemId, startingDate, jobId, organizationId, userId },
+      {
+        itemId,
+        startingDate: earliestStartingDate,
+        jobId,
+        organizationId,
+        userId,
+      },
       {
         jobId, // Custom job ID
         delay: debounceTime, // Delay execution by 1 minute
@@ -157,5 +170,27 @@ export class InventoryComputeCostService {
         group: 'inventory',
       }) ?? false
     );
+  }
+
+  /**
+   * Returns true when another cost job for the current organization is queued
+   * or active. The caller's currently active job is intentionally excluded.
+   */
+  async hasOtherPendingCostJobsForCurrentTenant() {
+    const organizationId = this.clsService.get('organizationId');
+    const jobs = await this.computeItemCostProcessor.getJobs([
+      'active',
+      'waiting',
+      'delayed',
+      'prioritized',
+      'waiting-children',
+    ]);
+    const tenantJobs = jobs.filter(
+      (job) => job.data.organizationId === organizationId,
+    );
+
+    // This check runs from the active processor, so one matching job is the
+    // current job. Keep the flag set only when additional work remains.
+    return tenantJobs.length > 1;
   }
 }

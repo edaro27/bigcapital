@@ -25,6 +25,7 @@ export class PaymentReceived extends TenantBaseModel {
   paymentReceiveNo: string;
   exchangeRate: number;
   statement: string;
+  stripeEventId?: string;
 
   userId: number;
   branchId: number;

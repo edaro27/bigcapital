@@ -33,20 +33,20 @@ export class DeleteRefundCreditNoteService {
    * @returns {Promise<void>}
    */
   public deleteCreditNoteRefund = async (refundCreditId: number) => {
-    // Retrieve the old credit note or throw not found service error.
-    const oldRefundCredit = await this.refundCreditNoteModel()
-      .query()
-      .findById(refundCreditId)
-      .throwIfNotFound();
-
-    // Triggers `onCreditNoteRefundDeleted` event.
-    await this.eventPublisher.emitAsync(events.creditNote.onRefundDelete, {
-      refundCreditId,
-      oldRefundCredit,
-    } as IRefundCreditNoteDeletedPayload);
-
     // Deletes refund credit note transactions with associated entries.
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+      const oldRefundCredit = await this.refundCreditNoteModel()
+        .query(trx)
+        .findById(refundCreditId)
+        .forUpdate()
+        .throwIfNotFound();
+
+      await this.eventPublisher.emitAsync(events.creditNote.onRefundDelete, {
+        refundCreditId,
+        oldRefundCredit,
+        trx,
+      } as IRefundCreditNoteDeletedPayload);
+
       const eventPayload = {
         trx,
         refundCreditId,

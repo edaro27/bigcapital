@@ -41,9 +41,9 @@ export class PaymentReceiveDTOTransformer {
     paymentReceiveDTO: IPaymentReceivedCreateDTO | IPaymentReceivedEditDTO,
     oldPaymentReceive?: PaymentReceived,
   ): Promise<PaymentReceived> {
-    const amount =
-      paymentReceiveDTO.amount ??
-      sumBy(paymentReceiveDTO.entries, 'paymentAmount');
+    // The header is derived from allocations so GL and document balances cannot
+    // diverge when a client submits a stale or inconsistent total.
+    const amount = sumBy(paymentReceiveDTO.entries, 'paymentAmount');
 
     // Retreive the next invoice number.
     const autoNextNumber = await this.increments.getNextPaymentReceiveNumber();

@@ -58,7 +58,7 @@ export class DeleteAccount {
   ): Promise<void> => {
     // Retrieve account or not found service error.
     const oldAccount = await this.accountModel()
-      .query()
+      .query(trx)
       .findById(accountId)
       .throwIfNotFound();
 

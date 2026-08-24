@@ -50,6 +50,8 @@ export class SaleReceipt extends ExtendedModel {
   public discountType!: DiscountType;
   public discount!: number;
   public adjustment!: number;
+  public isInclusiveTax!: boolean;
+  public taxAmountWithheld!: number;
 
   public branchId!: number;
   public warehouseId!: number;
@@ -89,6 +91,8 @@ export class SaleReceipt extends ExtendedModel {
 
       'subtotal',
       'subtotalLocal',
+      'subtotalExcludingTax',
+      'taxAmountWithheldLocal',
 
       'total',
       'totalLocal',
@@ -132,6 +136,18 @@ export class SaleReceipt extends ExtendedModel {
     return this.localAmount;
   }
 
+  /** Receipt subtotal before tax. */
+  get subtotalExcludingTax() {
+    return this.isInclusiveTax
+      ? this.subtotal - (this.taxAmountWithheld || 0)
+      : this.subtotal;
+  }
+
+  /** Receipt tax in organization base currency. */
+  get taxAmountWithheldLocal() {
+    return (this.taxAmountWithheld || 0) * this.exchangeRate;
+  }
+
   /**
    * Discount amount.
    * @returns {number}
@@ -165,7 +181,11 @@ export class SaleReceipt extends ExtendedModel {
   get total(): number {
     const adjustmentAmount = defaultTo(this.adjustment, 0);
 
-    return this.subtotal - this.discountAmount + adjustmentAmount;
+    const exclusiveTax = this.isInclusiveTax ? 0 : this.taxAmountWithheld || 0;
+
+    return (
+      this.subtotal - this.discountAmount + adjustmentAmount + exclusiveTax
+    );
   }
 
   /**

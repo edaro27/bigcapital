@@ -8,6 +8,7 @@ export class VendorCreditGL {
   private APAccountId: number;
   private purchaseDiscountAccountId: number;
   private otherExpensesAccountId: number;
+  private taxPayableAccountId: number;
 
   constructor(private vendorCredit: VendorCredit) {}
 
@@ -38,6 +39,11 @@ export class VendorCreditGL {
    */
   public setOtherExpensesAccountId(otherExpensesAccountId: number) {
     this.otherExpensesAccountId = otherExpensesAccountId;
+    return this;
+  }
+
+  public setTaxPayableAccountId(taxPayableAccountId: number) {
+    this.taxPayableAccountId = taxPayableAccountId;
     return this;
   }
 
@@ -105,6 +111,23 @@ export class VendorCreditGL {
     };
   }
 
+  /** Reverses input tax previously recognized on a vendor bill. */
+  private getVendorCreditTaxEntry(
+    entry: ItemEntry,
+    index: number,
+  ): ILedgerEntry {
+    return {
+      ...this.vendorCreditGLCommonEntry,
+      credit: entry.taxAmount * this.vendorCredit.exchangeRate,
+      accountId: this.taxPayableAccountId,
+      index: index + 1,
+      indexGroup: 30,
+      accountNormal: AccountNormal.CREDIT,
+      taxRateId: entry.taxRateId,
+      taxRate: entry.taxRate,
+    };
+  }
+
   /**
    * Retrieves the vendor credit discount GL entry.
    * @returns {ILedgerEntry}
@@ -150,10 +173,19 @@ export class VendorCreditGL {
     const itemsEntries = this.vendorCredit.entries.map((entry, index) =>
       this.getVendorCreditGLItemEntry(entry, index),
     );
+    const taxEntries = this.vendorCredit.entries
+      .filter((entry) => entry.taxAmount > 0)
+      .map((entry, index) => this.getVendorCreditTaxEntry(entry, index));
     const discountEntry = this.discountEntry;
     const adjustmentEntry = this.adjustmentEntry;
 
-    return [payableEntry, discountEntry, adjustmentEntry, ...itemsEntries];
+    return [
+      payableEntry,
+      discountEntry,
+      adjustmentEntry,
+      ...itemsEntries,
+      ...taxEntries,
+    ];
   }
 
   /**

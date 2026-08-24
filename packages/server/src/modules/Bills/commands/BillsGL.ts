@@ -1,11 +1,9 @@
-import { sumBy } from 'lodash';
 import * as moment from 'moment';
 import { ILedgerEntry } from '@/modules/Ledger/types/Ledger.types';
 import { ItemEntry } from '@/modules/TransactionItemEntry/models/ItemEntry';
 import { Bill } from '../models/Bill';
 import { AccountNormal } from '@/modules/Accounts/Accounts.types';
 import { Ledger } from '@/modules/Ledger/Ledger';
-import { BillLandedCost } from '@/modules/BillLandedCosts/models/BillLandedCost';
 
 export class BillGL {
   private bill: Bill;
@@ -74,11 +72,10 @@ export class BillGL {
   private getBillItemEntry(entry: ItemEntry, index: number): ILedgerEntry {
     const commonJournalMeta = this.billCommonEntry;
     const totalLocal = this.bill.exchangeRate * entry.totalExcludingTax;
-    const landedCostAmount = sumBy(entry.allocatedCostEntries, 'cost');
 
     return {
       ...commonJournalMeta,
-      debit: totalLocal + landedCostAmount,
+      debit: totalLocal,
       accountId:
         ['inventory'].indexOf(entry.item.type) !== -1
           ? entry.item.inventoryAccountId
@@ -87,27 +84,6 @@ export class BillGL {
       indexGroup: 10,
       itemId: entry.itemId,
       accountNormal: AccountNormal.DEBIT,
-    };
-  }
-
-  /**
-   * Retrieves the bill landed cost entry.
-   * @param {BillLandedCost} landedCost - Landed cost
-   * @param {number} index - Index
-   */
-  private getBillLandedCostEntry(
-    landedCost: BillLandedCost,
-    index: number,
-  ): ILedgerEntry {
-    const commonJournalMeta = this.billCommonEntry;
-
-    return {
-      ...commonJournalMeta,
-      credit: landedCost.amount,
-      accountId: landedCost.costAccountId,
-      accountNormal: AccountNormal.DEBIT,
-      index: 1,
-      indexGroup: 20,
     };
   }
 
@@ -142,7 +118,7 @@ export class BillGL {
 
     return {
       ...commonJournalMeta,
-      debit: entry.taxAmount,
+      debit: entry.taxAmount * this.bill.exchangeRate,
       index,
       indexGroup: 30,
       accountId: this.taxPayableAccountId,
@@ -208,14 +184,9 @@ export class BillGL {
     const itemsEntries = this.bill.entries.map((entry, index) =>
       this.getBillItemEntry(entry, index),
     );
-    const landedCostEntries = this.bill.locatedLandedCosts.map(
-      (landedCost, index) => this.getBillLandedCostEntry(landedCost, index),
-    );
-
     return [
       payableEntry,
       ...itemsEntries,
-      ...landedCostEntries,
       ...this.getBillTaxEntries(),
       this.purchaseDiscountEntry,
       this.adjustmentEntry,

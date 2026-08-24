@@ -130,10 +130,15 @@ export class CreateBillPaymentService {
     // Validate the payment account existance and type.
     const paymentAccount = await this.validators.getPaymentAccountOrThrowError(
       billPaymentObj.paymentAccountId,
+      trx,
     );
     // Validate the payment number uniquiness.
     if (billPaymentObj.paymentNumber) {
-      await this.validators.validatePaymentNumber(billPaymentObj.paymentNumber);
+      await this.validators.validatePaymentNumber(
+        billPaymentObj.paymentNumber,
+        undefined,
+        trx,
+      );
     }
     // Validates the withdrawal account currency code.
     this.validators.validateWithdrawalAccountCurrency(

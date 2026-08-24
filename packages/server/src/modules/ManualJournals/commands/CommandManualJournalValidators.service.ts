@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { difference, isEmpty, round, sumBy } from 'lodash';
+import { difference, isEmpty, sumBy } from 'lodash';
 import { ERRORS } from '../constants';
 import { ServiceError } from '@/modules/Items/ServiceError';
 import { Account } from '@/modules/Accounts/models/Account.model';
@@ -11,6 +11,7 @@ import {
   EditManualJournalDto,
   ManualJournalEntryDto,
 } from '../dtos/ManualJournal.dto';
+import { toCurrencyMinorUnits } from '@/utils/money';
 
 @Injectable()
 export class CommandManualJournalValidators {
@@ -32,13 +33,21 @@ export class CommandManualJournalValidators {
   public valdiateCreditDebitTotalEquals(
     manualJournalDTO: CreateManualJournalDto | EditManualJournalDto,
   ) {
-    const totalCredit = round(
+    const invalidEntry = manualJournalDTO.entries.some((entry) => {
+      const debit = entry.debit || 0;
+      const credit = entry.credit || 0;
+      return debit < 0 || credit < 0 || (debit > 0) === (credit > 0);
+    });
+    if (invalidEntry) {
+      throw new ServiceError(ERRORS.CREDIT_DEBIT_NOT_EQUAL_ZERO);
+    }
+    const totalCredit = toCurrencyMinorUnits(
       sumBy(manualJournalDTO.entries, (entry) => entry.credit || 0),
-      2,
+      manualJournalDTO.currencyCode,
     );
-    const totalDebit = round(
+    const totalDebit = toCurrencyMinorUnits(
       sumBy(manualJournalDTO.entries, (entry) => entry.debit || 0),
-      2,
+      manualJournalDTO.currencyCode,
     );
     if (totalCredit <= 0 || totalDebit <= 0) {
       throw new ServiceError(ERRORS.CREDIT_DEBIT_NOT_EQUAL_ZERO);

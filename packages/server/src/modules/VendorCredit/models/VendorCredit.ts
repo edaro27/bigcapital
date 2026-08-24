@@ -14,6 +14,21 @@ import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelD
 import { VendorCreditDefaultViews } from '../constants';
 import { InjectAttachable } from '@/modules/Attachments/decorators/InjectAttachable.decorator';
 
+const vendorCreditTotalSql = `GREATEST(
+  COALESCE(AMOUNT, 0)
+  - CASE
+      WHEN DISCOUNT_TYPE = 'amount' THEN COALESCE(DISCOUNT, 0)
+      ELSE COALESCE(AMOUNT, 0) * COALESCE(DISCOUNT, 0) / 100
+    END
+  + COALESCE(ADJUSTMENT, 0)
+  + CASE
+      WHEN COALESCE(IS_INCLUSIVE_TAX, 0) = 0
+      THEN COALESCE(TAX_AMOUNT_WITHHELD, 0)
+      ELSE 0
+    END,
+  0
+)`;
+
 @InjectAttachable()
 @ExportableModel()
 @ImportableModel()
@@ -31,6 +46,8 @@ export class VendorCredit extends TenantBaseModel {
   refundedAmount: number;
   invoicedAmount: number;
   adjustment: number;
+  isInclusiveTax: boolean;
+  taxAmountWithheld: number;
   exchangeRate: number;
   note: string;
   openedAt: Date;
@@ -81,6 +98,18 @@ export class VendorCredit extends TenantBaseModel {
     return this.subtotal * this.exchangeRate;
   }
 
+  /** Vendor-credit subtotal before tax. */
+  get subtotalExcludingTax() {
+    return this.isInclusiveTax
+      ? this.subtotal - (this.taxAmountWithheld || 0)
+      : this.subtotal;
+  }
+
+  /** Vendor-credit tax in organization base currency. */
+  get taxAmountWithheldLocal() {
+    return (this.taxAmountWithheld || 0) * this.exchangeRate;
+  }
+
   /**
    * Discount amount.
    * @returns {number}
@@ -120,7 +149,14 @@ export class VendorCredit extends TenantBaseModel {
    * @returns {number}
    */
   get total() {
-    return this.subtotal - this.discountAmount + this.adjustment;
+    const exclusiveTax = this.isInclusiveTax ? 0 : this.taxAmountWithheld || 0;
+
+    return (
+      this.subtotal -
+      this.discountAmount +
+      (this.adjustment || 0) +
+      exclusiveTax
+    );
   }
 
   /**
@@ -156,8 +192,8 @@ export class VendorCredit extends TenantBaseModel {
       open(query) {
         query
           .where(
-            raw(`COALESCE(REFUNDED_AMOUNT) + COALESCE(INVOICED_AMOUNT) <
-            COALESCE(AMOUNT)`),
+            raw(`COALESCE(REFUNDED_AMOUNT, 0) + COALESCE(INVOICED_AMOUNT, 0)
+              < ${vendorCreditTotalSql}`),
           )
           .modify('published');
       },
@@ -168,8 +204,8 @@ export class VendorCredit extends TenantBaseModel {
       closed(query) {
         query
           .where(
-            raw(`COALESCE(REFUNDED_AMOUNT) + COALESCE(INVOICED_AMOUNT) =
-            COALESCE(AMOUNT)`),
+            raw(`COALESCE(REFUNDED_AMOUNT, 0) + COALESCE(INVOICED_AMOUNT, 0)
+              >= ${vendorCreditTotalSql}`),
           )
           .modify('published');
       },
@@ -201,7 +237,8 @@ export class VendorCredit extends TenantBaseModel {
       sortByStatus(query, order) {
         const dir = sanitizeSortDirection(order);
         query.orderByRaw(
-          `COALESCE(REFUNDED_AMOUNT) + COALESCE(INVOICED_AMOUNT) = COALESCE(AMOUNT) ${dir}`,
+          `COALESCE(REFUNDED_AMOUNT, 0) + COALESCE(INVOICED_AMOUNT, 0)
+            >= ${vendorCreditTotalSql} ${dir}`,
         );
       },
     };
@@ -226,6 +263,11 @@ export class VendorCredit extends TenantBaseModel {
 
       'creditsRemaining',
       'localAmount',
+
+      'subtotal',
+      'subtotalLocal',
+      'subtotalExcludingTax',
+      'taxAmountWithheldLocal',
 
       'discountAmount',
       'discountAmountLocal',
@@ -275,7 +317,7 @@ export class VendorCredit extends TenantBaseModel {
    * @returns {number}
    */
   get creditsRemaining() {
-    return Math.max(this.amount - this.refundedAmount - this.invoicedAmount, 0);
+    return Math.max(this.total - this.refundedAmount - this.invoicedAmount, 0);
   }
 
   /**

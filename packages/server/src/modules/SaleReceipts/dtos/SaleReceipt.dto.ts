@@ -175,6 +175,15 @@ export class CommandSaleReceiptDto {
     example: 1,
   })
   adjustment?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    description: 'Whether line-item tax is included in the entered rates',
+    required: false,
+    example: false,
+  })
+  isInclusiveTax: boolean = false;
 }
 
 export class CreateSaleReceiptDto extends CommandSaleReceiptDto {}

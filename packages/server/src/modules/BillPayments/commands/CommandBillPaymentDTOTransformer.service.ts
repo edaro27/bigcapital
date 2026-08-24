@@ -29,8 +29,8 @@ export class CommandBillPaymentDTOTransformer {
     vendor: Vendor,
     oldBillPayment?: BillPayment,
   ): Promise<BillPayment> {
-    const amount =
-      billPaymentDTO.amount ?? sumBy(billPaymentDTO.entries, 'paymentAmount');
+    // The header is derived from allocations so GL and bill balances agree.
+    const amount = sumBy(billPaymentDTO.entries, 'paymentAmount');
 
     // Associate the default index to each item entry.
     const entries = R.compose(

@@ -136,7 +136,7 @@ export class EditVendorCreditService {
     // and applied-to-bills amounts against the locked row.
     this.vendorCreditDTOTransform.validateCreditAmountNotBelowUsed(
       oldVendorCredit,
-      vendorCreditModel.amount,
+      this.vendorCreditModel().fromJson(vendorCreditModel).total,
     );
     return { oldVendorCredit, vendorCreditModel };
   };

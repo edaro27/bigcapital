@@ -24,6 +24,7 @@ export class BulkDeletePaymentReceivedService {
         try {
           await this.deletePaymentReceivedService.deletePaymentReceive(
             paymentReceiveId,
+            trx,
           );
         } catch (error) {
           if (!skipUndeletable) {

@@ -52,45 +52,40 @@ export class AllocateLandedCostService extends BaseLandedCostService {
     allocateCostDTO: AllocateBillLandedCostDto,
     billId: number,
   ): Promise<BillLandedCost> {
-    // Retrieve total cost of allocated items.
-    const amount = this.getAllocateItemsCostTotal(allocateCostDTO);
-
-    // Retrieve the purchase invoice or throw not found error.
-    const bill = await this.billModel()
-      .query()
-      .findById(billId)
-      .withGraphFetched('entries')
-      .throwIfNotFound();
-
-    // Retrieve landed cost transaction or throw not found service error.
-    const costTransaction = await this.getLandedCostOrThrowError(
-      allocateCostDTO.transactionType,
-      allocateCostDTO.transactionId,
-    );
-    // Retrieve landed cost transaction entries.
-    const costTransactionEntry = await this.getLandedCostEntry(
-      allocateCostDTO.transactionType,
-      allocateCostDTO.transactionId,
-      allocateCostDTO.transactionEntryId,
-    );
-    // Validates allocate cost items association with the purchase invoice entries.
-    this.validateAllocateCostItems(bill.entries, allocateCostDTO.items);
-
-    // Validate the amount of cost with unallocated landed cost.
-    this.validateLandedCostEntryAmount(
-      costTransactionEntry.unallocatedCostAmount,
-      amount,
-    );
-    // Transformes DTO to bill landed cost model object.
-    const billLandedCostObj = this.transformToBillLandedCost(
-      allocateCostDTO,
-      bill,
-      costTransaction,
-      costTransactionEntry,
-    );
     // Saves landed cost transactions with associated tranasctions under
     // unit-of-work eniverment.
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+      const amount = this.getAllocateItemsCostTotal(allocateCostDTO);
+      const bill = await this.billModel()
+        .query(trx)
+        .findById(billId)
+        .forUpdate()
+        .withGraphFetched('entries')
+        .throwIfNotFound();
+      const costTransaction = await this.getLandedCostOrThrowError(
+        allocateCostDTO.transactionType,
+        allocateCostDTO.transactionId,
+        trx,
+      );
+      const costTransactionEntry = await this.getLandedCostEntry(
+        allocateCostDTO.transactionType,
+        allocateCostDTO.transactionId,
+        allocateCostDTO.transactionEntryId,
+        trx,
+      );
+
+      this.validateAllocateCostItems(bill.entries, allocateCostDTO.items);
+      this.validateLandedCostEntryAmount(
+        costTransactionEntry.unallocatedCostAmount,
+        amount,
+      );
+      const billLandedCostObj = this.transformToBillLandedCost(
+        allocateCostDTO,
+        bill,
+        costTransaction,
+        costTransactionEntry,
+      );
+
       // Save the bill landed cost model.
       const billLandedCost = await this.billLandedCostModel()
         .query(trx)

@@ -36,21 +36,23 @@ export class DeleteApplyVendorCreditToBillService {
    * @returns {Promise<void>}
    */
   public async deleteApplyVendorCreditToBills(appliedCreditToBillId: number) {
-    const oldCreditAppliedToBill = await this.vendorCreditAppliedBillModel()
-      .query()
-      .findById(appliedCreditToBillId);
-
-    if (!oldCreditAppliedToBill) {
-      throw new ServiceError(ERRORS.VENDOR_CREDIT_APPLY_TO_BILLS_NOT_FOUND);
-    }
-    // Retrieve the vendor credit or throw not found service error.
-    const vendorCredit = await this.vendorCreditModel()
-      .query()
-      .findById(oldCreditAppliedToBill.vendorCreditId)
-      .throwIfNotFound();
-
     // Deletes vendor credit apply under unit-of-work environment.
     return this.uow.withTransaction(async (trx) => {
+      const oldCreditAppliedToBill =
+        await this.vendorCreditAppliedBillModel()
+          .query(trx)
+          .findById(appliedCreditToBillId)
+          .forUpdate();
+
+      if (!oldCreditAppliedToBill) {
+        throw new ServiceError(ERRORS.VENDOR_CREDIT_APPLY_TO_BILLS_NOT_FOUND);
+      }
+      const vendorCredit = await this.vendorCreditModel()
+        .query(trx)
+        .findById(oldCreditAppliedToBill.vendorCreditId)
+        .forUpdate()
+        .throwIfNotFound();
+
       // Delete vendor credit applied to bill transaction.
       await this.vendorCreditAppliedBillModel()
         .query(trx)

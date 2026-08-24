@@ -25,7 +25,7 @@ export class BulkDeleteAccountsService {
       .for(accountsIds)
       .process(async (accountId: number) => {
         try {
-          await this.deleteAccountService.deleteAccount(accountId);
+          await this.deleteAccountService.deleteAccount(accountId, trx);
         } catch (error) {
           if (!skipUndeletable) {
             throw error;

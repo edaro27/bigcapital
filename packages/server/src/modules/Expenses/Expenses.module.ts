@@ -24,7 +24,12 @@ import { ValidateBulkDeleteExpensesService } from './ValidateBulkDeleteExpenses.
 @Module({
   imports: [TenancyModule, LedgerModule, BranchesModule, DynamicListModule],
   controllers: [ExpensesController],
-  exports: [CreateExpense, ExpensesExportable, ExpensesImportable],
+  exports: [
+    CreateExpense,
+    DeleteExpense,
+    ExpensesExportable,
+    ExpensesImportable,
+  ],
   providers: [
     CreateExpense,
     ExpenseDTOTransformer,

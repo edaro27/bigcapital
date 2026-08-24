@@ -7,11 +7,15 @@ import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { Account } from '@/modules/Accounts/models/Account.model';
 import { ILedgerEntry } from '@/modules/Ledger/types/Ledger.types';
 import { AccountNormal } from '@/interfaces/Account';
+import { AccountRepository } from '@/modules/Accounts/repositories/Account.repository';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 
 @Injectable()
 export class RefundCreditNoteGLEntries {
   constructor(
     private readonly ledgerStorage: LedgerStorageService,
+    private readonly accountRepository: AccountRepository,
+    private readonly tenancyContext: TenancyContext,
 
     @Inject(Account.name)
     private readonly accountModel: TenantModelProxy<typeof Account>,
@@ -66,7 +70,8 @@ export class RefundCreditNoteGLEntries {
 
     return {
       ...commonEntry,
-      debit: refundCreditNote.amount,
+      debit:
+        refundCreditNote.amount * refundCreditNote.creditNote.exchangeRate,
       accountId: ARAccountId,
       contactId: refundCreditNote.creditNote.customerId,
       index: 1,
@@ -86,7 +91,7 @@ export class RefundCreditNoteGLEntries {
 
     return {
       ...commonEntry,
-      credit: refundCreditNote.amount,
+      credit: refundCreditNote.amount * refundCreditNote.exchangeRate,
       accountId: refundCreditNote.fromAccountId,
       index: 2,
       accountNormal: AccountNormal.DEBIT,
@@ -102,6 +107,8 @@ export class RefundCreditNoteGLEntries {
   public getRefundCreditGLEntries(
     refundCreditNote: RefundCreditNote,
     ARAccountId: number,
+    exchangeGainLossAccountId: number,
+    baseCurrencyCode: string,
   ): ILedgerEntry[] {
     const receivableEntry = this.getRefundCreditGLReceivableEntry(
       refundCreditNote,
@@ -109,8 +116,21 @@ export class RefundCreditNoteGLEntries {
     );
     const withdrawalEntry =
       this.getRefundCreditGLWithdrawalEntry(refundCreditNote);
+    const difference = receivableEntry.debit - withdrawalEntry.credit;
+    const exchangeGainLossEntry: ILedgerEntry = {
+      ...this.getRefundCreditCommonGLEntry(refundCreditNote),
+      currencyCode: baseCurrencyCode,
+      exchangeRate: 1,
+      debit: difference < 0 ? Math.abs(difference) : 0,
+      credit: difference > 0 ? difference : 0,
+      accountId: exchangeGainLossAccountId,
+      accountNormal: AccountNormal.DEBIT,
+      index: 3,
+    };
 
-    return [receivableEntry, withdrawalEntry];
+    return difference
+      ? [receivableEntry, withdrawalEntry, exchangeGainLossEntry]
+      : [receivableEntry, withdrawalEntry];
   }
 
   /**
@@ -128,14 +148,24 @@ export class RefundCreditNoteGLEntries {
       .findById(refundCreditNoteId)
       .withGraphFetched('creditNote');
 
-    // Receivable account A/R.
-    const receivableAccount = await this.accountModel()
-      .query()
-      .findOne('slug', 'accounts-receivable');
+    // Receivable account A/R for the transaction currency.
+    const receivableAccount =
+      await this.accountRepository.findOrCreateAccountReceivable(
+        refundCreditNote.currencyCode,
+        {},
+        trx,
+      );
+    const exchangeGainLossAccount = await this.accountModel()
+      .query(trx)
+      .findOne('slug', 'exchange-grain-loss')
+      .throwIfNotFound();
+    const tenantMeta = await this.tenancyContext.getTenantMetadata();
     // Retrieve refund credit GL entries.
     const refundGLEntries = this.getRefundCreditGLEntries(
       refundCreditNote,
       receivableAccount.id,
+      exchangeGainLossAccount.id,
+      tenantMeta.baseCurrency,
     );
     const ledger = new Ledger(refundGLEntries);
 

@@ -39,7 +39,7 @@ export class DeleteCashflowTransaction {
   ): Promise<BankTransaction> => {
     // Retrieve the cashflow transaction.
     const oldCashflowTransaction = await this.bankTransaction()
-      .query()
+      .query(trx)
       .findById(cashflowTransactionId);
     // Throw not found error if the given transaction id not found.
     this.throwErrorIfTransactionNotFound(oldCashflowTransaction);

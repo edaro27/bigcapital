@@ -23,12 +23,14 @@ export class InventoryCostGLStorage {
    */
   public async revertInventoryCostGLEntries(
     startingDate: Date,
+    itemId: number,
     trx?: Knex.Transaction,
   ): Promise<void> {
     // Retrieve transactions from specific date range and costable transactions only.
     const transactions = await this.accountTransactionModel()
-      .query()
+      .query(trx)
       .where('costable', true)
+      .where('item_id', itemId)
       .modify('filterDateRange', startingDate)
       .withGraphFetched('account');
 

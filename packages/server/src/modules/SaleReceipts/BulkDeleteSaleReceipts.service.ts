@@ -20,7 +20,10 @@ export class BulkDeleteSaleReceiptsService {
       .for(receiptIds)
       .process(async (saleReceiptId: number) => {
         try {
-          await this.deleteSaleReceiptService.deleteSaleReceipt(saleReceiptId);
+          await this.deleteSaleReceiptService.deleteSaleReceipt(
+            saleReceiptId,
+            trx,
+          );
         } catch (error) {
           if (!skipUndeletable) {
             throw error;

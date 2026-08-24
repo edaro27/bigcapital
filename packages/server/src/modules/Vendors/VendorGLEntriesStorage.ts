@@ -5,6 +5,7 @@ import { AccountRepository } from '@/modules/Accounts/repositories/Account.repos
 import { VendorGLEntries } from './VendorGLEntries';
 import { Vendor } from './models/Vendor';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
+import { Account } from '@/modules/Accounts/models/Account.model';
 
 @Injectable()
 export class VendorGLEntriesStorage {
@@ -15,6 +16,9 @@ export class VendorGLEntriesStorage {
 
     @Inject(Vendor.name)
     private readonly vendorModel: TenantModelProxy<typeof Vendor>,
+
+    @Inject(Account.name)
+    private readonly accountModel: TenantModelProxy<typeof Account>,
   ) {}
 
   /**
@@ -28,9 +32,10 @@ export class VendorGLEntriesStorage {
   ) => {
     const vendor = await this.vendorModel().query(trx).findById(vendorId);
 
-    // Finds the expense account.
-    const expenseAccount =
-      await this.accountRepository.findOrCreateOtherExpensesAccount({}, trx);
+    // Opening balances belong in equity and must not distort current expenses.
+    const openingBalanceEquityAccount = await this.accountModel()
+      .query(trx)
+      .findOne({ slug: 'opening-balance-equity' });
     // Find or create the A/P account.
     const APAccount = await this.accountRepository.findOrCreateAccountsPayable(
       vendor.currencyCode,
@@ -40,7 +45,7 @@ export class VendorGLEntriesStorage {
     // Retrieves the vendor opening balance ledger.
     const ledger = this.vendorGLEntries.getOpeningBalanceLedger(
       APAccount.id,
-      expenseAccount.id,
+      openingBalanceEquityAccount.id,
       vendor,
     );
     // Commits the ledger entries to the storage.

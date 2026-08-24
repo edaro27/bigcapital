@@ -8,6 +8,8 @@ import {
   IsOptional,
   IsString,
   ValidateNested,
+  IsPositive,
+  ArrayMinSize,
 } from 'class-validator';
 import { AttachmentLinkDto } from '@/modules/Attachments/dtos/Attachment.dto';
 import { ToNumber } from '@/common/decorators/Validators';
@@ -15,12 +17,14 @@ import { ToNumber } from '@/common/decorators/Validators';
 export class BillPaymentEntryDto {
   @ToNumber()
   @IsNumber()
+  @IsPositive()
   @IsNotEmpty()
   @ApiProperty({ description: 'The id of the bill', example: 1 })
   billId: number;
 
   @ToNumber()
   @IsNumber()
+  @IsPositive()
   @IsNotEmpty()
   @ApiProperty({
     description: 'The payment amount of the bill payment',
@@ -32,12 +36,14 @@ export class BillPaymentEntryDto {
 export class CommandBillPaymentDTO {
   @ToNumber()
   @IsNumber()
+  @IsPositive()
   @IsNotEmpty()
   @ApiProperty({ description: 'The id of the vendor', example: 1 })
   vendorId: number;
 
   @ToNumber()
   @IsNumber()
+  @IsPositive()
   @IsOptional()
   @ApiProperty({
     description: 'The amount of the bill payment',
@@ -47,6 +53,7 @@ export class CommandBillPaymentDTO {
 
   @ToNumber()
   @IsNumber()
+  @IsPositive()
   @IsNotEmpty()
   @ApiProperty({ description: 'The id of the payment account', example: 1 })
   paymentAccountId: number;
@@ -67,7 +74,9 @@ export class CommandBillPaymentDTO {
   })
   paymentDate: Date | string;
 
+  @ToNumber()
   @IsNumber()
+  @IsPositive()
   @IsOptional()
   @ApiProperty({
     description: 'The exchange rate of the bill payment',
@@ -83,8 +92,8 @@ export class CommandBillPaymentDTO {
   })
   statement?: string;
 
-  @IsOptional()
   @IsArray()
+  @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => BillPaymentEntryDto)
   @ApiProperty({

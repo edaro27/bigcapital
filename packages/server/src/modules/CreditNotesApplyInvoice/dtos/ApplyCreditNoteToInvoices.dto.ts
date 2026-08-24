@@ -6,6 +6,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsPositive,
   ValidateNested,
 } from 'class-validator';
 
@@ -17,6 +18,7 @@ export class ApplyCreditNoteInvoiceEntryDto {
 
   @IsNotEmpty()
   @IsNumber()
+  @IsPositive()
   @ApiProperty({ description: 'Amount to apply', example: 100.5 })
   amount: number;
 }

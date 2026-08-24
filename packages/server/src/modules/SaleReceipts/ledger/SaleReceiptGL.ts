@@ -10,6 +10,7 @@ export class SaleReceiptGL {
   private saleReceipt: SaleReceipt;
   private discountAccountId: number;
   private otherChargesAccountId: number;
+  private taxPayableAccountId: number;
 
   /**
    * Constructor method.
@@ -34,6 +35,11 @@ export class SaleReceiptGL {
    */
   setOtherChargesAccountId(otherChargesAccountId: number) {
     this.otherChargesAccountId = otherChargesAccountId;
+    return this;
+  }
+
+  setTaxPayableAccountId(taxPayableAccountId: number) {
+    this.taxPayableAccountId = taxPayableAccountId;
     return this;
   }
 
@@ -104,6 +110,20 @@ export class SaleReceiptGL {
     };
   };
 
+  /** Sales-tax liability for a taxed receipt line. */
+  private getReceiptTaxEntry(entry: ItemEntry, index: number): ILedgerEntry {
+    return {
+      ...this.getIncomeGLCommonEntry(),
+      credit: entry.taxAmount * this.saleReceipt.exchangeRate,
+      accountId: this.taxPayableAccountId,
+      index: index + 1,
+      indexGroup: 30,
+      accountNormal: AccountNormal.CREDIT,
+      taxRateId: entry.taxRateId,
+      taxRate: entry.taxRate,
+    };
+  }
+
   /**
    * Retrieves the discount GL entry.
    * @returns {ILedgerEntry}
@@ -148,11 +168,20 @@ export class SaleReceiptGL {
     const creditEntries = this.saleReceipt.entries.map((e, index) =>
       getItemEntry(e, index),
     );
+    const taxEntries = this.saleReceipt.entries
+      .filter((entry) => entry.taxAmount > 0)
+      .map((entry, index) => this.getReceiptTaxEntry(entry, index));
     const depositEntry = this.getReceiptDepositEntry();
     const discountEntry = this.getDiscountEntry();
     const adjustmentEntry = this.getAdjustmentEntry();
 
-    return [depositEntry, ...creditEntries, discountEntry, adjustmentEntry];
+    return [
+      depositEntry,
+      ...creditEntries,
+      ...taxEntries,
+      discountEntry,
+      adjustmentEntry,
+    ];
   };
 
   /**

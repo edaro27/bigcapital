@@ -12,10 +12,10 @@ import { formatDateFields } from '@/utils/format-date-fields';
 import { VendorCreditAutoIncrementService } from './VendorCreditAutoIncrement.service';
 import { ServiceError } from '@/modules/Items/ServiceError';
 import { Injectable } from '@nestjs/common';
+import { ItemEntriesTaxTransactions } from '@/modules/TaxRates/ItemEntriesTaxTransactions.service';
 import {
   CreateVendorCreditDto,
   EditVendorCreditDto,
-  VendorCreditEntryDto,
 } from '../dtos/VendorCredit.dto';
 
 @Injectable()
@@ -31,6 +31,7 @@ export class VendorCreditDTOTransformService {
     private branchDTOTransform: BranchTransactionDTOTransformer,
     private warehouseDTOTransform: WarehouseTransactionDTOTransform,
     private vendorCreditAutoIncrement: VendorCreditAutoIncrementService,
+    private taxDTOTransformer: ItemEntriesTaxTransactions,
   ) {}
 
   /**
@@ -49,16 +50,21 @@ export class VendorCreditDTOTransformService {
     const amount = this.itemsEntriesService.getTotalItemsEntries(
       vendorCreditDTO.entries,
     );
+    const initialEntries = vendorCreditDTO.entries.map((entry) => ({
+      ...entry,
+      referenceType: 'VendorCredit',
+      isInclusiveTax: vendorCreditDTO.isInclusiveTax,
+    }));
+    const asyncEntries = await composeAsync(
+      this.taxDTOTransformer.assocTaxRateFromTaxIdToEntries,
+      this.taxDTOTransformer.assocTaxRateIdFromCodeToEntries,
+      this.itemsEntriesService.setItemsEntriesDefaultAccounts,
+    )(initialEntries);
     const entries = R.compose(
+      R.map(R.omit(['taxCode'])),
       // Associate the default index to each item entry.
       assocItemEntriesDefaultIndex,
-
-      // Associate the reference type to item entries.
-      R.map((entry: VendorCreditEntryDto) => ({
-        referenceType: 'VendorCredit',
-        ...entry,
-      })),
-    )(vendorCreditDTO.entries);
+    )(asyncEntries);
 
     // Retreive the next vendor credit number.
     const autoNextNumber =
@@ -84,10 +90,12 @@ export class VendorCreditDTOTransformService {
           openedAt: moment().toMySqlDateTime(),
         }),
     };
-    return composeAsync(
+    const asyncDto = (await composeAsync(
       this.branchDTOTransform.transformDTO<VendorCredit>,
       this.warehouseDTOTransform.transformDTO<VendorCredit>,
-    )(initialDTO) as VendorCredit;
+    )(initialDTO)) as VendorCredit;
+
+    return this.taxDTOTransformer.assocTaxAmountWithheldFromEntries(asyncDto);
   };
 
   /**
@@ -112,12 +120,12 @@ export class VendorCreditDTOTransformService {
    */
   public validateCreditAmountNotBelowUsed = (
     vendorCredit: VendorCredit,
-    newAmount: number,
+    newTotal: number,
   ) => {
     const usedAmount =
       vendorCredit.refundedAmount + vendorCredit.invoicedAmount;
 
-    if (newAmount < usedAmount) {
+    if (newTotal < usedAmount) {
       throw new ServiceError(ERRORS.VENDOR_CREDIT_AMOUNT_SMALLER_THAN_USED);
     }
   };

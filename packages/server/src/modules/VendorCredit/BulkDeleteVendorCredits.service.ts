@@ -24,6 +24,7 @@ export class BulkDeleteVendorCreditsService {
         try {
           await this.deleteVendorCreditService.deleteVendorCredit(
             vendorCreditId,
+            trx,
           );
         } catch (error) {
           if (!skipUndeletable) {

@@ -22,7 +22,10 @@ export class BulkDeleteCreditNotesService {
       .for(notesIds)
       .process(async (creditNoteId: number) => {
         try {
-          await this.deleteCreditNoteService.deleteCreditNote(creditNoteId);
+          await this.deleteCreditNoteService.deleteCreditNote(
+            creditNoteId,
+            trx,
+          );
         } catch (error) {
           if (!skipUndeletable) {
             throw error;

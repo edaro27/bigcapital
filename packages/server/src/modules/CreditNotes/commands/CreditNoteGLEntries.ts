@@ -38,7 +38,8 @@ export class CreditNoteGLEntries {
     trx?: Knex.Transaction,
   ): Promise<void> => {
     // Retrieve the credit note with associated entries and items.
-    const creditNoteWithItems = await CreditNote.query(trx)
+    const creditNoteWithItems = await this.creditNoteModel()
+      .query(trx)
       .findById(creditNoteId)
       .withGraphFetched('entries.item');
 
@@ -46,17 +47,22 @@ export class CreditNoteGLEntries {
     const ARAccount =
       await this.accountRepository.findOrCreateAccountReceivable(
         creditNoteWithItems.currencyCode,
+        {},
+        trx,
       );
     const discountAccount =
-      await this.accountRepository.findOrCreateDiscountAccount({});
+      await this.accountRepository.findOrCreateDiscountAccount({}, trx);
 
     const adjustmentAccount =
-      await this.accountRepository.findOrCreateOtherChargesAccount({});
+      await this.accountRepository.findOrCreateOtherChargesAccount({}, trx);
+    const taxPayableAccount =
+      await this.accountRepository.findOrCreateTaxPayable({}, trx);
 
     const creditNoteLedger = new CreditNoteGL(creditNoteWithItems)
       .setARAccountId(ARAccount.id)
       .setDiscountAccountId(discountAccount.id)
       .setAdjustmentAccountId(adjustmentAccount.id)
+      .setTaxPayableAccountId(taxPayableAccount.id)
       .getCreditNoteLedger();
 
     // Saves the credit note GL entries.

@@ -8,12 +8,14 @@ import { Account } from '@/modules/Accounts/models/Account.model';
 import { ILedgerEntry } from '@/modules/Ledger/types/Ledger.types';
 import { AccountNormal } from '@/interfaces/Account';
 import { AccountRepository } from '@/modules/Accounts/repositories/Account.repository';
+import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 
 @Injectable()
 export class RefundVendorCreditGLEntries {
   constructor(
     private readonly ledgerStorage: LedgerStorageService,
     private readonly accountRepository: AccountRepository,
+    private readonly tenancyContext: TenancyContext,
 
     @Inject(Account.name)
     private readonly accountModel: TenantModelProxy<typeof Account>,
@@ -70,7 +72,8 @@ export class RefundVendorCreditGLEntries {
 
     return {
       ...commonEntry,
-      credit: refundVendorCredit.amount,
+      credit:
+        refundVendorCredit.amount * refundVendorCredit.vendorCredit.exchangeRate,
       accountId: APAccountId,
       contactId: refundVendorCredit.vendorCredit.vendorId,
       index: 1,
@@ -91,7 +94,7 @@ export class RefundVendorCreditGLEntries {
 
     return {
       ...commonEntry,
-      debit: refundVendorCredit.amount,
+      debit: refundVendorCredit.amount * refundVendorCredit.exchangeRate,
       accountId: refundVendorCredit.depositAccountId,
       index: 2,
       accountNormal: AccountNormal.DEBIT,
@@ -107,6 +110,8 @@ export class RefundVendorCreditGLEntries {
   public getRefundVendorCreditGLEntries(
     refundVendorCredit: RefundVendorCredit,
     APAccountId: number,
+    exchangeGainLossAccountId: number,
+    baseCurrencyCode: string,
   ): ILedgerEntry[] {
     const payableEntry = this.getRefundVendorCreditGLPayableEntry(
       refundVendorCredit,
@@ -114,8 +119,21 @@ export class RefundVendorCreditGLEntries {
     );
     const depositEntry =
       this.getRefundVendorCreditGLDepositEntry(refundVendorCredit);
+    const difference = depositEntry.debit - payableEntry.credit;
+    const exchangeGainLossEntry: ILedgerEntry = {
+      ...this.getRefundVendorCreditCommonGLEntry(refundVendorCredit),
+      currencyCode: baseCurrencyCode,
+      exchangeRate: 1,
+      debit: difference < 0 ? Math.abs(difference) : 0,
+      credit: difference > 0 ? difference : 0,
+      accountId: exchangeGainLossAccountId,
+      accountNormal: AccountNormal.DEBIT,
+      index: 3,
+    };
 
-    return [payableEntry, depositEntry];
+    return difference
+      ? [payableEntry, depositEntry, exchangeGainLossEntry]
+      : [payableEntry, depositEntry];
   }
 
   /**
@@ -139,11 +157,18 @@ export class RefundVendorCreditGLEntries {
       {},
       trx,
     );
+    const exchangeGainLossAccount = await this.accountModel()
+      .query(trx)
+      .findOne('slug', 'exchange-grain-loss')
+      .throwIfNotFound();
+    const tenantMeta = await this.tenancyContext.getTenantMetadata();
 
     // Retrieve refund vendor credit GL entries.
     const refundGLEntries = this.getRefundVendorCreditGLEntries(
       refundVendorCredit,
       APAccount.id,
+      exchangeGainLossAccount.id,
+      tenantMeta.baseCurrency,
     );
     const ledger = new Ledger(refundGLEntries);
 

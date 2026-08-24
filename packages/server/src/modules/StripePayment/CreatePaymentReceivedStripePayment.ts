@@ -4,6 +4,9 @@ import { CreatePaymentReceivedService } from '../PaymentReceived/commands/Create
 import { UnitOfWork } from '../Tenancy/TenancyDB/UnitOfWork.service';
 import { Injectable } from '@nestjs/common';
 import { AccountRepository } from '../Accounts/repositories/Account.repository';
+import { Inject } from '@nestjs/common';
+import { PaymentReceived } from '../PaymentReceived/models/PaymentReceived';
+import { TenantModelProxy } from '../System/models/TenantBaseModel';
 
 @Injectable()
 export class CreatePaymentReceiveStripePayment {
@@ -12,6 +15,11 @@ export class CreatePaymentReceiveStripePayment {
     private readonly createPaymentReceivedService: CreatePaymentReceivedService,
     private readonly uow: UnitOfWork,
     private readonly accountRepository: AccountRepository,
+
+    @Inject(PaymentReceived.name)
+    private readonly paymentReceivedModel: TenantModelProxy<
+      typeof PaymentReceived
+    >,
   ) {}
 
   /**
@@ -19,9 +27,20 @@ export class CreatePaymentReceiveStripePayment {
    * @param {number} saleInvoiceId - Sale invoice id.
    * @param {number} paidAmount - Paid amount.
    */
-  async createPaymentReceived(saleInvoiceId: number, paidAmount: number) {
+  async createPaymentReceived(
+    saleInvoiceId: number,
+    paidAmount: number,
+    currencyCode: string,
+    stripeEventId: string,
+    paymentDate: Date,
+  ) {
     // Create a payment received transaction under UOW envirement.
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+      const existingPayment = await this.paymentReceivedModel()
+        .query(trx)
+        .findOne('stripeEventId', stripeEventId);
+      if (existingPayment) return existingPayment;
+
       // Finds or creates a new stripe payment clearing account (current asset).
       const stripeClearingAccount =
         await this.accountRepository.findOrCreateStripeClearing({}, trx);
@@ -32,19 +51,24 @@ export class CreatePaymentReceiveStripePayment {
         trx,
       );
 
+      if (invoice.currencyCode.toLowerCase() !== currencyCode.toLowerCase()) {
+        throw new Error('Stripe payment currency does not match the invoice.');
+      }
+
       const paymentReceivedDTO = {
         customerId: invoice.customerId,
-        paymentDate: new Date(),
+        paymentDate,
         amount: paidAmount,
-        exchangeRate: 1,
-        referenceNo: '',
-        statement: '',
+        exchangeRate: invoice.exchangeRate || 1,
+        referenceNo: `stripe:${stripeEventId}`,
+        statement: 'Stripe Checkout payment',
+        stripeEventId,
         depositAccountId: stripeClearingAccount.id,
         branchId: invoice.branchId,
         entries: [{ invoiceId: saleInvoiceId, paymentAmount: paidAmount }],
       };
       // Create a payment received transaction associated to the given invoice.
-      await this.createPaymentReceivedService.createPaymentReceived(
+      return this.createPaymentReceivedService.createPaymentReceived(
         paymentReceivedDTO,
         trx,
       );

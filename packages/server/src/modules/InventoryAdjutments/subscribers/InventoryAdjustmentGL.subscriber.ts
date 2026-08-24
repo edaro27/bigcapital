@@ -19,7 +19,6 @@ export class InventoryAdjustmentsGLSubscriber {
    * @param {IInventoryAdjustmentEventCreatedPayload} payload -
    */
   @OnEvent(events.inventoryAdjustment.onQuickCreated)
-  @OnEvent(events.inventoryAdjustment.onPublished)
   async handleGLEntriesOnceIncrementAdjustmentCreated({
     inventoryAdjustmentId,
     inventoryAdjustment,
@@ -27,10 +26,6 @@ export class InventoryAdjustmentsGLSubscriber {
   }: IInventoryAdjustmentEventCreatedPayload) {
     // Can't continue if the inventory adjustment is not published.
     if (!inventoryAdjustment.isPublished) {
-      return;
-    }
-    // Can't continue if the inventory adjustment direction is not `IN`.
-    if (inventoryAdjustment.type !== 'increment') {
       return;
     }
     await this.inventoryAdjustmentGL.writeAdjustmentGLEntries(

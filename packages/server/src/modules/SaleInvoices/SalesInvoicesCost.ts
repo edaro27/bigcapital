@@ -62,7 +62,7 @@ export class SaleInvoicesCost {
       (acc: Record<number, ModelObject<InventoryTransaction>>, transaction) => {
         const existing = acc[transaction.itemId];
 
-        if (!existing || moment(existing.date).isBefore(transaction.date)) {
+        if (!existing || moment(existing.date).isAfter(transaction.date)) {
           return {
             ...acc,
             [transaction.itemId]: {
@@ -122,13 +122,17 @@ export class SaleInvoicesCost {
    * @param {Date} startingDate - Starting date.
    * @returns {Promise<void>}
    */
-  public writeCostLotsGLEntries = async (startingDate: Date) => {
+  public writeCostLotsGLEntries = async (
+    startingDate: Date,
+    itemId: number,
+  ) => {
     await this.uow.withTransaction(async (trx: Knex.Transaction) => {
       // Triggers event `onInventoryCostLotsGLEntriesBeforeWrite`.
       await this.eventPublisher.emitAsync(
         events.inventory.onCostLotsGLEntriesBeforeWrite,
         {
           startingDate,
+          itemId,
           trx,
         } as IInventoryCostLotsGLEntriesWriteEvent,
       );
@@ -137,6 +141,7 @@ export class SaleInvoicesCost {
         events.inventory.onCostLotsGLEntriesWrite,
         {
           startingDate,
+          itemId,
           trx,
         } as IInventoryCostLotsGLEntriesWriteEvent,
       );

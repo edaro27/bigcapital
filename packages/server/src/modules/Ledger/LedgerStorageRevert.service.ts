@@ -29,9 +29,10 @@ export class LedgerRevertService {
   public getTransactionsByReference = async (
     referenceId: number | number[],
     referenceType: string | string[],
+    trx?: Knex.Transaction,
   ) => {
     const transactions = await this.accountTransactionModel()
-      .query()
+      .query(trx)
       .whereIn('reference_type', castArray(referenceType))
       .whereIn('reference_id', castArray(referenceId))
       .withGraphFetched('account');
@@ -54,6 +55,7 @@ export class LedgerRevertService {
     const transactions = await this.getTransactionsByReference(
       referenceId,
       referenceType,
+      trx,
     );
     // Creates a new ledger from transaction and reverse the entries.
     const ledger = Ledger.fromTransactions(transactions);

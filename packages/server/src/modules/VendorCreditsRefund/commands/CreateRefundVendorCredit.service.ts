@@ -161,7 +161,7 @@ export class CreateRefundVendorCredit {
    * @param {Account} account
    */
   public validateRefundDepositAccountType(account: Account) {
-    const supportedTypes = ['bank', 'cash', 'fixed-asset'];
+    const supportedTypes = ['bank', 'cash', 'other-current-asset'];
 
     if (supportedTypes.indexOf(account.accountType) === -1) {
       throw new ServiceError(ERRORS.DEPOSIT_ACCOUNT_INVALID_TYPE);

@@ -30,6 +30,7 @@ import { VendorCreditsExportable } from './commands/VendorCreditsExportable';
 import { VendorCreditsImportable } from './commands/VendorCreditsImportable';
 import { BulkDeleteVendorCreditsService } from './BulkDeleteVendorCredits.service';
 import { ValidateBulkDeleteVendorCreditsService } from './ValidateBulkDeleteVendorCredits.service';
+import { TaxRatesModule } from '../TaxRates/TaxRate.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { ValidateBulkDeleteVendorCreditsService } from './ValidateBulkDeleteVend
     AccountsModule,
     DynamicListModule,
     InventoryCostModule,
+    TaxRatesModule,
   ],
   providers: [
     CreateVendorCreditService,

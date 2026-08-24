@@ -9,16 +9,17 @@ export class RefundVendorCreditDto {
   @ToNumber()
   @IsNumber()
   @IsNotEmpty()
-  @Min(0)
+  @IsPositive()
   @ApiProperty({
     description: 'The amount of the refund',
     example: 100,
   })
   amount: number;
 
+  @ToNumber()
   @IsNumber()
   @IsOptional()
-  @Min(0)
+  @IsPositive()
   @ApiProperty({
     description: 'The exchange rate of the refund',
     example: 1,

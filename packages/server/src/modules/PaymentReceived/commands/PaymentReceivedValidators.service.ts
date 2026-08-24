@@ -53,9 +53,10 @@ export class PaymentReceivedValidators {
   public async validatePaymentReceiveNoExistance(
     paymentReceiveNo: string,
     notPaymentReceiveId?: number,
+    trx?: Knex.Transaction,
   ): Promise<void> {
     const paymentReceive = await this.paymentReceiveModel()
-      .query()
+      .query(trx)
       .findOne('payment_receive_no', paymentReceiveNo)
       .onBuild((builder) => {
         if (notPaymentReceiveId) {
@@ -85,6 +86,9 @@ export class PaymentReceivedValidators {
 
     if (invoicesIds.length === 0) {
       throw new ServiceError(ERRORS.INVOICES_IDS_NOT_FOUND);
+    }
+    if (new Set(invoicesIds).size !== invoicesIds.length) {
+      throw new ServiceError(ERRORS.INVALID_PAYMENT_AMOUNT);
     }
 
     const storedInvoicesQuery = this.saleInvoiceModel()
@@ -140,7 +144,9 @@ export class PaymentReceivedValidators {
 
     const storedInvoicesMap = new Map(
       storedInvoices.map((invoice: SaleInvoice) => {
-        const oldEntries = oldPaymentEntries.filter((entry) => entry.invoiceId);
+        const oldEntries = oldPaymentEntries.filter(
+          (entry) => entry.invoiceId === invoice.id,
+        );
         const oldPaymentAmount = sumBy(oldEntries, 'paymentAmount') || 0;
 
         return [
@@ -184,13 +190,14 @@ export class PaymentReceivedValidators {
   public async validateEntriesIdsExistance(
     paymentReceiveId: number,
     paymentReceiveEntries: IPaymentReceivedEntryDTO[],
+    trx?: Knex.Transaction,
   ) {
     const entriesIds = paymentReceiveEntries
       .filter((entry) => entry.id)
       .map((entry) => entry.id);
 
     const storedEntries = await this.paymentReceiveEntryModel()
-      .query()
+      .query(trx)
       .where('payment_receive_id', paymentReceiveId);
     const storedEntriesIds = storedEntries.map((entry: any) => entry.id);
     const notFoundEntriesIds = difference(entriesIds, storedEntriesIds);
@@ -270,9 +277,10 @@ export class PaymentReceivedValidators {
    */
   async getDepositAccountOrThrowError(
     depositAccountId: number,
+    trx?: Knex.Transaction,
   ): Promise<Account> {
     const depositAccount = await this.accountModel()
-      .query()
+      .query(trx)
       .findById(depositAccountId);
 
     if (!depositAccount) {

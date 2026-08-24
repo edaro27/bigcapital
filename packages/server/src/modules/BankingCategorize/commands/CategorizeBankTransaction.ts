@@ -42,28 +42,25 @@ export class CategorizeBankTransaction {
   ) {
     const uncategorizedTransactionIds = castArray(uncategorizedTransactionId);
 
-    // Retrieves the uncategorized transaction or throw an error.
-    const oldUncategorizedTransactions =
-      await this.uncategorizedBankTransactionModel()
-        .query()
-        .whereIn('id', uncategorizedTransactionIds)
-        .throwIfNotFound();
-
-    // Validate cannot categorize excluded transaction.
-    validateUncategorizedTransactionsNotExcluded(oldUncategorizedTransactions);
-
-    // Validates the transaction shouldn't be categorized before.
-    this.commandValidators.validateTransactionsShouldNotCategorized(
-      oldUncategorizedTransactions,
-    );
-    // Validate the uncateogirzed transaction if it's deposit the transaction direction
-    // should `IN` and the same thing if it's withdrawal the direction should be OUT.
-    this.commandValidators.validateUncategorizeTransactionType(
-      oldUncategorizedTransactions,
-      categorizeDTO.transactionType,
-    );
     // Edits the cashflow transaction under UOW env.
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
+      const oldUncategorizedTransactions =
+        await this.uncategorizedBankTransactionModel()
+          .query(trx)
+          .whereIn('id', uncategorizedTransactionIds)
+          .forUpdate()
+          .throwIfNotFound();
+
+      validateUncategorizedTransactionsNotExcluded(
+        oldUncategorizedTransactions,
+      );
+      this.commandValidators.validateTransactionsShouldNotCategorized(
+        oldUncategorizedTransactions,
+      );
+      this.commandValidators.validateUncategorizeTransactionType(
+        oldUncategorizedTransactions,
+        categorizeDTO.transactionType,
+      );
       // Triggers `onTransactionCategorizing` event.
       await this.eventPublisher.emitAsync(
         events.cashflow.onTransactionCategorizing,
@@ -81,6 +78,8 @@ export class CategorizeBankTransaction {
       const cashflowTransaction =
         await this.createBankTransaction.newCashflowTransaction(
           cashflowTransactionDTO,
+          undefined,
+          trx,
         );
 
       // Updates the uncategorized transaction as categorized.

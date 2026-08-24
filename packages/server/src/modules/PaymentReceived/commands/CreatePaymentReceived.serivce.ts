@@ -104,10 +104,13 @@ export class CreatePaymentReceivedService {
     // Validate payment receive number uniquiness.
     await this.validators.validatePaymentReceiveNoExistance(
       paymentReceiveObj.paymentReceiveNo,
+      undefined,
+      trx,
     );
     // Validate the deposit account existance and type.
     const depositAccount = await this.validators.getDepositAccountOrThrowError(
       paymentReceiveDTO.depositAccountId,
+      trx,
     );
     // Validates the payment account currency code.
     this.validators.validatePaymentAccountCurrency(

@@ -24,6 +24,7 @@ export class BulkDeleteManualJournalsService {
         try {
           await this.deleteManualJournalService.deleteManualJournal(
             manualJournalId,
+            trx,
           );
         } catch (error) {
           if (!skipUndeletable) {

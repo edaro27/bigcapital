@@ -126,6 +126,15 @@ export class CommandCreditNoteDto {
   @ToNumber()
   @IsNumber()
   adjustment?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    description: 'Whether line-item tax is included in the entered rates',
+    required: false,
+    example: false,
+  })
+  isInclusiveTax: boolean = false;
 }
 
 export class CreateCreditNoteDto extends CommandCreditNoteDto {}

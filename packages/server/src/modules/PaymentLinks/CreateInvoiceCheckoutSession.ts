@@ -6,8 +6,7 @@ import { PaymentLink } from './models/PaymentLink';
 import { StripeInvoiceCheckoutSessionPOJO } from '../StripePayment/StripePayment.types';
 import { ModelObject } from 'objection';
 import { ConfigService } from '@nestjs/config';
-
-const origin = 'http://localhost';
+import { toCurrencyMinorUnits } from '@/utils/money';
 
 @Injectable()
 export class CreateInvoiceCheckoutSession {
@@ -55,6 +54,7 @@ export class CreateInvoiceCheckoutSession {
     const session = await this.createCheckoutSession(invoice, stripeAccountId, {
       tenantId: paymentLink.tenantId,
       paymentLinkId: paymentLink.id,
+      publicPaymentLinkId,
     });
     return {
       sessionId: session.id,
@@ -74,6 +74,18 @@ export class CreateInvoiceCheckoutSession {
     stripeAccountId?: string,
     metadata?: Record<string, any>,
   ) {
+    const baseUrl = this.configService.get('app.baseUrl') || 'http://localhost';
+    const publicPaymentLinkId = metadata?.publicPaymentLinkId;
+    const returnUrl = publicPaymentLinkId
+      ? `${baseUrl.replace(/\/$/, '')}/payment/${publicPaymentLinkId}`
+      : baseUrl;
+    const amountDue = invoice.dueAmount;
+    const { publicPaymentLinkId: _returnLinkId, ...stripeMetadata } =
+      metadata || {};
+
+    if (amountDue <= 0) {
+      throw new Error('This invoice has no remaining balance to pay.');
+    }
     return this.stripePaymentService.stripe.checkout.sessions.create(
       {
         payment_method_types: ['card'],
@@ -84,21 +96,30 @@ export class CreateInvoiceCheckoutSession {
               product_data: {
                 name: invoice.invoiceNo,
               },
-              unit_amount: invoice.total * 100, // Amount in cents
+              unit_amount: toCurrencyMinorUnits(
+                amountDue,
+                invoice.currencyCode,
+              ),
             },
             quantity: 1,
           },
         ],
         mode: 'payment',
-        success_url: `${origin}/success`,
-        cancel_url: `${origin}/cancel`,
+        success_url: `${returnUrl}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${returnUrl}?payment=cancelled`,
         metadata: {
           saleInvoiceId: invoice.id,
           resource: 'SaleInvoice',
-          ...metadata,
+          ...stripeMetadata,
         },
       },
-      { stripeAccount: stripeAccountId },
+      {
+        stripeAccount: stripeAccountId,
+        idempotencyKey: `invoice-checkout:${invoice.id}:${toCurrencyMinorUnits(
+          amountDue,
+          invoice.currencyCode,
+        )}:${metadata?.paymentLinkId}`,
+      },
     );
   }
 }

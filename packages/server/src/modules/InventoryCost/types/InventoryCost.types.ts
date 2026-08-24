@@ -18,6 +18,7 @@ export interface IInventoryItemCostMeta {
 
 export interface IInventoryCostLotsGLEntriesWriteEvent {
   startingDate: Date;
+  itemId: number;
   trx: Knex.Transaction;
 }
 

@@ -117,7 +117,7 @@ export class ApplyVendorCreditToBillsService {
     // Validate bills has remaining amount to apply.
     this.validateBillsRemainingAmount(
       appliedBills,
-      vendorCreditAppliedModel.amount,
+      vendorCreditAppliedModel.entries,
     );
     // Validate vendor credit remaining credit amount against the locked row.
     this.vendorCreditDTOTransform.validateCreditRemainingAmount(
@@ -155,9 +155,16 @@ export class ApplyVendorCreditToBillsService {
    * @param {IBill[]} bills
    * @param {number} amount
    */
-  private validateBillsRemainingAmount = (bills: Bill[], amount: number) => {
-    const invalidBills = bills.filter((bill) => bill.dueAmount < amount);
-    if (invalidBills.length > 0) {
+  private validateBillsRemainingAmount = (
+    bills: Bill[],
+    entries: IVendorCreditApplyToInvoicesModel['entries'],
+  ) => {
+    const billsMap = new Map(bills.map((bill) => [bill.id, bill]));
+    const invalidEntries = entries.filter((entry) => {
+      const bill = billsMap.get(entry.billId);
+      return bill != null && bill.dueAmount < entry.amount;
+    });
+    if (invalidEntries.length > 0) {
       throw new ServiceError(ERRORS.BILLS_HAS_NO_REMAINING_AMOUNT);
     }
   };

@@ -46,6 +46,7 @@ import { SaleReceiptCostGLEntriesSubscriber } from './subscribers/SaleReceiptCos
 import { SaleReceiptCostGLEntries } from './SaleReceiptCostGLEntries';
 import { BulkDeleteSaleReceiptsService } from './BulkDeleteSaleReceipts.service';
 import { ValidateBulkDeleteSaleReceiptsService } from './ValidateBulkDeleteSaleReceipts.service';
+import { TaxRatesModule } from '../TaxRates/TaxRate.module';
 
 @Module({
   controllers: [SaleReceiptsController],
@@ -64,6 +65,7 @@ import { ValidateBulkDeleteSaleReceiptsService } from './ValidateBulkDeleteSaleR
     DynamicListModule,
     MailModule,
     MailNotificationModule,
+    TaxRatesModule,
     BullModule.registerQueue({ name: SendSaleReceiptMailQueue }),
     BullBoardModule.forFeature({
       name: SendSaleReceiptMailQueue,

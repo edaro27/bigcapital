@@ -11,6 +11,7 @@ import { PaymentIntegration } from '../models/PaymentIntegration.model';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { TenantModel } from '@/modules/System/models/TenantModel';
 import { SystemUser } from '@/modules/System/models/SystemUser';
+import { fromCurrencyMinorUnits } from '@/utils/money';
 
 @Injectable()
 export class StripeWebhooksSubscriber {
@@ -38,7 +39,18 @@ export class StripeWebhooksSubscriber {
   async handleCheckoutSessionCompleted({
     event,
   }: StripeCheckoutSessionCompletedEventPayload) {
-    const { metadata } = event.data.object;
+    const session = event.data.object;
+    const { metadata } = session;
+
+    if (
+      session.payment_status !== 'paid' ||
+      !metadata?.tenantId ||
+      !metadata?.saleInvoiceId ||
+      session.amount_total == null ||
+      !session.currency
+    ) {
+      return;
+    }
     const tenantId = parseInt(metadata.tenantId, 10);
     const saleInvoiceId = parseInt(metadata.saleInvoiceId, 10);
 
@@ -59,15 +71,18 @@ export class StripeWebhooksSubscriber {
     this.clsService.set('userId', user.id);
 
     // Get the amount from the event
-    const amount = event.data.object.amount_total;
-
-    // Convert from Stripe amount (cents) to normal amount (dollars)
-    const amountInDollars = amount / 100;
+    const amount = fromCurrencyMinorUnits(
+      session.amount_total,
+      session.currency,
+    );
 
     // Creates a new payment received transaction.
     await this.createPaymentReceiveStripePayment.createPaymentReceived(
       saleInvoiceId,
-      amountInDollars,
+      amount,
+      session.currency,
+      event.id,
+      new Date(event.created * 1000),
     );
   }
 
@@ -79,9 +94,9 @@ export class StripeWebhooksSubscriber {
   async handleAccountUpdated({ event }: StripeWebhookEventPayload) {
     const { metadata } = event.data.object;
     const account = event.data.object;
-    const tenantId = parseInt(metadata.tenantId, 10);
 
     if (!metadata?.paymentIntegrationId || !metadata.tenantId) return;
+    const tenantId = parseInt(metadata.tenantId, 10);
 
     // Find the tenant or throw not found error.
     await this.tenantModel.query().findById(tenantId).throwIfNotFound();

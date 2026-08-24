@@ -61,7 +61,8 @@ export class InventoryAdjustmentsGL {
 
       return {
         ...commonEntry,
-        debit: amount,
+        debit: this.inventoryAdjustment.type === 'increment' ? amount : 0,
+        credit: this.inventoryAdjustment.type === 'decrement' ? amount : 0,
         accountId: entry.item.inventoryAccountId,
         accountNormal: AccountNormal.DEBIT,
         index,
@@ -86,7 +87,8 @@ export class InventoryAdjustmentsGL {
       ...commonEntry,
       accountId: this.inventoryAdjustment.adjustmentAccountId,
       accountNormal: AccountNormal.DEBIT,
-      credit: amount,
+      debit: this.inventoryAdjustment.type === 'decrement' ? amount : 0,
+      credit: this.inventoryAdjustment.type === 'increment' ? amount : 0,
       index: index + 2,
     };
   }

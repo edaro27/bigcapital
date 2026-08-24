@@ -22,6 +22,7 @@ import { RegisterTenancyModel } from '../Tenancy/TenancyModels/Tenancy.module';
 import { TaxRateTransaction } from './models/TaxRateTransaction.model';
 import { TaxRatesExportable } from './TaxRatesExportable';
 import { TaxRatesImportable } from './TaxRatesImportable';
+import { WriteAdditionalDocumentTaxTransactionsSubscriber } from './subscribers/WriteAdditionalDocumentTaxTransactionsSubscriber';
 
 const models = [RegisterTenancyModel(TaxRateTransaction)];
 
@@ -41,6 +42,7 @@ const models = [RegisterTenancyModel(TaxRateTransaction)];
     ItemEntriesTaxTransactions,
     WriteBillTaxTransactionsSubscriber,
     WriteInvoiceTaxTransactionsSubscriber,
+    WriteAdditionalDocumentTaxTransactionsSubscriber,
     BillTaxRateValidateSubscriber,
     SaleInvoiceTaxRateValidateSubscriber,
     SyncItemTaxRateOnEditTaxSubscriber,

@@ -30,10 +30,10 @@ export class CustomerGLEntriesStorage {
   ) => {
     const customer = await this.customerModel().query(trx).findById(customerId);
 
-    // Finds the income account.
-    const incomeAccount = await this.accountModel()
+    // Opening balances belong in equity and must not distort current income.
+    const openingBalanceEquityAccount = await this.accountModel()
       .query(trx)
-      .findOne({ slug: 'other-income' });
+      .findOne({ slug: 'opening-balance-equity' });
 
     // Find or create the A/R account.
     const ARAccount =
@@ -45,7 +45,7 @@ export class CustomerGLEntriesStorage {
     // Retrieves the customer opening balance ledger.
     const ledger = this.customerGLEntries.getCustomerOpeningLedger(
       ARAccount.id,
-      incomeAccount.id,
+      openingBalanceEquityAccount.id,
       customer,
     );
     // Commits the ledger entries to the storage.

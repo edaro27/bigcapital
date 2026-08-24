@@ -1,10 +1,6 @@
-import * as async from 'async';
 import { Knex } from 'knex';
 import { uniq } from 'lodash';
-import {
-  ILedger,
-  ISaveAccountsBalanceQueuePayload,
-} from './types/Ledger.types';
+import { ILedger } from './types/Ledger.types';
 import { Inject, Injectable } from '@nestjs/common';
 import { Account } from '../Accounts/models/Account.model';
 import { AccountRepository } from '../Accounts/repositories/Account.repository';
@@ -49,57 +45,30 @@ export class LedegrAccountsStorage {
    * @param {number[]} accountsIds
    * @returns {number[]}
    */
-  private findDependantsAccountsIds = async (
-    accountsIds: number[],
-    trx?: Knex.Transaction,
-  ): Promise<number[]> => {
-    const accountsGraph = await this.accountRepository.getDependencyGraph(
-      null,
-      trx,
-    );
-    return this.getDependantsAccountsIds(accountsIds, accountsGraph);
-  };
-
-  /**
-   * Atomic mutation for accounts balances.
-   * @param {number} tenantId
-   * @param {ILedger} ledger
-   * @param {Knex.Transaction} trx -
-   * @returns {Promise<void>}
-   */
+  /** Atomic mutation for direct accounts and every affected parent balance. */
   public saveAccountsBalance = async (
     ledger: ILedger,
     trx?: Knex.Transaction,
   ): Promise<void> => {
-    // Initiate a new queue for accounts balance mutation.
-    const saveAccountsBalanceQueue = async.queue(
-      this.saveAccountBalanceTask,
-      10,
-    );
-    const effectedAccountsIds = ledger.getAccountsIds();
-    const dependAccountsIds = await this.findDependantsAccountsIds(
-      effectedAccountsIds,
+    const accountsGraph = await this.accountRepository.getDependencyGraph(
+      null,
       trx,
     );
-    dependAccountsIds.forEach((accountId: number) => {
-      saveAccountsBalanceQueue.push({ ledger, accountId, trx });
-    });
-    if (dependAccountsIds.length > 0) {
-      await saveAccountsBalanceQueue.drain();
+    const affectedAccountIds = this.getDependantsAccountsIds(
+      ledger.getAccountsIds(),
+      accountsGraph,
+    ).sort((left, right) => left - right);
+
+    // Acquire account row locks in a stable order across concurrent postings.
+    for (const accountId of affectedAccountIds) {
+      const descendantAccountIds = accountsGraph.dependenciesOf(accountId);
+      await this.saveAccountBalanceFromLedger(
+        ledger,
+        accountId,
+        uniq([accountId, ...descendantAccountIds]),
+        trx,
+      );
     }
-  };
-
-  /**
-   * Async task mutates the given account balance.
-   * @param   {ISaveAccountsBalanceQueuePayload} task
-   * @returns {Promise<void>}
-   */
-  private saveAccountBalanceTask = async (
-    task: ISaveAccountsBalanceQueuePayload,
-  ): Promise<void> => {
-    const { ledger, accountId, trx } = task;
-
-    await this.saveAccountBalanceFromLedger(ledger, accountId, trx);
   };
 
   /**
@@ -113,12 +82,13 @@ export class LedegrAccountsStorage {
   private saveAccountBalanceFromLedger = async (
     ledger: ILedger,
     accountId: number,
+    rolledUpAccountIds: number[],
     trx?: Knex.Transaction,
   ): Promise<void> => {
     const account = await this.accountModel().query(trx).findById(accountId);
 
-    // Filters the ledger entries by the current account.
-    const accountLedger = ledger.whereAccountId(accountId);
+    // A parent balance includes every entry posted to its descendants.
+    const accountLedger = ledger.whereAccountsIds(rolledUpAccountIds);
 
     // Retrieves the given tenant metadata.
     const tenant = await this.tenancyContext.getTenant(true);
@@ -129,11 +99,27 @@ export class LedegrAccountsStorage {
 
     // Calculates the closing foreign balance by the given currency if account was has
     // foreign currency otherwise get closing balance.
+    const accountEntries = accountLedger.getEntries();
     const closingBalance = isAccountForeign
-      ? accountLedger
-          .whereCurrencyCode(account.currencyCode)
-          .getForeignClosingBalance()
-      : accountLedger.getClosingBalance();
+      ? accountEntries
+          .filter((entry) => entry.currencyCode === account.currencyCode)
+          .reduce((balance, entry) => {
+            const exchangeRate = entry.exchangeRate || 1;
+            const amount =
+              account.accountNormal === 'credit'
+                ? entry.credit - entry.debit
+                : entry.debit - entry.credit;
+
+            return balance + amount / exchangeRate;
+          }, 0)
+      : accountEntries.reduce((balance, entry) => {
+          const amount =
+            account.accountNormal === 'credit'
+              ? entry.credit - entry.debit
+              : entry.debit - entry.credit;
+
+          return balance + amount;
+        }, 0);
 
     await this.saveAccountBalance(accountId, closingBalance, trx);
   };
