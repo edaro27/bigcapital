@@ -34,7 +34,7 @@ export class NewSubscriptionService {
       .findOne('slug', planSlug)
       .throwIfNotFound();
 
-    const isFree = plan.price === 0;
+    const isFree = plan.isFree();
 
     // Take the invoice interval and period from the given plan.
     const invoiceInterval = plan.invoiceInternal;
