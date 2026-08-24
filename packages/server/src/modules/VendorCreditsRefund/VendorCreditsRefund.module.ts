@@ -11,9 +11,16 @@ import { RefundVendorCreditGLEntries } from './commands/RefundVendorCreditGLEntr
 import { RefundVendorCreditGLEntriesSubscriber } from './subscribers/RefundVendorCreditGLEntriesSubscriber';
 import { LedgerModule } from '../Ledger/Ledger.module';
 import { AccountsModule } from '../Accounts/Accounts.module';
+import { TenancyModule } from '../Tenancy/Tenancy.module';
 
 @Module({
-  imports: [WarehousesModule, BranchesModule, LedgerModule, AccountsModule],
+  imports: [
+    WarehousesModule,
+    BranchesModule,
+    LedgerModule,
+    AccountsModule,
+    TenancyModule,
+  ],
   providers: [
     GetRefundVendorCreditService,
     GetRefundVendorCreditsService,

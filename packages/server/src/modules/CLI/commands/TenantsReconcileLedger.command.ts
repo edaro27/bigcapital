@@ -267,12 +267,18 @@ export class TenantsReconcileLedgerCommand extends BaseCommand {
       .select('accountId', 'currencyCode')
       .sum({ debit: 'debit', credit: 'credit' })
       .sum({
-        foreignDebit: knex.raw(
-          '`debit` / NULLIF(COALESCE(`exchange_rate`, 1), 0)',
-        ),
-        foreignCredit: knex.raw(
-          '`credit` / NULLIF(COALESCE(`exchange_rate`, 1), 0)',
-        ),
+        foreignDebit: knex.raw('?? / NULLIF(COALESCE(??, ?), ?)', [
+          'debit',
+          'exchangeRate',
+          1,
+          0,
+        ]),
+        foreignCredit: knex.raw('?? / NULLIF(COALESCE(??, ?), ?)', [
+          'credit',
+          'exchangeRate',
+          1,
+          0,
+        ]),
       })
       .groupBy('accountId', 'currencyCode');
     const accountTypes = new Map(
@@ -362,12 +368,18 @@ export class TenantsReconcileLedgerCommand extends BaseCommand {
       .select('transaction.contactId', 'transaction.currencyCode')
       .sum({ debit: 'transaction.debit', credit: 'transaction.credit' })
       .sum({
-        foreignDebit: knex.raw(
-          '`transaction`.`debit` / NULLIF(COALESCE(`transaction`.`exchange_rate`, 1), 0)',
-        ),
-        foreignCredit: knex.raw(
-          '`transaction`.`credit` / NULLIF(COALESCE(`transaction`.`exchange_rate`, 1), 0)',
-        ),
+        foreignDebit: knex.raw('?? / NULLIF(COALESCE(??, ?), ?)', [
+          'transaction.debit',
+          'transaction.exchangeRate',
+          1,
+          0,
+        ]),
+        foreignCredit: knex.raw('?? / NULLIF(COALESCE(??, ?), ?)', [
+          'transaction.credit',
+          'transaction.exchangeRate',
+          1,
+          0,
+        ]),
       })
       .groupBy('transaction.contactId', 'transaction.currencyCode');
     const byContact = new Map<number, any[]>();
@@ -414,27 +426,42 @@ export class TenantsReconcileLedgerCommand extends BaseCommand {
   private async getDocumentCacheState(knex: Knex) {
     const definitions: Array<{
       table: string;
-      fields: Array<[string, string, string]>;
+      fields: Array<[string, string, string, string]>;
     }> = [
       {
         table: 'salesInvoices',
         fields: [
-          ['paymentAmount', 'paymentReceivesEntries', 'invoiceId'],
-          ['creditedAmount', 'creditNoteAppliedInvoice', 'invoiceId'],
+          [
+            'paymentAmount',
+            'paymentReceivesEntries',
+            'invoiceId',
+            'paymentAmount',
+          ],
+          ['creditedAmount', 'creditNoteAppliedInvoice', 'invoiceId', 'amount'],
         ],
       },
       {
         table: 'bills',
         fields: [
-          ['paymentAmount', 'billsPaymentsEntries', 'billId'],
-          ['creditedAmount', 'vendorCreditAppliedBill', 'billId'],
+          ['paymentAmount', 'billsPaymentsEntries', 'billId', 'paymentAmount'],
+          ['creditedAmount', 'vendorCreditAppliedBill', 'billId', 'amount'],
         ],
       },
       {
         table: 'creditNotes',
         fields: [
-          ['refundedAmount', 'refundCreditNoteTransactions', 'creditNoteId'],
-          ['invoicesAmount', 'creditNoteAppliedInvoice', 'creditNoteId'],
+          [
+            'refundedAmount',
+            'refundCreditNoteTransactions',
+            'creditNoteId',
+            'amount',
+          ],
+          [
+            'invoicesAmount',
+            'creditNoteAppliedInvoice',
+            'creditNoteId',
+            'amount',
+          ],
         ],
       },
       {
@@ -444,8 +471,14 @@ export class TenantsReconcileLedgerCommand extends BaseCommand {
             'refundedAmount',
             'refundVendorCreditTransactions',
             'vendorCreditId',
+            'amount',
           ],
-          ['invoicedAmount', 'vendorCreditAppliedBill', 'vendorCreditId'],
+          [
+            'invoicedAmount',
+            'vendorCreditAppliedBill',
+            'vendorCreditId',
+            'amount',
+          ],
         ],
       },
     ];
@@ -462,10 +495,15 @@ export class TenantsReconcileLedgerCommand extends BaseCommand {
         ...definition.fields.map(([field]) => field),
       ]);
       const expectedByField = new Map<string, Map<number, number>>();
-      for (const [field, sourceTable, sourceKey] of definition.fields) {
+      for (const [
+        field,
+        sourceTable,
+        sourceKey,
+        sourceAmount,
+      ] of definition.fields) {
         const rows = await knex(sourceTable)
           .select(sourceKey)
-          .sum({ amount: 'amount' })
+          .sum({ amount: sourceAmount })
           .groupBy(sourceKey);
         expectedByField.set(
           field,
@@ -502,9 +540,12 @@ export class TenantsReconcileLedgerCommand extends BaseCommand {
     const totals = await knex('inventoryTransactions')
       .select('itemId')
       .sum({
-        quantityOnHand: knex.raw(
-          "CASE WHEN `direction` = 'IN' THEN `quantity` ELSE -`quantity` END",
-        ),
+        quantityOnHand: knex.raw('CASE WHEN ?? = ? THEN ?? ELSE -?? END', [
+          'direction',
+          'IN',
+          'quantity',
+          'quantity',
+        ]),
       })
       .groupBy('itemId');
     const expected = new Map(

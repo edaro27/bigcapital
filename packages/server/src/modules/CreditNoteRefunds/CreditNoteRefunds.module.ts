@@ -12,9 +12,15 @@ import { RefundCreditNoteGLEntries } from './commands/RefundCreditNoteGLEntries'
 import { RefundCreditNoteGLEntriesSubscriber } from '../CreditNotes/subscribers/RefundCreditNoteGLEntriesSubscriber';
 import { LedgerModule } from '../Ledger/Ledger.module';
 import { AccountsModule } from '../Accounts/Accounts.module';
+import { TenancyModule } from '../Tenancy/Tenancy.module';
 
 @Module({
-  imports: [forwardRef(() => CreditNotesModule), LedgerModule, AccountsModule],
+  imports: [
+    forwardRef(() => CreditNotesModule),
+    LedgerModule,
+    AccountsModule,
+    TenancyModule,
+  ],
   providers: [
     CreateRefundCreditNoteService,
     DeleteRefundCreditNoteService,
