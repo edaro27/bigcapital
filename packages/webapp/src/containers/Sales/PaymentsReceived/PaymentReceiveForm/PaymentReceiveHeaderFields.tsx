@@ -8,10 +8,7 @@ import { isEmpty, toSafeInteger } from 'lodash';
 import React, { useMemo } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
-import {
-  PaymentReceiveExchangeRateInputField,
-  PaymentReceiveProjectSelectButton,
-} from './components';
+import { PaymentReceiveExchangeRateInputField } from './components';
 import { usePaymentReceiveFormContext } from './PaymentReceiveFormProvider';
 import { PaymentReceivePaymentNoField } from './PaymentReceivePaymentNoField';
 import {
@@ -22,7 +19,6 @@ import {
   type PaymentReceiveFormValues,
 } from './utils';
 import {
-  FeatureCan,
   CustomersSelect,
   FormattedMessage as T,
   FMoneyInputGroup,
@@ -40,9 +36,7 @@ import {
   Money,
   FInputGroup,
 } from '@/components';
-import { Features } from '@/constants';
 import { ACCOUNT_TYPE } from '@/constants/accountTypes';
-import { ProjectsSelect } from '@/containers/Projects/components';
 import { safeSumBy } from '@/utils';
 
 const getHeaderFieldsStyle = (theme: Theme) => css`
@@ -68,7 +62,7 @@ export function PaymentReceiveHeaderFields() {
   const theme = useTheme() as Theme;
   const styleClassName = getHeaderFieldsStyle(theme);
 
-  const { accounts, projects } = usePaymentReceiveFormContext();
+  const { accounts } = usePaymentReceiveFormContext();
 
   const {
     values: { entries, currencyCode },
@@ -96,7 +90,7 @@ export function PaymentReceiveHeaderFields() {
       {/* ------------- Customer name ------------- */}
       <PaymentReceiveCustomerSelect />
 
-      {/* ----------- Exchange rate ----------- */}
+      {/* Manual compatibility for legacy foreign-currency customers. */}
       <PaymentReceiveExchangeRateInputField
         name={'exchangeRate'}
         formGroupProps={{ label: ' ', inline: true }}
@@ -211,22 +205,6 @@ export function PaymentReceiveHeaderFields() {
         <FInputGroup name={'referenceNo'} fill />
       </FFormGroup>
 
-      {/*------------ Project name -----------*/}
-      <FeatureCan feature={Features.Projects}>
-        <FFormGroup
-          name={'projectId'}
-          label={intl.get('payment_receive.project_name.label')}
-          inline={true}
-          className={classNames('form-group--select-list', Classes.FILL)}
-        >
-          <ProjectsSelect
-            name={'projectId'}
-            projects={projects}
-            input={PaymentReceiveProjectSelectButton}
-            popoverFill={true}
-          />
-        </FFormGroup>
-      </FeatureCan>
     </Stack>
   );
 }
@@ -270,6 +248,7 @@ function PaymentReceiveCustomerSelect() {
             setFieldValue('customerId', customer.id);
             setFieldValue('amount', '');
             setFieldValue('currencyCode', customer?.currencyCode);
+            setFieldValue('exchangeRate', 1);
           }}
           popoverFill={true}
           disabled={!isNewMode}

@@ -16,14 +16,13 @@ import { withItems } from './withItems';
 import { withItemsActions } from './withItemsActions';
 import type { WithItemsProps } from './withItems';
 import type { WithItemsActionsProps } from './withItemsActions';
+import type { IFilterRole } from '@/components/AdvancedFilter/interfaces';
 import type { WithDialogActionsProps } from '@/containers/Dialog/withDialogActions';
 import {
   DashboardActionsBar,
-  DashboardRowsHeightButton,
   FormattedMessage as T,
 } from '@/components';
 import {
-  If,
   Can,
   Icon,
   DashboardActionViewsList,
@@ -35,8 +34,6 @@ import { DialogsName } from '@/constants/dialogs';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
 import { useRefreshItems } from '@/hooks/query/items';
-import { useSaveSettings } from '@/hooks/query';
-import type { IFilterRole } from '@/components/AdvancedFilter/interfaces';
 import { compose } from '@/utils';
 
 interface ItemsActionsBarInnerProps
@@ -62,8 +59,6 @@ function ItemsActionsBarInner({
   // #withDialogActions
   openDialog,
 }: ItemsActionsBarInnerProps) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
   const bulkDelete = useBulkDeleteItemsDialog();
   const { openBulkDeleteDialog } = bulkDelete;
   // `isValidatingBulkDeleteItems` is not on the return type (the hook returns
@@ -74,8 +69,7 @@ function ItemsActionsBarInner({
   ).isValidatingBulkDeleteItems;
 
   // Items list context.
-  const { itemsSettings, itemsViews, fields } = useItemsListContext();
-  const itemsTableSize = itemsSettings?.tableSize as string | undefined;
+  const { itemsViews, fields } = useItemsListContext();
 
   // Exports pdf document.
   const { downloadAsync: downloadExportPdf } = useDownloadExportPdf();
@@ -111,12 +105,6 @@ function ItemsActionsBarInner({
   // Handle refresh button click.
   const handleRefreshBtnClick = () => {
     refresh();
-  };
-  // Handle table row size change.
-  const handleTableRowSizeChange = (size: string) => {
-    saveSettings({
-      options: [{ group: 'items', key: 'tableSize', value: size }],
-    });
   };
   // Handles the import button click.
   const handleImportBtnClick = () => {
@@ -201,11 +189,6 @@ function ItemsActionsBarInner({
           icon={<Icon icon="file-export-16" iconSize={16} />}
           text={<T id={'export'} />}
           onClick={handleExportBtnClick}
-        />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={itemsTableSize}
-          onChange={handleTableRowSizeChange}
         />
         <NavbarDivider />
         <Can I={ItemAction.Edit} a={AbilitySubject.Item}>

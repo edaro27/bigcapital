@@ -15,12 +15,12 @@ import { withManualJournals } from './withManualJournals';
 import { withManualJournalsActions } from './withManualJournalsActions';
 import type { WithManualJournalsProps } from './withManualJournals';
 import type { WithManualJournalsActionsProps } from './withManualJournalsActions';
+import type { IFilterRole } from '@/components/AdvancedFilter/interfaces';
 import type { WithDialogActionsProps } from '@/containers/Dialog/withDialogActions';
 import {
   Icon,
   AdvancedFilterPopover,
   DashboardFilterButton,
-  DashboardRowsHeightButton,
   FormattedMessage as T,
   Can,
   If,
@@ -31,9 +31,7 @@ import { ManualJournalAction, AbilitySubject } from '@/constants/abilityOption';
 import { DialogsName } from '@/constants/dialogs';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
-import { useSaveSettings } from '@/hooks/query';
 import { useRefreshJournals } from '@/hooks/query/manual-journals';
-import type { IFilterRole } from '@/components/AdvancedFilter/interfaces';
 import { compose } from '@/utils';
 
 interface ManualJournalActionsBarInnerProps
@@ -57,17 +55,11 @@ function ManualJournalActionsBarInner({
   // #withDialogActions
   openDialog,
 }: ManualJournalActionsBarInnerProps) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
   // History context.
   const history = useHistory();
 
   // Manual journals context.
-  const { journalsViews, fields, manualJournalsSettings } =
-    useManualJournalsContext();
-  const manualJournalsTableSize = manualJournalsSettings?.tableSize as
-    | string
-    | undefined;
+  const { journalsViews, fields } = useManualJournalsContext();
 
   // Exports pdf document.
   const { downloadAsync: downloadExportPdf } = useDownloadExportPdf();
@@ -97,13 +89,6 @@ function ManualJournalActionsBarInner({
   // Handle import button click.
   const handleImportBtnClick = () => {
     history.push('/manual-journals/import');
-  };
-
-  // Handle table row size change.
-  const handleTableRowSizeChange = (size: string) => {
-    saveSettings({
-      options: [{ group: 'manualJournals', key: 'tableSize', value: size }],
-    });
   };
 
   // Handle the export button click.
@@ -197,12 +182,6 @@ function ManualJournalActionsBarInner({
           text={<T id={'export'} />}
           onClick={handleExportBtnClick}
         />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={manualJournalsTableSize}
-          onChange={handleTableRowSizeChange}
-        />
-        <NavbarDivider />
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>
         <Button

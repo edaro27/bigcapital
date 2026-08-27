@@ -29,7 +29,6 @@ import {
   DashboardActionViewsList,
   AdvancedFilterPopover,
   DashboardFilterButton,
-  DashboardRowsHeightButton,
   DashboardActionsBar,
 } from '@/components';
 import { VendorCreditAction, AbilitySubject } from '@/constants/abilityOption';
@@ -38,7 +37,6 @@ import { DRAWERS } from '@/constants/drawers';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
-import { useSaveSettings } from '@/hooks/query';
 import { compose } from '@/utils';
 
 interface WithVendorsCreditNotesActionsProps {
@@ -66,15 +64,10 @@ function VendorsCreditNoteActionsBarInner({
   openDialog,
   openDrawer,
 }: VendorsCreditNoteActionsBarProps) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
   const history = useHistory();
 
-  const { VendorCreditsViews, fields, refresh, vendorCreditSettings } =
+  const { VendorCreditsViews, fields, refresh } =
     useVendorsCreditNoteListContext();
-  const creditNoteTableSize = vendorCreditSettings?.tableSize as
-    | string
-    | undefined;
 
   const { downloadAsync: downloadExportPdf } = useDownloadExportPdf();
 
@@ -86,11 +79,6 @@ function VendorsCreditNoteActionsBarInner({
   };
   const handleRefreshBtnClick = () => {
     refresh();
-  };
-  const handleTableRowSizeChange = (size: any) => {
-    saveSettings({
-      options: [{ group: 'vendorCredit', key: 'tableSize', value: size }],
-    });
   };
   const handleImportBtnClick = () => {
     history.push('/vendor-credits/import');
@@ -180,12 +168,6 @@ function VendorsCreditNoteActionsBarInner({
           text={<T id={'export'} />}
           onClick={handleExportBtnClick}
         />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={creditNoteTableSize}
-          onChange={handleTableRowSizeChange}
-        />
-        <NavbarDivider />
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>
         <Popover

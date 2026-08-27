@@ -12,9 +12,11 @@ import { useHistory } from 'react-router-dom';
 import { useBulkDeleteVendorsDialog } from './hooks/use-bulk-delete-vendors-dialog';
 import { useVendorsListContext } from './VendorsListProvider';
 import { withVendors } from './withVendors';
-import type { WithVendorsProps } from './withVendors';
 import { withVendorsActions } from './withVendorsActions';
+import type { WithVendorsProps } from './withVendors';
 import type { WithVendorsActionsProps } from './withVendorsActions';
+import type { IFilterRole } from '@/components/AdvancedFilter/interfaces';
+import type { WithDialogActionsProps } from '@/containers/Dialog/withDialogActions';
 import {
   Can,
   Icon,
@@ -22,17 +24,13 @@ import {
   DashboardActionViewsList,
   DashboardFilterButton,
   DashboardActionsBar,
-  DashboardRowsHeightButton,
   AdvancedFilterPopover,
 } from '@/components';
-import type { IFilterRole } from '@/components/AdvancedFilter/interfaces';
 import { VendorAction, AbilitySubject } from '@/constants/abilityOption';
 import { DialogsName } from '@/constants/dialogs';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
-import type { WithDialogActionsProps } from '@/containers/Dialog/withDialogActions';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
 import { useRefreshVendors } from '@/hooks/query/vendors';
-import { useSaveSettings } from '@/hooks/query';
 import { compose } from '@/utils';
 
 interface VendorActionsBarInnerProps
@@ -59,8 +57,6 @@ function VendorActionsBarInner({
   // #withDialogActions
   openDialog,
 }: VendorActionsBarInnerProps) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
   const history = useHistory();
   const bulkDelete = useBulkDeleteVendorsDialog();
   const { openBulkDeleteDialog } = bulkDelete;
@@ -71,8 +67,7 @@ function VendorActionsBarInner({
   ).isValidatingBulkDeleteVendors;
 
   // Vendors list context.
-  const { vendorsViews, fields, vendorsSettings } = useVendorsListContext();
-  const vendorsTableSize = vendorsSettings?.tableSize as string | undefined;
+  const { vendorsViews, fields } = useVendorsListContext();
 
   // Exports pdf document.
   const { downloadAsync: downloadExportPdf } = useDownloadExportPdf();
@@ -98,11 +93,6 @@ function VendorActionsBarInner({
   // Handle click a refresh sale estimates
   const handleRefreshBtnClick = () => {
     refresh();
-  };
-  const handleTableRowSizeChange = (size: string) => {
-    saveSettings({
-      options: [{ group: 'vendors', key: 'tableSize', value: size }],
-    });
   };
   // Handle import button success.
   const handleImportBtnSuccess = () => {
@@ -188,11 +178,6 @@ function VendorActionsBarInner({
           icon={<Icon icon="file-export-16" iconSize={16} />}
           text={<T id={'export'} />}
           onClick={handleExportBtnClick}
-        />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={vendorsTableSize}
-          onChange={handleTableRowSizeChange}
         />
         <NavbarDivider />
         <Can I={VendorAction.Edit} a={AbilitySubject.Vendor}>

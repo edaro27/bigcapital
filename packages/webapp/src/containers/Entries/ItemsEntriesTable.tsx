@@ -31,6 +31,7 @@ interface ItemsEntriesTableProps {
   currencyCode?: string;
   isInclusiveTax?: boolean;
   landedCost?: boolean;
+  enablePriceTiers?: boolean;
 }
 
 /**
@@ -59,7 +60,6 @@ export function ItemsEntriesTable(props: ItemsEntriesTableProps) {
 function ItemEntriesTableRoot() {
   const {
     localValue,
-    defaultEntry,
     handleChange,
     items,
     errors,
@@ -95,7 +95,7 @@ function ItemEntriesTableRoot() {
       const newRows = composeRowsOnEditCell(rowIndex, columnId, value);
       handleChange(newRows);
     },
-    [localValue, defaultEntry, handleChange],
+    [composeRowsOnEditCell, handleChange, setItemRow],
   );
 
   // Handle table rows removing by index.
@@ -141,4 +141,5 @@ ItemsEntriesTable.defaultProps = {
   linesNumber: 1,
   minLinesNumber: 1,
   enableTaxRates: true,
+  enablePriceTiers: false,
 };

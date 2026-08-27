@@ -5,10 +5,7 @@ import { defaultTo, isEmpty } from 'lodash';
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';
-import {
-  CreditNoteExchangeRateSync,
-  CreditNoteSyncIncrementSettingsToForm,
-} from './components';
+import { CreditNoteSyncIncrementSettingsToForm } from './components';
 import { CreditNoteFloatingActions } from './CreditNoteFloatingActions';
 import {
   CreateCreditNoteFormSchema,
@@ -180,7 +177,6 @@ function CreditNoteFormInner({}: CreditNoteFormInnerProps) {
 
         {/*-------- Effects --------*/}
         <CreditNoteSyncIncrementSettingsToForm />
-        <CreditNoteExchangeRateSync />
       </Form>
     </Formik>
   );

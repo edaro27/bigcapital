@@ -178,7 +178,7 @@ export interface DataTableProps<D extends object = any> {
   size?: string | null;
   styleName?: string;
   className?: string;
-  spinnerProps?: Record<string, any>;
+  spinnerProps?: Record<string, any> | boolean;
   noResults?: ReactNode;
   expandToggleColumn?: number;
   expandColumnSpace?: number;

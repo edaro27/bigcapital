@@ -6,7 +6,6 @@ import {
   useEstimateFormContext,
 } from './EstimateFormProvider';
 import { DashboardInsider } from '@/components';
-import { AutoExchangeRateProvider } from '@/containers/Entries/AutoExchangeProvider';
 
 /**
  * Estimate form page.
@@ -17,9 +16,7 @@ export function EstimateFormPage() {
 
   return (
     <EstimateFormProvider estimateId={idInteger}>
-      <AutoExchangeRateProvider>
-        <EstimateFormPageContent />
-      </AutoExchangeRateProvider>
+      <EstimateFormPageContent />
     </EstimateFormProvider>
   );
 }

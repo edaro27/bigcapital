@@ -28,7 +28,6 @@ import {
   Can,
   DashboardActionViewsList,
   DashboardFilterButton,
-  DashboardRowsHeightButton,
   DashboardActionsBar,
 } from '@/components';
 import { SaleEstimateAction, AbilitySubject } from '@/constants/abilityOption';
@@ -38,7 +37,6 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useRefreshEstimates } from '@/hooks/query/estimates';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
-import { useSaveSettings } from '@/hooks/query';
 import { compose } from '@/utils';
 
 interface WithEstimatesActionsProps {
@@ -60,12 +58,8 @@ function EstimateActionsBar({
   openDialog,
   openDrawer,
 }: EstimateActionsBarProps) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
   const history = useHistory();
-  const { estimatesViews, fields, estimatesSettings } =
-    useEstimatesListContext();
-  const estimatesTableSize = estimatesSettings?.tableSize as string | undefined;
+  const { estimatesViews, fields } = useEstimatesListContext();
   const { downloadAsync: downloadExportPdf } = useDownloadExportPdf();
 
   const onClickNewEstimate = () => {
@@ -80,11 +74,6 @@ function EstimateActionsBar({
   };
   const handleRefreshBtnClick = () => {
     refresh();
-  };
-  const handleTableRowSizeChange = (size: any) => {
-    saveSettings({
-      options: [{ group: 'salesEstimates', key: 'tableSize', value: size }],
-    });
   };
   const handleImportBtnClick = () => {
     history.push('/estimates/import');
@@ -175,12 +164,6 @@ function EstimateActionsBar({
           text={<T id={'export'} />}
           onClick={handleExportBtnClick}
         />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={estimatesTableSize}
-          onChange={handleTableRowSizeChange}
-        />
-        <NavbarDivider />
       </NavbarGroup>
 
       <NavbarGroup align={Alignment.RIGHT}>

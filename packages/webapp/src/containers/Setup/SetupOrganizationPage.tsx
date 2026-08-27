@@ -10,7 +10,7 @@ import { setCookie, transfromToSnakeCase } from '@/utils';
 const defaultValues: SetupOrganizationFormValues = {
   name: '',
   location: '',
-  baseCurrency: '',
+  baseCurrency: 'USD',
   language: 'en',
   fiscalYear: '',
   timezone: '',
@@ -50,7 +50,7 @@ export function SetupOrganizationPage({ wizard }: SetupOrganizationPageProps) {
       ? {
           name: settings.name ?? defaultValues.name,
           location: settings.location ?? defaultValues.location,
-          baseCurrency: settings.baseCurrency ?? defaultValues.baseCurrency,
+          baseCurrency: 'USD',
           language: settings.language ?? defaultValues.language,
           fiscalYear: settings.fiscalYear ?? defaultValues.fiscalYear,
           timezone: settings.timezone ?? defaultValues.timezone,

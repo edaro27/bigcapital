@@ -21,7 +21,6 @@ import {
   PreferencesAbility,
   TaxRateAction,
 } from '@/constants/abilityOption';
-import { Features } from '@/constants/features';
 import {
   ISidebarMenuItemType,
   ISidebarMenuOverlayIds,
@@ -100,12 +99,6 @@ export const SidebarMenu: SidebarMenuItem[] = [
                   ability: ItemAction.View,
                 },
               },
-              {
-                text: <T id={'sidebar.warehouse_transfer'} />,
-                href: '/warehouses-transfers',
-                type: ISidebarMenuItemType.Link,
-                feature: Features.Warehouses,
-              },
             ],
           },
           {
@@ -139,12 +132,6 @@ export const SidebarMenu: SidebarMenuItem[] = [
                   subject: AbilitySubject.Item,
                   ability: ItemAction.Create,
                 },
-              },
-              {
-                text: <T id={'sidebar.new_warehouse_transfer'} />,
-                href: '/warehouses-transfers/new',
-                type: ISidebarMenuItemType.Link,
-                feature: Features.Warehouses,
               },
             ],
           },

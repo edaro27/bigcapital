@@ -38,6 +38,7 @@ const defaultInitialValues: ItemFormValues = {
   code: '',
   costPrice: '',
   sellPrice: '',
+  priceTiers: [],
   costAccountId: '',
   sellAccountId: '',
   sellTaxRateId: '',

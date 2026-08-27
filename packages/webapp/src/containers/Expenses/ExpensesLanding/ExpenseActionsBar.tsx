@@ -15,12 +15,12 @@ import { withExpenses } from './withExpenses';
 import { withExpensesActions } from './withExpensesActions';
 import type { WithExpensesProps } from './withExpenses';
 import type { WithExpensesActionsProps } from './withExpensesActions';
+import type { IFilterRole } from '@/components/AdvancedFilter/interfaces';
 import type { WithDialogActionsProps } from '@/containers/Dialog/withDialogActions';
 import {
   If,
   Can,
   Icon,
-  DashboardRowsHeightButton,
   DashboardActionViewsList,
   DashboardActionsBar,
   DashboardFilterButton,
@@ -32,8 +32,6 @@ import { DialogsName } from '@/constants/dialogs';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { useRefreshExpenses } from '@/hooks/query/expenses';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
-import { useSaveSettings } from '@/hooks/query';
-import type { IFilterRole } from '@/components/AdvancedFilter/interfaces';
 import { compose } from '@/utils';
 
 interface ExpensesActionsBarInnerProps
@@ -57,14 +55,11 @@ function ExpensesActionsBar({
   // #withDialogActions
   openDialog,
 }: ExpensesActionsBarInnerProps) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
   // History context.
   const history = useHistory();
 
   // Expenses list context.
-  const { expensesViews, fields, expenseSettings } = useExpensesListContext();
-  const expensesTableSize = expenseSettings?.tableSize as string | undefined;
+  const { expensesViews, fields } = useExpensesListContext();
 
   // Exports pdf document.
   const { downloadAsync: downloadExportPdf } = useDownloadExportPdf();
@@ -97,12 +92,6 @@ function ExpensesActionsBar({
   // Handle the import button click.
   const handleImportBtnClick = () => {
     history.push('/expenses/import');
-  };
-  // Handle table row size change.
-  const handleTableRowSizeChange = (size: unknown) => {
-    saveSettings({
-      options: [{ group: 'expenses', key: 'tableSize', value: size }],
-    });
   };
   // Handle the export button click.
   const handleExportBtnClick = () => {
@@ -193,13 +182,6 @@ function ExpensesActionsBar({
           text={<T id={'export'} />}
           onClick={handleExportBtnClick}
         />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={expensesTableSize}
-          value={expensesTableSize}
-          onChange={handleTableRowSizeChange}
-        />
-        <NavbarDivider />
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>
         <Button

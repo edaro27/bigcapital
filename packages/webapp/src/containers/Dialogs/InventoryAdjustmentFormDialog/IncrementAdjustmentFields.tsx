@@ -59,7 +59,7 @@ export function IncrementAdjustmentFields(): React.ReactElement {
 
       <Col className={'col--cost'}>
         <FFormGroup name={'cost'} label={intl.get('cost')} fastField>
-          <FMoneyInputGroup name={'cost'} fastField />
+          <FMoneyInputGroup name={'cost'} decimalsLimit={4} fastField />
         </FFormGroup>
       </Col>
 

@@ -22,7 +22,6 @@ export class GetCurrentOrganizationService {
   async getCurrentOrganization(): Promise<ModelObject<TenantModel>> {
     const tenant = await this.tenancyContext
       .getTenant()
-      .withGraphFetched('subscriptions')
       .withGraphFetched('metadata');
 
     throwIfTenantNotExists(tenant);

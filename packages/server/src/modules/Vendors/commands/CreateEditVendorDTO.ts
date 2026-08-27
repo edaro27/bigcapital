@@ -46,7 +46,7 @@ export class CreateEditVendorDTOService {
 
     return {
       ...commonDTO,
-      currencyCode: vendorDTO.currencyCode || tenant.metadata.baseCurrency,
+      currencyCode: tenant.metadata.baseCurrency || 'USD',
       active: defaultTo(vendorDTO.active, true),
       contactService: ContactService.Vendor,
 
@@ -57,10 +57,7 @@ export class CreateEditVendorDTOService {
             ).toMySqlDateTime(),
           }
         : {}),
-      openingBalanceExchangeRate: defaultTo(
-        vendorDTO.openingBalanceExchangeRate,
-        1,
-      ),
+      openingBalanceExchangeRate: 1,
     };
   };
 

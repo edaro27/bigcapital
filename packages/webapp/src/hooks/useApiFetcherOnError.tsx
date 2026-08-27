@@ -41,14 +41,6 @@ export function useApiFetcherOnError() {
           });
         }
         if (
-          data.errors.find(
-            (e: { type?: string }) =>
-              e.type === 'ORGANIZATION.SUBSCRIPTION.INACTIVE',
-          )
-        ) {
-          setGlobalErrors({ subscriptionInactive: true });
-        }
-        if (
           data.errors.find((e: { type?: string }) => e.type === 'USER_INACTIVE')
         ) {
           setGlobalErrors({ userInactive: true });

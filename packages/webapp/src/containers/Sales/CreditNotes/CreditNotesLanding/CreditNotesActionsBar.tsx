@@ -27,7 +27,6 @@ import {
   DashboardActionViewsList,
   AdvancedFilterPopover,
   DashboardFilterButton,
-  DashboardRowsHeightButton,
   DashboardActionsBar,
 } from '@/components';
 import { CreditNoteAction, AbilitySubject } from '@/constants/abilityOption';
@@ -36,7 +35,6 @@ import { DRAWERS } from '@/constants/drawers';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
-import { useSaveSettings } from '@/hooks/query';
 import { compose } from '@/utils';
 
 interface WithCreditNotesActionsProps {
@@ -58,15 +56,9 @@ function CreditNotesActionsBarInner({
   openDialog,
   openDrawer,
 }: CreditNotesActionsBarProps) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
   const history = useHistory();
 
-  const { CreditNotesView, fields, refresh, creditNoteSettings } =
-    useCreditNoteListContext();
-  const creditNoteTableSize = creditNoteSettings?.tableSize as
-    | string
-    | undefined;
+  const { CreditNotesView, fields, refresh } = useCreditNoteListContext();
 
   const { downloadAsync: downloadExportPdf } = useDownloadExportPdf();
 
@@ -80,11 +72,6 @@ function CreditNotesActionsBarInner({
 
   const handleRefreshBtnClick = () => {
     refresh();
-  };
-  const handleTableRowSizeChange = (size: any) => {
-    saveSettings({
-      options: [{ group: 'creditNote', key: 'tableSize', value: size }],
-    });
   };
   const handleImportBtnClick = () => {
     history.push('/credit-notes/import');
@@ -173,12 +160,6 @@ function CreditNotesActionsBarInner({
           text={<T id={'export'} />}
           onClick={handleExportBtnClick}
         />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={creditNoteTableSize}
-          onChange={handleTableRowSizeChange}
-        />
-        <NavbarDivider />
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>
         <Popover

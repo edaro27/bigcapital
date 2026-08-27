@@ -11,11 +11,9 @@ import type {
 } from '@bigcapital/sdk-ts';
 import { DashboardInsider } from '@/components';
 import { Features } from '@/constants';
-import { useProjects } from '@/containers/Projects/hooks';
 import {
   useAccounts,
   useAutoCompleteContacts,
-  useCurrencies,
   useJournal,
   useCreateJournal,
   useEditJournal,
@@ -78,7 +76,6 @@ function MakeJournalProvider({
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isBranchFeatureCan = featureCan(Features.Branches);
-  const isProjectFeatureCan = featureCan(Features.Projects);
 
   // Load the accounts list.
   const { data: accounts, isLoading: isAccountsLoading } = useAccounts();
@@ -87,8 +84,8 @@ function MakeJournalProvider({
   const { data: contacts, isLoading: isContactsLoading } =
     useAutoCompleteContacts();
 
-  // Load the currencies list.
-  const { data: currencies, isLoading: isCurrenciesLoading } = useCurrencies();
+  const currencies: CurrenciesListResponse = [];
+  const isCurrenciesLoading = false;
 
   // Load the details of the given manual journal.
   const { data: manualJournal, isLoading: isJournalLoading } = useJournal(
@@ -112,11 +109,7 @@ function MakeJournalProvider({
     isSuccess: isBranchesSuccess,
   } = useBranches(query, { enabled: isBranchFeatureCan });
 
-  // Fetch the projects list.
-  const { data: projectsData, isLoading: isProjectsLoading } = useProjects(
-    {},
-    { enabled: !!isProjectFeatureCan },
-  );
+  const isProjectsLoading = false;
 
   // Submit form payload.
   const [submitPayload, setSubmitPayload] =
@@ -130,7 +123,7 @@ function MakeJournalProvider({
     contacts: contacts ?? [],
     currencies: currencies ?? [],
     manualJournal,
-    projects: projectsData?.projects ?? [],
+    projects: [],
     branches: branches ?? [],
 
     createJournalMutate,

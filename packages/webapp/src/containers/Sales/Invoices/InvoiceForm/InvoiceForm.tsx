@@ -5,10 +5,7 @@ import { sumBy, isEmpty, defaultTo } from 'lodash';
 import React from 'react';
 import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';
-import {
-  InvoiceExchangeRateSync,
-  InvoiceNoSyncSettingsToForm,
-} from './components';
+import { InvoiceNoSyncSettingsToForm } from './components';
 import { InvoiceFloatingActions } from './InvoiceFloatingActions';
 import {
   getCreateInvoiceFormSchema,
@@ -204,7 +201,6 @@ function InvoiceFormRoot({}: InvoiceFormRootProps) {
 
           {/*---------- Effects ----------*/}
           <InvoiceNoSyncSettingsToForm />
-          <InvoiceExchangeRateSync />
         </PageForm>
       </Form>
     </Formik>

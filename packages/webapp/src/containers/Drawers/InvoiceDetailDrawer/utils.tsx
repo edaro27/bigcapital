@@ -31,7 +31,6 @@ interface InvoiceDetailsStatusProps {
 interface BadDebtMenuItemPayload {
   onCancelBadDebt: () => void;
   onBadDebt: () => void;
-  onNotifyViaSMS: () => void;
   onConvert: () => void;
   onDeliver: () => void;
 }
@@ -126,8 +125,7 @@ export const BadDebtMenuItem = ({ payload }: BadDebtMenuItemProps) => {
     return null;
   }
 
-  const { onCancelBadDebt, onBadDebt, onNotifyViaSMS, onConvert, onDeliver } =
-    payload;
+  const { onCancelBadDebt, onBadDebt, onConvert, onDeliver } = payload;
 
   return (
     <Popover
@@ -163,12 +161,6 @@ export const BadDebtMenuItem = ({ payload }: BadDebtMenuItemProps) => {
             <MenuItem
               onClick={onConvert}
               text={<T id={'invoice.convert_to_credit_note'} />}
-            />
-          </Can>
-          <Can I={SaleInvoiceAction.NotifyBySms} a={AbilitySubject.Invoice}>
-            <MenuItem
-              onClick={onNotifyViaSMS}
-              text={<T id={'notify_via_sms.dialog.notify_via_sms'} />}
             />
           </Can>
         </Menu>

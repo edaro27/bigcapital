@@ -11,17 +11,15 @@ import { useWarehouseTranfersListContext } from './WarehouseTransfersListProvide
 import { withWarehouseTransfers } from './withWarehouseTransfers';
 import { withWarehouseTransfersActions } from './withWarehouseTransfersActions';
 import type { WithWarehouseTransfersActionsProps } from './withWarehouseTransfersActions';
+import type { IFilterRole } from '@/components/AdvancedFilter/interfaces';
 import {
   Icon,
   FormattedMessage as T,
   AdvancedFilterPopover,
   DashboardFilterButton,
-  DashboardRowsHeightButton,
   DashboardActionViewsList,
   DashboardActionsBar,
 } from '@/components';
-import { useSaveSettings } from '@/hooks/query';
-import type { IFilterRole } from '@/components/AdvancedFilter/interfaces';
 import { compose } from '@/utils';
 
 interface WarehouseTransfersActionsBarInnerProps
@@ -46,14 +44,11 @@ function WarehouseTransfersActionsBarInner({
   // #withWarehouseTransfersActions
   setWarehouseTransferTableState,
 }: WarehouseTransfersActionsBarInnerProps) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
   const history = useHistory();
 
   // credit note list context.
-  const { WarehouseTransferView, fields, refresh, warehouseTransferSettings } =
+  const { WarehouseTransferView, fields, refresh } =
     useWarehouseTranfersListContext();
-  const warehouseTransferTableSize = warehouseTransferSettings?.tableSize;
 
   // Handle new warehouse transfer button click.
   const handleClickNewWarehouseTransfer = () => {
@@ -68,13 +63,6 @@ function WarehouseTransfersActionsBarInner({
   // Handle views tab change.
   const handleTabChange = (view: ViewOption | null) => {
     setWarehouseTransferTableState({ viewSlug: view ? view.slug : null });
-  };
-
-  // Handle table row size change.
-  const handleTableRowSizeChange = (size: string) => {
-    saveSettings({
-      options: [{ group: 'warehouseTransfers', key: 'tableSize', value: size }],
-    });
   };
 
   return (
@@ -128,12 +116,6 @@ function WarehouseTransfersActionsBarInner({
           icon={<Icon icon={'file-export-16'} iconSize={16} />}
           text={<T id={'export'} />}
         />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={warehouseTransferTableSize}
-          onChange={handleTableRowSizeChange}
-        />
-        <NavbarDivider />
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>
         <Button

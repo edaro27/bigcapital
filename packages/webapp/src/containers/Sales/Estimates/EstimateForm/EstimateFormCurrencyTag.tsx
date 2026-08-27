@@ -15,7 +15,7 @@ export function EstimateFromCurrencyTag() {
   }
   return (
     <BaseCurrencyRoot>
-      <BaseCurrency currency={selectCustomer?.currency_code} />
+      <BaseCurrency currency={selectCustomer?.currencyCode} />
     </BaseCurrencyRoot>
   );
 }

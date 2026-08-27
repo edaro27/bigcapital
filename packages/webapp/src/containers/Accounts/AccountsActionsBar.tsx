@@ -16,6 +16,7 @@ import { withAccounts } from './withAccounts';
 import { withAccountsTableActions } from './withAccountsTableActions';
 import type { WithAccountsProps } from './withAccounts';
 import type { WithAccountsTableActionsProps } from './withAccountsTableActions';
+import type { IFilterRole } from '@/components/AdvancedFilter/interfaces';
 import type { WithAlertActionsProps } from '@/containers/Alert/withAlertActions';
 import type { WithDialogActionsProps } from '@/containers/Dialog/withDialogActions';
 import {
@@ -25,7 +26,6 @@ import {
   FormattedMessage as T,
   DashboardActionViewsList,
   DashboardFilterButton,
-  DashboardRowsHeightButton,
   DashboardActionsBar,
 } from '@/components';
 import { AccountAction, AbilitySubject } from '@/constants/abilityOption';
@@ -34,8 +34,6 @@ import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { useRefreshAccounts } from '@/hooks/query/accounts';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
-import { useSaveSettings } from '@/hooks/query';
-import type { IFilterRole } from '@/components/AdvancedFilter/interfaces';
 import { compose } from '@/utils';
 
 interface AccountsActionsBarInnerProps {
@@ -58,11 +56,8 @@ function AccountsActionsBarInner({
   openAlert,
   setAccountsTableState,
 }: AccountsActionsBarInnerProps) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
   const history = useHistory();
-  const { resourceViews, fields, accountsSettings } = useAccountsChartContext();
-  const accountsTableSize = accountsSettings?.tableSize as string | undefined;
+  const { resourceViews, fields } = useAccountsChartContext();
 
   // Exports pdf document.
   const { downloadAsync: downloadExportPdf } = useDownloadExportPdf();
@@ -102,12 +97,6 @@ function AccountsActionsBarInner({
   // Handle click a refresh accounts
   const handleRefreshBtnClick = () => {
     refresh();
-  };
-  // Handle table row size change.
-  const handleTableRowSizeChange = (size: unknown) => {
-    saveSettings({
-      options: [{ group: 'accounts', key: 'tableSize', value: size }],
-    });
   };
   // handle the import button click.
   const handleImportBtnClick = () => {
@@ -209,12 +198,6 @@ function AccountsActionsBarInner({
           icon={<Icon icon="file-export-16" iconSize={16} />}
           text={<T id={'export'} />}
           onClick={handleExportBtnClick}
-        />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={accountsTableSize}
-          value={accountsTableSize}
-          onChange={handleTableRowSizeChange}
         />
         <NavbarDivider />
         <Can I={AccountAction.Edit} a={AbilitySubject.Account}>

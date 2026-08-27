@@ -6,10 +6,8 @@ import { useFormikContext } from 'formik';
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
-import {
-  ReceiptExchangeRateInputField,
-  ReceiptProjectSelectButton,
-} from './components';
+import type { Customer } from '@bigcapital/sdk-ts';
+import { ReceiptExchangeRateInputField } from './components';
 import { useReceiptFormContext } from './ReceiptFormProvider';
 import { ReceiptFormReceiptNumberField } from './ReceiptFormReceiptNumberField';
 import { accountsFieldShouldUpdate, customersFieldShouldUpdate } from './utils';
@@ -22,15 +20,11 @@ import {
   Icon,
   CustomerDrawerLink,
   FormattedMessage as T,
-  FeatureCan,
   FInputGroup,
   Stack,
   FDateInput,
 } from '@/components';
-import { Features } from '@/constants';
 import { ACCOUNT_TYPE } from '@/constants/accountTypes';
-import { useCustomerUpdateExRate } from '@/containers/Entries/withExRateItemEntriesPriceRecalc';
-import { ProjectsSelect } from '@/containers/Projects/components';
 
 const getEstimateFieldsStyle = (theme: Theme & { bpPrefix?: string }) => css`
   .${theme.bpPrefix}-form-group {
@@ -55,14 +49,14 @@ const getEstimateFieldsStyle = (theme: Theme & { bpPrefix?: string }) => css`
 export function ReceiptFormHeader() {
   const theme = useTheme();
   const receiptFieldsClassName = getEstimateFieldsStyle(theme);
-  const { accounts, projects } = useReceiptFormContext();
+  const { accounts } = useReceiptFormContext();
 
   return (
     <Stack spacing={18} flex={1} className={receiptFieldsClassName}>
       {/* ----------- Customer name ----------- */}
       <ReceiptFormCustomerSelect />
 
-      {/* ----------- Exchange rate ----------- */}
+      {/* Manual compatibility for legacy foreign-currency customers. */}
       <ReceiptExchangeRateInputField />
 
       {/* ----------- Deposit account ----------- */}
@@ -120,23 +114,6 @@ export function ReceiptFormHeader() {
       >
         <FInputGroup name={'referenceNo'} />
       </FFormGroup>
-
-      {/*------------ Project name -----------*/}
-      <FeatureCan feature={Features.Projects}>
-        <FFormGroup
-          name={'projectId'}
-          label={intl.get('receipt.project_name.label')}
-          inline={true}
-          className={classNames('form-group--select-list', Classes.FILL)}
-        >
-          <ProjectsSelect
-            name={'projectId'}
-            projects={projects}
-            input={ReceiptProjectSelectButton}
-            popoverFill={true}
-          />
-        </FFormGroup>
-      </FeatureCan>
     </Stack>
   );
 }
@@ -149,17 +126,13 @@ function ReceiptFormCustomerSelect() {
   const { setFieldValue, values } = useFormikContext<ReceiptFormValues>();
   const { customers } = useReceiptFormContext();
 
-  const updateEntries = useCustomerUpdateExRate();
-
   // Handles the customer item change.
-  const handleItemChange = (customer: {
-    id: number;
-    currency_code: string;
-  }) => {
+  const handleItemChange = (
+    customer: Pick<Customer, 'id' | 'currencyCode'>,
+  ) => {
     setFieldValue('customerId', customer.id);
-    setFieldValue('currencyCode', customer?.currency_code);
-
-    updateEntries(customer);
+    setFieldValue('currencyCode', customer.currencyCode);
+    setFieldValue('exchangeRate', 1);
   };
 
   return (

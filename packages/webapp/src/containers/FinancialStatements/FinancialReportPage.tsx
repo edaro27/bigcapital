@@ -7,7 +7,7 @@ import { CLASSES } from '@/constants/classes';
 interface FinancialReportPageProps {
   name?: string;
   className?: string;
-  children?: React.ReactNode;
+  children: React.ReactNode;
 }
 
 export function FinancialReportPage(props: FinancialReportPageProps) {

@@ -99,7 +99,7 @@ export class CreateAccountService {
     return {
       ...createAccountDTO,
       slug: kebabCase(createAccountDTO.name),
-      currencyCode: createAccountDTO.currencyCode || baseCurrency,
+      currencyCode: baseCurrency || 'USD',
 
       // Mark the account is Plaid owner since Plaid item/account is defined on creating.
       isSyncingOwner: Boolean(
@@ -120,20 +120,25 @@ export class CreateAccountService {
   ): Promise<Account> => {
     // Retrieves the given tenant metadata.
     const tenant = await this.tenancyContext.getTenant(true);
+    const baseCurrency = tenant.metadata.baseCurrency || 'USD';
+    const normalizedAccountDTO = {
+      ...accountDTO,
+      currencyCode: baseCurrency,
+    };
 
     // Authorize the account creation.
-    await this.authorize(accountDTO, tenant.metadata.baseCurrency, params);
+    await this.authorize(normalizedAccountDTO, baseCurrency, params);
 
     // Transformes the DTO to model.
     const accountInputModel = this.transformDTOToModel(
-      accountDTO,
-      tenant.metadata.baseCurrency,
+      normalizedAccountDTO,
+      baseCurrency,
     );
     // Creates a new account with associated transactions under unit-of-work envirement.
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {
       // Triggers `onAccountCreating` event.
       await this.eventEmitter.emitAsync(events.accounts.onCreating, {
-        accountDTO,
+        accountDTO: normalizedAccountDTO,
         trx,
       } as IAccountEventCreatingPayload);
 

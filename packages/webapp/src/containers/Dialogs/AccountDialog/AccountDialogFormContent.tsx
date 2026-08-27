@@ -6,19 +6,16 @@ import { useAccountDialogContext } from './AccountDialogProvider';
 import { parentAccountShouldUpdate } from './utils';
 import type { AccountFormValues } from './types';
 import {
-  If,
   FieldRequiredHint,
   Hint,
   AccountsSelect,
   AccountsTypesSelect,
-  CurrencySelect,
   FormattedMessage as T,
   FFormGroup,
   FInputGroup,
   FCheckbox,
   FTextArea,
 } from '@/components';
-import { FOREIGN_CURRENCY_ACCOUNTS } from '@/constants/accountTypes';
 import { useAutofocus } from '@/hooks';
 
 interface AccountFormDialogFieldsProps {
@@ -34,8 +31,7 @@ export function AccountDialogFormContent({
   const { values, isSubmitting, setFieldValue } =
     useFormikContext<AccountFormValues>();
   const accountNameFieldRef = useAutofocus<HTMLInputElement>();
-  const { fieldsDisabled, currencies, accounts, accountsTypes } =
-    useAccountDialogContext();
+  const { fieldsDisabled, accounts, accountsTypes } = useAccountDialogContext();
 
   return (
     <Form>
@@ -109,7 +105,6 @@ export function AccountDialogFormContent({
         {values.subaccount && (
           <FFormGroup
             name={'parentAccountId'}
-            shouldUpdate={parentAccountShouldUpdate}
             label={intl.get('parent_account')}
             inline={true}
             fastField={true}
@@ -127,24 +122,6 @@ export function AccountDialogFormContent({
             />
           </FFormGroup>
         )}
-
-        <If condition={FOREIGN_CURRENCY_ACCOUNTS.includes(values.accountType)}>
-          {/*------------ Currency  ----------- */}
-          <FFormGroup
-            label={intl.get('currency')}
-            name={'currencyCode'}
-            inline
-            fastField
-          >
-            <CurrencySelect
-              name={'currencyCode'}
-              currencies={currencies as []}
-              popoverProps={{ minimal: true }}
-              fastField
-              fill
-            />
-          </FFormGroup>
-        </If>
 
         <FFormGroup
           label={intl.get('description')}

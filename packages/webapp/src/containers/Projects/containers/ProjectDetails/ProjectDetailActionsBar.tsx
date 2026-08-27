@@ -7,18 +7,15 @@ import {
   Alignment,
 } from '@blueprintjs/core';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { projectTranslations } from './common';
 import { ProjectTransactionsSelect } from './components';
 import { useProjectDetailContext } from './ProjectDetailProvider';
 import {
   Icon,
   FormattedMessage as T,
-  DashboardRowsHeightButton,
   DashboardActionsBar,
 } from '@/components';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
-import { useSaveSettings } from '@/hooks/query';
 import { compose } from '@/utils';
 
 /**
@@ -29,11 +26,7 @@ function ProjectDetailActionsBarInner({
   // #withDialogActions
   openDialog,
 }) {
-  // Settings hook.
-  const { projectId, timesheetsSettings } = useProjectDetailContext();
-  const timesheetsTableSize = timesheetsSettings?.tableSize;
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
+  const { projectId } = useProjectDetailContext();
   // Handle new transaction button click.
   const handleNewTransactionBtnClick = ({ path }) => {
     switch (path) {
@@ -56,18 +49,6 @@ function ProjectDetailActionsBarInner({
       projectId,
     });
   };
-  // Handle table row size change.
-  const handleTableRowSizeChange = (size) => {
-    saveSettings({
-      options: [
-        { group: 'timesheets', key: 'tableSize', value: size },
-        { group: 'sales', key: 'tableSize', value: size },
-        { group: 'purchases', key: 'tableSize', value: size },
-        { group: 'project_tasks', key: 'tableSize', value: size },
-      ],
-    });
-  };
-
   const handleTimeEntryBtnClick = () => {
     openDialog('project-time-entry-form', {
       projectId,
@@ -112,11 +93,6 @@ function ProjectDetailActionsBarInner({
           className={Classes.MINIMAL}
           icon={<Icon icon={'file-export-16'} iconSize={'16'} />}
           text={<T id={'export'} />}
-        />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={timesheetsTableSize}
-          onChange={handleTableRowSizeChange}
         />
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>

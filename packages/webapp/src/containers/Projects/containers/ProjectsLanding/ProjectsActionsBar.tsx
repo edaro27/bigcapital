@@ -9,19 +9,16 @@ import {
 import React from 'react';
 import { withProjects } from './withProjects';
 import { withProjectsActions } from './withProjectsActions';
-import { useProjectsListContext } from './ProjectsListProvider';
 import {
   Icon,
   Can,
   DashboardActionViewsList,
-  DashboardRowsHeightButton,
   FormattedMessage as T,
   DashboardActionsBar,
 } from '@/components';
 import { ProjectAction, AbilitySubject } from '@/constants/abilityOption';
 import { DialogsName } from '@/constants/dialogs';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
-import { useSaveSettings } from '@/hooks/query';
 import { compose } from '@/utils';
 
 /**
@@ -38,10 +35,6 @@ function ProjectsActionsBarInner({
   // #withProjectsActions
   setProjectsTableState,
 }) {
-  // Settings hook.
-  const { projectSettings } = useProjectsListContext();
-  const projectsTableSize = projectSettings?.tableSize;
-  const { mutateAsync: saveSettings } = useSaveSettings();
   // Handle tab change.
   const handleTabChange = (view) => {
     setProjectsTableState({
@@ -51,13 +44,6 @@ function ProjectsActionsBarInner({
 
   // Handle click a refresh projects list.
   const handleRefreshBtnClick = () => {};
-
-  // Handle table row size change.
-  const handleTableRowSizeChange = (size) => {
-    saveSettings({
-      options: [{ group: 'projects', key: 'tableSize', value: size }],
-    });
-  };
 
   // Handle new project button click.
   const handleNewProjectBtnClick = () => {
@@ -98,12 +84,6 @@ function ProjectsActionsBarInner({
           icon={<Icon icon={'file-export-16'} iconSize={'16'} />}
           text={<T id={'export'} />}
         />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={projectsTableSize}
-          onChange={handleTableRowSizeChange}
-        />
-        <NavbarDivider />
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>
         <Button

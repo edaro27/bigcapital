@@ -83,10 +83,6 @@ function EstimateDetailActionsBarInner({
   const handlePrintEstimate = () => {
     openDialog('estimate-pdf-preview', { estimateId });
   };
-  // Handle notify via SMS.
-  const handleNotifyViaSMS = () => {
-    openDialog('notify-estimate-via-sms', { estimateId });
-  };
   // Handles the estimate mail dialog.
   const handleMailEstimate = () => {
     openDrawer(DRAWERS.ESTIMATE_SEND_MAIL, { estimateId });
@@ -144,13 +140,9 @@ function EstimateDetailActionsBarInner({
             onClick={handleDeleteEstimate}
           />
         </Can>
-        <Can I={SaleEstimateAction.NotifyBySms} a={AbilitySubject.Estimate}>
+        <Can I={SaleEstimateAction.Edit} a={AbilitySubject.Estimate}>
           <NavbarDivider />
-          <EstimateMoreMenuItems
-            payload={{
-              onNotifyViaSMS: handleNotifyViaSMS,
-            }}
-          />
+          <EstimateMoreMenuItems />
         </Can>
       </NavbarGroup>
     </DrawerActionsBar>

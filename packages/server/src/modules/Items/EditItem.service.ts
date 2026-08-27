@@ -1,13 +1,15 @@
 import { Knex } from 'knex';
+import { omit } from 'lodash';
 import { Injectable, Inject } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { IItemDTO, IItemEventEditedPayload } from '@/interfaces/Item';
+import { IItemEventEditedPayload } from '@/interfaces/Item';
 import { events } from '@/common/events/events';
 import { ItemsValidators } from './ItemValidator.service';
 import { Item } from './models/Item';
 import { UnitOfWork } from '../Tenancy/TenancyDB/UnitOfWork.service';
 import { TenantModelProxy } from '../System/models/TenantBaseModel';
 import { EditItemDto } from './dtos/Item.dto';
+import { ItemPriceTiersService } from './ItemPriceTiers.service';
 
 @Injectable()
 export class EditItemService {
@@ -22,6 +24,7 @@ export class EditItemService {
     private readonly eventEmitter: EventEmitter2,
     private readonly uow: UnitOfWork,
     private readonly validators: ItemsValidators,
+    private readonly itemPriceTiersService: ItemPriceTiersService,
 
     @Inject(Item.name)
     private readonly itemModel: TenantModelProxy<typeof Item>,
@@ -90,8 +93,10 @@ export class EditItemService {
     itemDTO: EditItemDto,
     oldItem: Item,
   ): Partial<Item> {
+    const item = omit(itemDTO, ['priceTiers']);
+
     return {
-      ...itemDTO,
+      ...item,
       ...(itemDTO.type === 'inventory' && oldItem.type !== 'inventory'
         ? {
             quantityOnHand: 0,
@@ -129,6 +134,18 @@ export class EditItemService {
       const newItem = await this.itemModel()
         .query(trx)
         .patchAndFetchById(itemId, itemModel);
+      const isSellable = itemDTO.sellable ?? oldItem.sellable;
+
+      // Preserve existing tiers for older API clients that do not submit the
+      // newly introduced field. Explicitly making the item non-sellable clears
+      // its tiers because they can no longer be applied to sales documents.
+      if (itemDTO.priceTiers !== undefined || itemDTO.sellable === false) {
+        await this.itemPriceTiersService.replacePriceTiers(
+          itemId,
+          isSellable ? itemDTO.priceTiers : [],
+          trx,
+        );
+      }
 
       // Edit event payload.
       const eventPayload: IItemEventEditedPayload = {

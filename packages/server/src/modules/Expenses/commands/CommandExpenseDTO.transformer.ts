@@ -92,8 +92,8 @@ export class ExpenseDTOTransformer {
 
     return {
       ...initialDTO,
-      currencyCode: expenseDTO.currencyCode || tenant?.metadata?.baseCurrency,
-      exchangeRate: expenseDTO.exchangeRate || 1,
+      currencyCode: tenant?.metadata?.baseCurrency || 'USD',
+      exchangeRate: 1,
       // ...(user
       //   ? {
       //       userId: user.id,

@@ -15,14 +15,6 @@ export class FeaturesConfigure {
   getConfigure(): IFeatureConfiugration[] {
     return [
       {
-        name: Features.BRANCHES,
-        defaultValue: false,
-      },
-      {
-        name: Features.WAREHOUSES,
-        defaultValue: false,
-      },
-      {
         name: Features.BankSyncing,
         defaultValue: this.configService.get('bankfeed.enabled') ?? false,
       },

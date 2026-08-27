@@ -14,7 +14,13 @@ export default function TablePage() {
   } = useContext(TableContext);
 
   if (loading) {
-    return <TableLoadingRenderer spinnerProps={spinnerProps} />;
+    return (
+      <TableLoadingRenderer
+        spinnerProps={
+          typeof spinnerProps === 'object' ? spinnerProps : undefined
+        }
+      />
+    );
   }
   if (page.length === 0) {
     return <TableNoResultsRowRenderer />;

@@ -65,18 +65,6 @@ export class PaymentReceiveMailOptsDto {
   message: string;
 
   @ApiProperty({
-    description: 'Available recipient address options',
-    type: [PaymentReceiveMailAddressItemDto],
-  })
-  toOptions: Array<PaymentReceiveMailAddressItemDto>;
-
-  @ApiProperty({
-    description: 'Available sender address options',
-    type: [PaymentReceiveMailAddressItemDto],
-  })
-  fromOptions: Array<PaymentReceiveMailAddressItemDto>;
-
-  @ApiProperty({
     description: 'Template format arguments',
     type: Object,
     required: false,

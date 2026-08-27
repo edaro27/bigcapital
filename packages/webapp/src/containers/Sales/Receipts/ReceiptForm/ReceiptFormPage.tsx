@@ -7,7 +7,6 @@ import {
   useReceiptFormContext,
 } from './ReceiptFormProvider';
 import { DashboardInsider } from '@/components';
-import { AutoExchangeRateProvider } from '@/containers/Entries/AutoExchangeProvider';
 
 /**
  * Receipt form page.
@@ -18,9 +17,7 @@ export function ReceiptFormPage() {
 
   return (
     <ReceiptFormProvider receiptId={receiptId}>
-      <AutoExchangeRateProvider>
-        <ReceiptFormPageContent />
-      </AutoExchangeRateProvider>
+      <ReceiptFormPageContent />
     </ReceiptFormProvider>
   );
 }

@@ -61,6 +61,7 @@ export function ItemFormPurchasingSection() {
           <InputPrependText text={baseCurrency} />
           <FMoneyInputGroup
             name={'costPrice'}
+            decimalsLimit={4}
             shouldUpdate={costPriceFieldShouldUpdate}
             purchasable={values.purchasable}
             inputGroupProps={{ medium: true }}

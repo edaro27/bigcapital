@@ -29,7 +29,6 @@ import type { WithDialogActionsProps } from '@/containers/Dialog/withDialogActio
 import {
   Icon,
   DashboardActionsBar,
-  DashboardRowsHeightButton,
   FormattedMessage as T,
   AppToaster,
   If,
@@ -42,7 +41,7 @@ import {
 import { DialogsName } from '@/constants/dialogs';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
-import { useRefreshCashflowTransactions, useSaveSettings } from '@/hooks/query';
+import { useRefreshCashflowTransactions } from '@/hooks/query';
 import {
   useUpdateBankAccount,
   useExcludeUncategorizedTransactions,
@@ -79,14 +78,9 @@ function AccountTransactionsActionsBarInner({
   // #withAlerts
   openAlert,
 }: AccountTransactionsActionsBarInnerProps) {
-  // Settings hook.
-  const { mutateAsync: saveSettings } = useSaveSettings();
 
   const history = useHistory();
-  const { accountId, currentAccount, cashflowTransactionsSettings } =
-    useAccountTransactionsContext();
-  const cashflowTansactionsTableSize =
-    cashflowTransactionsSettings?.tableSize as string | undefined;
+  const { accountId, currentAccount } = useAccountTransactionsContext();
 
   // Refresh cashflow infinity transactions hook.
   const { refresh } = useRefreshCashflowTransactions();
@@ -101,14 +95,6 @@ function AccountTransactionsActionsBarInner({
   const isFeedsPaused = !!currentAccount?.isFeedsPaused;
   const isSyncingOwner = !!currentAccount?.isSyncingOwner;
 
-  // Handle table row size change.
-  const handleTableRowSizeChange = (size: unknown) => {
-    saveSettings({
-      options: [
-        { group: 'cashflowTransactions', key: 'tableSize', value: size },
-      ],
-    });
-  };
   // Handle money in form
   const handleMoneyInFormTransaction = (account: CashFlowMenuItem) => {
     openDialog('money-in', {
@@ -287,12 +273,6 @@ function AccountTransactionsActionsBarInner({
           />
           <NavbarDivider />
         </If>
-
-        <DashboardRowsHeightButton
-          initialValue={cashflowTansactionsTableSize}
-          onChange={handleTableRowSizeChange}
-        />
-        <NavbarDivider />
 
         <If condition={isSyncingOwner}>
           <Tooltip

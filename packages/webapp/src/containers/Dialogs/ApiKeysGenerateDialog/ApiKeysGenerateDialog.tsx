@@ -3,7 +3,10 @@ import React, { useState } from 'react';
 import { ApiKeyDisplayView } from './ApiKeyDisplayView';
 import { CreateApiKeyFormSchema as ApiKeysGenerateFormSchema } from './ApiKeysGenerateForm.schema';
 import { ApiKeysGenerateFormContent } from './ApiKeysGenerateFormContent';
+import type { DialogBaseProps } from '@/components/DialogReduxConnect';
 import type { WithDialogActionsProps } from '@/containers/Dialog/withDialogActions';
+import { Dialog, FormattedMessage as T } from '@/components';
+import withDialogRedux from '@/components/DialogReduxConnect';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { useGenerateApiKey } from '@/hooks/query';
 import { compose } from '@/utils';
@@ -103,9 +106,29 @@ export const ApiKeysGenerateDialogContent = compose(withDialogActions)(
   ApiKeysGenerateDialogContentInner,
 );
 
-// FIXME: latent bug preserved — `index.tsx` re-exports `ApiKeysGenerateDialog`
-// but this module historically only exported `ApiKeysGenerateDialogContent`.
-// The Dialog wrapper (`<Dialog>...`) was never created in the original code;
-// instead the dialog content is used directly. Re-export under the dialog
-// name to keep external consumers (DialogsContainer.tsx) working.
-export { ApiKeysGenerateDialogContent as ApiKeysGenerateDialog };
+interface ApiKeysGenerateDialogProps extends DialogBaseProps {
+  dialogName: string;
+}
+
+function ApiKeysGenerateDialogRoot({
+  dialogName,
+  isOpen,
+}: ApiKeysGenerateDialogProps): React.ReactElement {
+  return (
+    <Dialog
+      name={dialogName}
+      title={<T id={'api_key.dialog.generate_title'} />}
+      className={'dialog--api-key-generate'}
+      isOpen={isOpen}
+      autoFocus
+      canEscapeKeyClose
+      style={{ width: '440px' }}
+    >
+      <ApiKeysGenerateDialogContent dialogName={dialogName} />
+    </Dialog>
+  );
+}
+
+export const ApiKeysGenerateDialog = compose(withDialogRedux())(
+  ApiKeysGenerateDialogRoot,
+);

@@ -22,7 +22,6 @@ import {
 } from '@/components';
 import { SelectButton } from '@/components/Forms/Select';
 import { CLASSES } from '@/constants/classes';
-import { getAllCurrenciesOptions } from '@/constants/currencies';
 import { getFiscalYear } from '@/constants/fiscalYearOptions';
 import { getLanguages } from '@/constants/languagesOptions';
 import { inputIntent } from '@/utils';
@@ -43,7 +42,6 @@ export function PreferencesGeneralForm({
 
   const FiscalYear = getFiscalYear();
   const Languages = getLanguages();
-  const Currencies = getAllCurrenciesOptions();
 
   const { dateFormats, baseCurrencyMutateAbility } = useGeneralFormContext()!;
 
@@ -156,27 +154,11 @@ export function PreferencesGeneralForm({
         label={intl.get('base_currency')}
         labelInfo={<FieldRequiredHint />}
         inline={true}
-        helperText={
-          <T
-            id={'you_can_t_change_the_base_currency_as_there_are_transactions'}
-          />
-        }
+        helperText={'This internal deployment uses USD only.'}
         fastField={true}
         shouldUpdate={shouldBaseCurrencyUpdate}
       >
-        <FSelect
-          name={'baseCurrency'}
-          items={Currencies}
-          valueAccessor={'key'}
-          textAccessor={'name'}
-          labelAccessor={'key'}
-          placeholder={<T id={'select_base_currency'} />}
-          popoverProps={{ minimal: true }}
-          disabled={baseCurrencyDisabled}
-          fastField={true}
-          shouldUpdate={shouldBaseCurrencyUpdate}
-          baseCurrencyDisabled={baseCurrencyDisabled}
-        />
+        <FInputGroup name={'baseCurrency'} value={'USD'} disabled fastField />
       </FFormGroup>
 
       {/* --------- Fiscal Year ----------- */}

@@ -23,7 +23,6 @@ import {
   DashboardActionViewsList,
   DashboardFilterButton,
   AdvancedFilterPopover,
-  DashboardRowsHeightButton,
   DashboardActionsBar,
 } from '@/components';
 import { BillAction, AbilitySubject } from '@/constants/abilityOption';
@@ -31,7 +30,6 @@ import { DialogsName } from '@/constants/dialogs';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { useRefreshBills } from '@/hooks/query/bills';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
-import { useSaveSettings } from '@/hooks/query';
 import { compose } from '@/utils';
 
 interface WithBillsActionsProps {
@@ -51,13 +49,10 @@ function BillActionsBar({
   billsSelectedRows,
   openDialog,
 }: BillActionsBarProps) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
   const history = useHistory();
   const { refresh } = useRefreshBills();
 
-  const { billsViews, fields, billSettings } = useBillsListContext();
-  const billsTableSize = billSettings?.tableSize as string | undefined;
+  const { billsViews, fields } = useBillsListContext();
 
   const { downloadAsync: downloadExportPdf } = useDownloadExportPdf();
 
@@ -71,11 +66,6 @@ function BillActionsBar({
   };
   const handleRefreshBtnClick = () => {
     refresh();
-  };
-  const handleTableRowSizeChange = (size: any) => {
-    saveSettings({
-      options: [{ group: 'bills', key: 'tableSize', value: size }],
-    });
   };
   const handleImportBtnClick = () => {
     history.push('/bills/import');
@@ -171,12 +161,6 @@ function BillActionsBar({
           text={<T id={'export'} />}
           onClick={handleExportBtnClick}
         />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={billsTableSize}
-          onChange={handleTableRowSizeChange}
-        />
-        <NavbarDivider />
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>
         <Button

@@ -104,33 +104,6 @@ export const getPreferenceRoutes = () => [
     exact: true,
   },
   {
-    path: `${BASE_URL}/currencies`,
-    component: lazy(() =>
-      import('@/containers/Preferences/Currencies/Currencies').then((m) => ({
-        default: m.PreferencesCurrenciesPage,
-      })),
-    ),
-    exact: true,
-  },
-  {
-    path: `${BASE_URL}/warehouses`,
-    component: lazy(() =>
-      import('../containers/Preferences/Warehouses').then((m) => ({
-        default: m.WarehousesPerences,
-      })),
-    ),
-    exact: true,
-  },
-  {
-    path: `${BASE_URL}/branches`,
-    component: lazy(() =>
-      import('../containers/Preferences/Branches').then((m) => ({
-        default: m.BranchesPreferences,
-      })),
-    ),
-    exact: true,
-  },
-  {
     path: `${BASE_URL}/accountant`,
     component: lazy(() =>
       import('@/containers/Preferences/Accountant/Accountant').then((m) => ({

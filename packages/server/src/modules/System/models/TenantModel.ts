@@ -1,7 +1,6 @@
 import { BaseModel } from '@/models/Model';
 import { Model } from 'objection';
 import { TenantMetadata } from './TenantMetadataModel';
-import { PlanSubscription } from '@/modules/Subscription/models/PlanSubscription';
 
 export class TenantModel extends BaseModel {
   public readonly organizationId: string;
@@ -14,7 +13,6 @@ export class TenantModel extends BaseModel {
   public readonly databaseBatch: string;
   public readonly isDeleting: boolean;
   public readonly isInactive: boolean;
-  public readonly subscriptions: Array<PlanSubscription>;
 
   /**
    * Table name.
@@ -65,9 +63,6 @@ export class TenantModel extends BaseModel {
    * Relations mappings.
    */
   static get relationMappings() {
-    const {
-      PlanSubscription,
-    } = require('../../Subscription/models/PlanSubscription');
     const { TenantMetadata } = require('./TenantMetadataModel');
 
     return {
@@ -77,15 +72,6 @@ export class TenantModel extends BaseModel {
         join: {
           from: 'tenants.id',
           to: 'tenants_metadata.tenantId',
-        },
-      },
-
-      subscriptions: {
-        relation: Model.HasManyRelation,
-        modelClass: PlanSubscription,
-        join: {
-          from: 'tenants.id',
-          to: 'subscription_plan_subscriptions.tenantId',
         },
       },
     };

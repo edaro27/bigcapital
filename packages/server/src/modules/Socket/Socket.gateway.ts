@@ -42,12 +42,6 @@ export class SocketGateway
     this.logger.log('Emitted NEW_TRANSACTIONS_DATA event');
   }
 
-  // Method to emit SUBSCRIPTION_CHANGED event
-  emitSubscriptionChanged() {
-    this.server.emit('SUBSCRIPTION_CHANGED');
-    this.logger.log('Emitted SUBSCRIPTION_CHANGED event');
-  }
-
   // Method to emit WORKSPACES_CHANGED event
   emitWorkspacesChanged() {
     this.server.emit('WORKSPACES_CHANGED');

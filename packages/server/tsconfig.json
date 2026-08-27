@@ -21,5 +21,25 @@
       "@/*": ["./src/*"],
       "@bigcapital/server/*": ["../server/*"]
     }
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/modules/Subscription",
+    "src/modules/Subscription/**/*.ts",
+    "src/modules/EventsTracker",
+    "src/modules/EventsTracker/**/*.ts",
+    "src/modules/Loops",
+    "src/modules/Loops/**/*.ts",
+    "src/modules/Currencies",
+    "src/modules/Currencies/**/*.ts",
+    "src/modules/ExchangeRates",
+    "src/modules/ExchangeRates/**/*.ts",
+    "src/modules/WarehousesTransfers",
+    "src/modules/WarehousesTransfers/**/*.ts",
+    "src/modules/Branches",
+    "src/modules/Branches/**/*.ts",
+    "src/modules/Warehouses",
+    "src/modules/Warehouses/**/*.ts"
+  ]
 }

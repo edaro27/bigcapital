@@ -1,5 +1,4 @@
 import { isEmpty } from 'lodash';
-import * as R from 'ramda';
 import type { ProfitLossColumnKey } from '@bigcapital/sdk-ts';
 import { Align } from '@/constants';
 import { getColumnWidth } from '@/utils';
@@ -11,309 +10,98 @@ interface ReportTableColumn {
   children?: ReportTableColumn[];
 }
 
-const getTableCellValueAccessor = (index: number) => `cells[${index}].value`;
+interface TableColumn {
+  key: string;
+  Header: string;
+  accessor?: string;
+  className?: string;
+  textOverview?: boolean;
+  width?: number;
+  sticky?: string;
+  align?: string;
+  disableSortBy?: boolean;
+  money?: boolean;
+  columns?: TableColumn[];
+}
 
-const isColumnKey = (key: ProfitLossColumnKey) => R.pathEq(['key'], key);
+const getTableCellValueAccessor = (index = 0) => `cells[${index}].value`;
 
 const getReportColWidth = (
   data: unknown[],
   accessor: string,
   labelText?: string,
-) => {
-  return getColumnWidth(
+) =>
+  getColumnWidth(
     data,
     accessor,
     { magicSpacing: 10, minWidth: 100 },
     labelText,
   );
+
+const leafMoneyColumn = (
+  data: unknown[],
+  column: ReportTableColumn,
+): TableColumn => {
+  const accessor = getTableCellValueAccessor(column.cellIndex);
+
+  return {
+    Header: column.label,
+    key: column.key,
+    accessor,
+    width: getReportColWidth(data, accessor, column.label),
+    align: Align.Right,
+    disableSortBy: true,
+    textOverview: true,
+    money: true,
+  };
 };
 
-const isNodeHasChildren = (node: ReportTableColumn) => !isEmpty(node.children);
-
-/**
- * `Percentage of income` column accessor.
- */
-const percentageOfIncomeAccessor = R.curry((data, column) => {
-  const accessor = getTableCellValueAccessor(column.cellIndex);
-  const width = getReportColWidth(data, accessor, column.label);
+const totalColumn = (
+  data: unknown[],
+  column: ReportTableColumn,
+): TableColumn => {
+  if (isEmpty(column.children)) return leafMoneyColumn(data, column);
 
   return {
-    Header: column.label,
     key: column.key,
-    accessor,
-    width,
-    align: Align.Right,
-    disableSortBy: true,
-    textOverview: true,
-    money: true,
-  };
-});
-
-/**
- * `Percentage of expense` column accessor.
- */
-const percentageOfExpenseAccessor = R.curry((data, column) => {
-  const accessor = getTableCellValueAccessor(column.cellIndex);
-  const width = getReportColWidth(data, accessor, column.label);
-
-  return {
     Header: column.label,
-    key: column.key,
-    accessor,
-    width,
-    align: Align.Right,
-    disableSortBy: true,
     textOverview: true,
-    money: true,
-  };
-});
-
-/**
- * `Percentage of column` column accessor.
- */
-const percentageOfColumnAccessor = R.curry((data, column) => {
-  const accessor = getTableCellValueAccessor(column.cellIndex);
-  const width = getReportColWidth(data, accessor, column.label);
-
-  return {
-    Header: column.label,
-    key: column.key,
-    accessor,
-    width,
-    align: Align.Right,
     disableSortBy: true,
-    textOverview: true,
+    align: Align.Center,
     money: true,
-  };
-});
-
-/**
- * `Percentage of row` column accessor.
- */
-const percentageOfRowAccessor = R.curry((data, column) => {
-  const accessor = getTableCellValueAccessor(column.cellIndex);
-  const width = getReportColWidth(data, accessor, column.label);
-
-  return {
-    Header: column.label,
-    key: column.key,
-    accessor,
-    width,
-    align: Align.Right,
-    disableSortBy: true,
-    textOverview: true,
-    money: true,
-  };
-});
-
-/**
- * Previous year column accessor.
- */
-const previousYearAccessor = R.curry((data, column) => {
-  const accessor = getTableCellValueAccessor(column.cellIndex);
-  const width = getReportColWidth(data, accessor, column.label);
-
-  return {
-    Header: column.label,
-    key: column.key,
-    accessor,
-    width,
-    align: Align.Right,
-    disableSortBy: true,
-    textOverview: true,
-    money: true,
-  };
-});
-
-/**
- * Pervious year change column accessor.
- */
-const previousYearChangeAccessor = R.curry((data, column) => {
-  const accessor = getTableCellValueAccessor(column.cellIndex);
-  const width = getReportColWidth(data, accessor, column.label);
-
-  return {
-    Header: column.label,
-    key: column.key,
-    accessor,
-    width,
-    align: Align.Right,
-    disableSortBy: true,
-    textOverview: true,
-    money: true,
-  };
-});
-
-/**
- * Previous year percentage column accessor.
- */
-const previousYearPercentageAccessor = R.curry((data, column) => {
-  const accessor = getTableCellValueAccessor(column.cellIndex);
-  const width = getReportColWidth(data, accessor, column.label);
-
-  return {
-    Header: column.label,
-    key: column.key,
-    accessor,
-    width,
-    align: Align.Right,
-    disableSortBy: true,
-    textOverview: true,
-    money: true,
-  };
-});
-
-/**
- * Previous period column accessor.
- */
-const previousPeriodAccessor = R.curry((data, column) => {
-  const accessor = getTableCellValueAccessor(column.cellIndex);
-  const width = getReportColWidth(data, accessor, column.label);
-
-  return {
-    Header: column.label,
-    key: column.key,
-    accessor,
-    width,
-    align: Align.Right,
-    disableSortBy: true,
-    textOverview: true,
-    money: true,
-  };
-});
-
-/**
- * Previous period change column accessor.
- */
-const previousPeriodChangeAccessor = R.curry((data, column) => {
-  const accessor = getTableCellValueAccessor(column.cellIndex);
-  const width = getReportColWidth(data, accessor, column.label);
-
-  return {
-    Header: column.label,
-    key: column.key,
-    accessor,
-    width,
-    align: Align.Right,
-    disableSortBy: true,
-    textOverview: true,
-    money: true,
-  };
-});
-
-/**
- * Previous period percentage column accessor.
- */
-const previousPeriodPercentageAccessor = R.curry((data, column) => {
-  const accessor = getTableCellValueAccessor(column.cellIndex);
-  const width = getReportColWidth(data, accessor, column.label);
-
-  return {
-    Header: column.label,
-    key: column.key,
-    accessor,
-    width,
-    align: Align.Right,
-    disableSortBy: true,
-    textOverview: true,
-    money: true,
-  };
-});
-
-/**
- *
- * @param {*} column
- * @param {*} index
- * @returns
- */
-const totalColumnsMapper = R.curry((data, column) => {
-  return R.compose(
-    R.when(isColumnKey('total'), totalColumn(data)),
-    // Percetage of column/row.
-    R.when(isColumnKey('percentage_column'), percentageOfColumnAccessor(data)),
-    R.when(isColumnKey('percentage_row'), percentageOfRowAccessor(data)),
-    R.when(isColumnKey('percentage_income'), percentageOfIncomeAccessor(data)),
-    R.when(
-      isColumnKey('percentage_expenses'),
-      percentageOfExpenseAccessor(data),
+    columns: (column.children ?? []).map((child) =>
+      totalSubColumn(data, child),
     ),
-    // Previous year.
-    R.when(isColumnKey('previous_year'), previousYearAccessor(data)),
-    R.when(
-      isColumnKey('previous_year_change'),
-      previousYearChangeAccessor(data),
-    ),
-    R.when(
-      isColumnKey('previous_year_percentage'),
-      previousYearPercentageAccessor(data),
-    ),
-    // Pervious period.
-    R.when(isColumnKey('previous_period'), previousPeriodAccessor(data)),
-    R.when(
-      isColumnKey('previous_period_change'),
-      previousPeriodChangeAccessor(data),
-    ),
-    R.when(
-      isColumnKey('previous_period_percentage'),
-      previousPeriodPercentageAccessor(data),
-    ),
-  )(column);
-});
-
-/**
- * Total sub-columns composer.
- */
-const totalColumnsComposer = R.curry((data, column) => {
-  return R.map(totalColumnsMapper(data), column.children);
-});
-
-/**
- * Assoc columns to total column.
- */
-const assocColumnsToTotalColumn = R.curry((data, column, columnAccessor) => {
-  const columns = totalColumnsComposer(data, column);
-
-  return R.assoc('columns', columns, columnAccessor);
-});
-
-/**
- * Retrieves the total column.
- */
-const totalColumn = R.curry((data, column) => {
-  const hasChildren = isNodeHasChildren(column);
-  const accessor = getTableCellValueAccessor(column.cellIndex);
-  const width = getReportColWidth(data, accessor, column.label);
-
-  return {
-    key: column.key,
-    Header: column.label,
-    accessor,
-    textOverview: true,
-    width,
-    disableSortBy: true,
-    align: hasChildren ? Align.Center : Align.Right,
-    money: true,
   };
-});
+};
 
-/**
- *
- */
-const totalColumnCompose = R.curry((data, column) => {
-  const hasChildren = isNodeHasChildren(column);
+const totalSubColumn = (
+  data: unknown[],
+  column: ReportTableColumn,
+): TableColumn => {
+  const knownKey = column.key as ProfitLossColumnKey;
+  switch (knownKey) {
+    case 'total':
+    case 'percentage_column':
+    case 'percentage_row':
+    case 'percentage_income':
+    case 'percentage_expenses':
+    case 'previous_year':
+    case 'previous_year_change':
+    case 'previous_year_percentage':
+    case 'previous_period':
+    case 'previous_period_change':
+    case 'previous_period_percentage':
+    default:
+      return totalColumn(data, column);
+  }
+};
 
-  return R.compose(
-    R.when(R.always(hasChildren), assocColumnsToTotalColumn(data, column)),
-    totalColumn(data),
-  )(column);
-});
-
-/**
- * Account name column mapper.
- */
-const accountNameColumn = R.curry((data, column) => {
+const accountNameColumn = (
+  data: unknown[],
+  column: ReportTableColumn,
+): TableColumn => {
   const accessor = getTableCellValueAccessor(column.cellIndex);
-  const width = getReportColWidth(data, accessor, column.label);
 
   return {
     key: column.key,
@@ -321,77 +109,40 @@ const accountNameColumn = R.curry((data, column) => {
     accessor,
     className: column.key,
     textOverview: true,
-    width: Math.max(width, 300),
+    width: Math.max(getReportColWidth(data, accessor, column.label), 300),
     sticky: Align.Left,
-  };
-});
-
-/**
- *
- * @param {*} data
- * @param {*} column
- * @returns
- */
-const dateRangeSoloColumnAttrs = (data, column) => {
-  const accessor = getTableCellValueAccessor(column.cellIndex);
-
-  return {
-    accessor,
-    width: getReportColWidth(data, accessor),
   };
 };
 
-/**
- * Retrieves date range column.
- */
-const dateRangeColumn = R.curry((data, column) => {
-  const isDateColumnHasColumns = isNodeHasChildren(column);
+const dateRangeColumn = (
+  data: unknown[],
+  column: ReportTableColumn,
+): TableColumn => {
+  if (isEmpty(column.children)) return leafMoneyColumn(data, column);
 
-  const columnAccessor = {
+  return {
     Header: column.label,
     key: column.key,
     disableSortBy: true,
     textOverview: true,
-    align: isDateColumnHasColumns ? Align.Center : Align.Right,
+    align: Align.Center,
     money: true,
+    columns: (column.children ?? []).map((child) =>
+      totalSubColumn(data, child),
+    ),
   };
-  return R.compose(
-    R.when(
-      R.always(isDateColumnHasColumns),
-      assocColumnsToTotalColumn(data, column),
-    ),
-    R.when(
-      R.always(!isDateColumnHasColumns),
-      R.mergeLeft(dateRangeSoloColumnAttrs(data, column)),
-    ),
-  )(columnAccessor);
-});
+};
 
-/**
- * Detarmines the given string starts with `date-range` string.
- */
-const isMatchesDateRange = (r: string) => R.match(/^date-range/g, r).length > 0;
-
-/**
- *
- * @param {} data
- * @param {} column
- */
-const dynamicColumnMapper = R.curry((data, column) => {
-  const indexTotalColumn = totalColumnCompose(data);
-  const indexAccountNameColumn = accountNameColumn(data);
-  const indexDatePeriodMapper = dateRangeColumn(data);
-
-  return R.compose(
-    R.when(R.pathSatisfies(isMatchesDateRange, ['key']), indexDatePeriodMapper),
-    R.when(isColumnKey('name'), indexAccountNameColumn),
-    R.when(isColumnKey('total'), indexTotalColumn),
-  )(column);
-});
+const dynamicColumnMapper = (
+  data: unknown[],
+  column: ReportTableColumn,
+): TableColumn => {
+  if (/^date-range/.test(column.key)) return dateRangeColumn(data, column);
+  if (column.key === 'name') return accountNameColumn(data, column);
+  return totalColumn(data, column);
+};
 
 export const dynamicColumns = (
   columns: ReportTableColumn[],
   data: unknown[],
-) => {
-  return R.map(dynamicColumnMapper(data), columns);
-};
+): TableColumn[] => columns.map((column) => dynamicColumnMapper(data, column));

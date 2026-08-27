@@ -8,6 +8,7 @@ import { ImportableModel } from '@/modules/Import/decorators/Import.decorator';
 import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { ItemDefaultViews } from '../Items.constants';
+import { ItemPriceTier } from './ItemPriceTier';
 
 @ExportableModel()
 @ImportableModel()
@@ -37,6 +38,7 @@ export class Item extends TenantBaseModel {
   public readonly userId: number;
   public readonly sellTaxRateId: number;
   public readonly purchaseTaxRateId: number;
+  public readonly priceTiers: ItemPriceTier[];
 
   public readonly warehouse!: Warehouse;
 
@@ -179,6 +181,19 @@ export class Item extends TenantBaseModel {
           from: 'items.id',
           to: 'items_entries.itemId',
         },
+      },
+
+      /**
+       * Item quantity-based selling prices.
+       */
+      priceTiers: {
+        relation: Model.HasManyRelation,
+        modelClass: ItemPriceTier,
+        join: {
+          from: 'items.id',
+          to: 'item_price_tiers.itemId',
+        },
+        modify: (builder) => builder.orderBy('minimumQuantity', 'asc'),
       },
 
       /**

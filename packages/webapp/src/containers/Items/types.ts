@@ -9,6 +9,7 @@ export interface ItemFormValues {
   code: string;
   costPrice: string | number;
   sellPrice: string | number;
+  priceTiers: ItemPriceTierFormValue[];
   costAccountId: number | string;
   sellAccountId: number | string;
   sellTaxRateId: number | string;
@@ -19,6 +20,12 @@ export interface ItemFormValues {
   sellDescription: string;
   purchaseDescription: string;
   purchaseTaxRateId: number | string;
+}
+
+export interface ItemPriceTierFormValue {
+  id?: number;
+  minimumQuantity: string | number;
+  price: string | number;
 }
 
 export type ItemFormType = 'service' | 'non-inventory' | 'inventory';

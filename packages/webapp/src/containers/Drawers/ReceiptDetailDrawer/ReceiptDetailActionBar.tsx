@@ -7,7 +7,6 @@ import {
 } from '@blueprintjs/core';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { ReceiptMoreMenuItems } from './components';
 import { useReceiptDetailDrawerContext } from './ReceiptDetailDrawerProvider';
 import {
   Can,
@@ -67,10 +66,6 @@ function ReceiptDetailActionBarInner({
   const onPrintReceipt = () => {
     openDialog('receipt-pdf-preview', { receiptId });
   };
-  // Handle notify via SMS.
-  const handleNotifyViaSMS = () => {
-    openDialog('notify-receipt-via-sms', { receiptId });
-  };
   // Handle receipt mail action.
   const handleReceiptMail = () => {
     openDrawer(DRAWERS.RECEIPT_SEND_MAIL, { receiptId });
@@ -109,14 +104,6 @@ function ReceiptDetailActionBarInner({
             text={<T id={'delete'} />}
             intent={Intent.DANGER}
             onClick={safeCallback(onDeleteReceipt)}
-          />
-        </Can>
-        <Can I={SaleReceiptAction.NotifyBySms} a={AbilitySubject.Receipt}>
-          <NavbarDivider />
-          <ReceiptMoreMenuItems
-            payload={{
-              onNotifyViaSMS: handleNotifyViaSMS,
-            }}
           />
         </Can>
       </NavbarGroup>

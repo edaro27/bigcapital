@@ -1,14 +1,15 @@
 import { Knex } from 'knex';
-import { defaultTo } from 'lodash';
+import { defaultTo, omit } from 'lodash';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Inject, Injectable, Scope } from '@nestjs/common';
-import { IItemDTO, IItemEventCreatedPayload } from '@/interfaces/Item';
+import { IItemEventCreatedPayload } from '@/interfaces/Item';
 import { events } from '@/common/events/events';
 import { ItemsValidators } from './ItemValidator.service';
 import { Item } from './models/Item';
 import { UnitOfWork } from '../Tenancy/TenancyDB/UnitOfWork.service';
 import { TenantModelProxy } from '../System/models/TenantBaseModel';
 import { CreateItemDto } from './dtos/Item.dto';
+import { ItemPriceTiersService } from './ItemPriceTiers.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class CreateItemService {
@@ -23,6 +24,7 @@ export class CreateItemService {
     private readonly eventEmitter: EventEmitter2,
     private readonly uow: UnitOfWork,
     private readonly validators: ItemsValidators,
+    private readonly itemPriceTiersService: ItemPriceTiersService,
 
     @Inject(Item.name)
     private readonly itemModel: TenantModelProxy<typeof Item>,
@@ -81,8 +83,10 @@ export class CreateItemService {
    * @return {IItem}
    */
   private transformNewItemDTOToModel(itemDTO: CreateItemDto) {
+    const item = omit(itemDTO, ['priceTiers']);
+
     return {
-      ...itemDTO,
+      ...item,
       active: Boolean(defaultTo(itemDTO.active, true)),
       quantityOnHand: itemDTO.type === 'inventory' ? 0 : null,
     };
@@ -110,6 +114,12 @@ export class CreateItemService {
         .insertAndFetch({
           ...itemInsert,
         });
+      await this.itemPriceTiersService.replacePriceTiers(
+        item.id,
+        itemDTO.sellable === false ? [] : itemDTO.priceTiers,
+        trx,
+      );
+
       // Triggers `onItemCreated` event.
       await this.eventEmitter.emitAsync(events.item.onCreated, {
         item,

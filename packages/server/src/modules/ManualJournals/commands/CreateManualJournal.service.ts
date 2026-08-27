@@ -67,9 +67,8 @@ export class CreateManualJournalService {
         : {}),
       amount,
       date,
-      currencyCode:
-        manualJournalDTO.currencyCode || tenant?.metadata?.baseCurrency,
-      exchangeRate: manualJournalDTO.exchangeRate || 1,
+      currencyCode: tenant?.metadata?.baseCurrency || 'USD',
+      exchangeRate: 1,
       journalNumber,
       entries,
       userId: authorizedUser.id,

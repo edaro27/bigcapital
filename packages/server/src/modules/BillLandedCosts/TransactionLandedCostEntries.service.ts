@@ -68,7 +68,7 @@ export class TransactionLandedCostEntriesService {
     newCommonEntriesDTO.forEach((entry) => {
       const oldEntry = oldBillEntriesById.get(entry.id);
 
-      if (oldEntry && oldEntry.allocatedCostAmount > entry.amount) {
+      if (oldEntry && oldEntry.allocatedCostAmount > Number(entry.amount || 0)) {
         throw new ServiceError(
           ERRORS.LOCATED_COST_ENTRIES_SHOULD_BIGGE_THAN_NEW_ENTRIES,
         );

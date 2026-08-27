@@ -1,9 +1,7 @@
 import { useFormikContext } from 'formik';
 import React from 'react';
 import type { EstimateFormValues } from './utils';
-import { DialogsName } from '@/constants/dialogs';
 import { index as EstimateNumberDialog } from '@/containers/Dialogs/EstimateNumberDialog';
-import { InvoiceExchangeRateChangeDialog } from '@/containers/Sales/Invoices/InvoiceForm/Dialogs/InvoiceExchangeRateChangeDialog';
 
 type EstimateNumberSettings = {
   transactionNumber: string;
@@ -33,9 +31,6 @@ export function EstimateFormDialogs() {
       <EstimateNumberDialog
         dialogName={'estimate-number-form'}
         onConfirm={handleEstimateNumberFormConfirm}
-      />
-      <InvoiceExchangeRateChangeDialog
-        dialogName={DialogsName.InvoiceExchangeRateChangeNotice}
       />
     </>
   );

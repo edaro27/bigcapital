@@ -1,4 +1,4 @@
-import { TransactionsByCustomersTableQuery } from '@bigcapital/sdk-ts';
+import type { TransactionsByCustomersTableQuery } from '@bigcapital/sdk-ts';
 import { castArray } from 'lodash';
 import moment from 'moment';
 import { useMemo } from 'react';
@@ -25,9 +25,12 @@ export const getCustomersTransactionsDefaultQuery = () => ({
   numberFormat: {},
 });
 
+type CustomerTransactionsFilterQuery = TransactionsByCustomersTableQuery &
+  ReturnType<typeof getCustomersTransactionsDefaultQuery>;
+
 const parseCustomersTransactionsQuery = (
   query: Record<string, any>,
-): TransactionsByCustomersTableQuery => {
+): CustomerTransactionsFilterQuery => {
   const defaultQuery = getCustomersTransactionsDefaultQuery();
 
   const transformedQuery = {
@@ -36,7 +39,7 @@ const parseCustomersTransactionsQuery = (
   };
   return {
     ...transformedQuery,
-    customersIds: castArray(transformedQuery.customersIds).map(Number),
+    customersIds: castArray(transformedQuery.customersIds).map(String),
   };
 };
 

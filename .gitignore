@@ -9,6 +9,9 @@ node_modules/
 test-results/
 .qodo
 
+# Local database backups contain private business data.
+backups/
+
 # Playwright shared auth state (regenerated per run by globalSetup)
 e2e/.auth/
 

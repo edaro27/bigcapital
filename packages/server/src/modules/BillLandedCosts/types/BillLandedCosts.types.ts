@@ -134,13 +134,13 @@ interface ICommonEntry {
 }
 
 export interface ICommonLandedCostEntry extends ICommonEntry {
-  landedCost: boolean;
+  landedCost?: boolean;
   allocatedCostAmount: number;
 }
 
 interface ICommonEntryDTO {
   id?: number;
-  amount: number;
+  amount?: number;
 }
 
 export interface ICommonLandedCostEntryDTO extends ICommonEntryDTO {

@@ -35,6 +35,30 @@ const Schema = Yup.object().shape({
       then: Yup.number().required().label(intl.get('sell_price_')),
       otherwise: Yup.number().nullable(true),
     }),
+  priceTiers: Yup.array()
+    .of(
+      Yup.object().shape({
+        minimumQuantity: Yup.number()
+          .moreThan(0)
+          .max(DATATYPES_LENGTH.DECIMAL_13_3)
+          .required('Minimum quantity is required'),
+        price: Yup.number()
+          .min(0)
+          .max(DATATYPES_LENGTH.DECIMAL_15_5)
+          .required('Unit price is required'),
+      }),
+    )
+    .test(
+      'unique-minimum-quantities',
+      'Each price tier must have a unique minimum quantity',
+      (priceTiers) => {
+        const minimumQuantities = (priceTiers ?? [])
+          .map((priceTier) => Number(priceTier?.minimumQuantity))
+          .filter(Number.isFinite);
+
+        return new Set(minimumQuantities).size === minimumQuantities.length;
+      },
+    ),
   costAccountId: Yup.number()
     .when(['purchasable'], {
       is: true,

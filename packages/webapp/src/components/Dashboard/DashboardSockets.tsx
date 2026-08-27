@@ -30,9 +30,6 @@ export function DashboardSockets() {
         intent: Intent.SUCCESS,
       });
     });
-    socket.current.on('SUBSCRIPTION_CHANGED', () => {
-      client.invalidateQueries({ queryKey: ['GetSubscriptions'] });
-    });
     socket.current.on('WORKSPACES_CHANGED', () => {
       client.invalidateQueries({ queryKey: ['workspaces'] });
     });

@@ -12,9 +12,11 @@ import { useHistory } from 'react-router-dom';
 import { useCustomersListContext } from './CustomersListProvider';
 import { useBulkDeleteCustomersDialog } from './hooks/use-bulk-delete-customers-dialog';
 import { withCustomers } from './withCustomers';
-import type { WithCustomersProps } from './withCustomers';
 import { withCustomersActions } from './withCustomersActions';
+import type { WithCustomersProps } from './withCustomers';
 import type { WithCustomersActionsProps } from './withCustomersActions';
+import type { IFilterRole } from '@/components/AdvancedFilter/interfaces';
+import type { WithDialogActionsProps } from '@/containers/Dialog/withDialogActions';
 import {
   Icon,
   Can,
@@ -22,17 +24,13 @@ import {
   DashboardActionViewsList,
   AdvancedFilterPopover,
   DashboardFilterButton,
-  DashboardRowsHeightButton,
   DashboardActionsBar,
 } from '@/components';
-import type { IFilterRole } from '@/components/AdvancedFilter/interfaces';
 import { CustomerAction, AbilitySubject } from '@/constants/abilityOption';
 import { DialogsName } from '@/constants/dialogs';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
-import type { WithDialogActionsProps } from '@/containers/Dialog/withDialogActions';
 import { useRefreshCustomers } from '@/hooks/query/customers';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
-import { useSaveSettings } from '@/hooks/query';
 import { compose } from '@/utils';
 
 interface CustomerActionsBarInnerProps
@@ -59,8 +57,6 @@ function CustomerActionsBar({
   // #withDialogActions
   openDialog,
 }: CustomerActionsBarInnerProps) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
   const bulkDelete = useBulkDeleteCustomersDialog();
   const { openBulkDeleteDialog } = bulkDelete;
   // `isValidatingBulkDeleteCustomers` is not on the hook's return type — preserved
@@ -73,9 +69,7 @@ function CustomerActionsBar({
   const history = useHistory();
 
   // Customers list context.
-  const { customersViews, fields, customersSettings } =
-    useCustomersListContext();
-  const customersTableSize = customersSettings?.tableSize as string | undefined;
+  const { customersViews, fields } = useCustomersListContext();
 
   // Customers refresh action.
   const { refresh } = useRefreshCustomers();
@@ -108,13 +102,6 @@ function CustomerActionsBar({
   // Handle click a refresh customers
   const handleRefreshBtnClick = () => {
     refresh();
-  };
-
-  // Handle table row size change.
-  const handleTableRowSizeChange = (size: string) => {
-    saveSettings({
-      options: [{ group: 'customers', key: 'tableSize', value: size }],
-    });
   };
 
   // Handle import button click.
@@ -200,11 +187,6 @@ function CustomerActionsBar({
           icon={<Icon icon="file-export-16" iconSize={16} />}
           text={<T id={'export'} />}
           onClick={handleExportBtnClick}
-        />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={customersTableSize}
-          onChange={handleTableRowSizeChange}
         />
         <NavbarDivider />
         <Can I={CustomerAction.Edit} a={AbilitySubject.Customer}>

@@ -6,16 +6,13 @@ import classNames from 'classnames';
 import { useFormikContext } from 'formik';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
-import {
-  EstimateExchangeRateInputField,
-  EstimateProjectSelectButton,
-} from './components';
+import type { Customer } from '@bigcapital/sdk-ts';
+import { EstimateExchangeRateInputField } from './components';
 import { EstimateFormEstimateNumberField } from './EstimateFormEstimateNumberField';
 import { useEstimateFormContext } from './EstimateFormProvider';
 import { customersFieldShouldUpdate } from './utils';
 import type { EstimateFormValues } from './utils';
 import {
-  FeatureCan,
   FFormGroup,
   FormattedMessage as T,
   FieldRequiredHint,
@@ -26,9 +23,6 @@ import {
   Stack,
   FDateInput,
 } from '@/components';
-import { Features } from '@/constants';
-import { useCustomerUpdateExRate } from '@/containers/Entries/withExRateItemEntriesPriceRecalc';
-import { ProjectsSelect } from '@/containers/Projects/components';
 
 const getEstimateFieldsStyle = (theme: Theme) => css`
   .${theme.bpPrefix}-form-group {
@@ -47,14 +41,11 @@ const getEstimateFieldsStyle = (theme: Theme) => css`
   }
 `;
 
-type Customer = { id: number; currency_code: string };
-
 /**
  * Estimate form header.
  */
 export function EstimateFormHeader() {
   const theme = useTheme();
-  const { projects } = useEstimateFormContext();
   const styleClassName = getEstimateFieldsStyle(theme);
 
   return (
@@ -62,7 +53,7 @@ export function EstimateFormHeader() {
       {/* ----------- Customer name ----------- */}
       <EstimateFormCustomerSelect />
 
-      {/* ----------- Exchange Rate ----------- */}
+      {/* Manual compatibility for legacy foreign-currency customers. */}
       <EstimateExchangeRateInputField />
 
       {/* ----------- Estimate Date ----------- */}
@@ -118,23 +109,6 @@ export function EstimateFormHeader() {
           data-testId="estimate-reference-input"
         />
       </FFormGroup>
-
-      {/*------------ Project name -----------*/}
-      <FeatureCan feature={Features.Projects}>
-        <FFormGroup
-          name={'projectId'}
-          label={intl.get('estimate.project_name.label')}
-          inline={true}
-          className={classNames('form-group--select-list', Classes.FILL)}
-        >
-          <ProjectsSelect
-            name={'projectId'}
-            projects={projects}
-            input={EstimateProjectSelectButton}
-            popoverFill={true}
-          />
-        </FFormGroup>
-      </FeatureCan>
     </Stack>
   );
 }
@@ -147,14 +121,11 @@ function EstimateFormCustomerSelect() {
   const { setFieldValue, values } = useFormikContext<EstimateFormValues>();
   const { customers } = useEstimateFormContext();
 
-  const updateEntries = useCustomerUpdateExRate();
-
   // Handles the customer item change.
   const handleItemChange = (customer: Customer) => {
     setFieldValue('customerId', customer.id);
-    setFieldValue('currencyCode', customer?.currency_code);
-
-    updateEntries(customer);
+    setFieldValue('currencyCode', customer.currencyCode);
+    setFieldValue('exchangeRate', 1);
   };
 
   return (

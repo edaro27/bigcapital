@@ -37,6 +37,37 @@ const expectBalanced = (entries) => {
 };
 
 describe('taxed receipt and credit ledgers', () => {
+  it('balances a receipt containing a four-decimal rate', () => {
+    const entry = Object.assign(makeTaxedEntry(), {
+      quantity: 3,
+      rate: 0.1765,
+      taxRate: 0,
+      taxRateId: null,
+    });
+    const receipt = Object.assign(new SaleReceipt(), {
+      id: 10,
+      amount: 0.5295,
+      taxAmountWithheld: 0,
+      isInclusiveTax: false,
+      discount: 0,
+      discountType: DiscountType.Percentage,
+      adjustment: 0,
+      exchangeRate: 1,
+      currencyCode: 'USD',
+      depositAccountId: 101,
+      entries: [entry],
+    });
+    const entries = new SaleReceiptGL(receipt)
+      .setDiscountAccountId(601)
+      .setOtherChargesAccountId(602)
+      .setTaxPayableAccountId(201)
+      .getIncomeLedger()
+      .getEntries();
+
+    expectBalanced(entries);
+    expect(entries[0].debit).toBeCloseTo(0.5295, 8);
+  });
+
   it('posts receipt tax to the liability account in base currency', () => {
     const receipt = Object.assign(new SaleReceipt(), {
       id: 11,

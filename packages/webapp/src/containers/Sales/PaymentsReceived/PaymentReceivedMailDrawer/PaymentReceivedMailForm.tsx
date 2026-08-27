@@ -4,6 +4,7 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { PaymentReceivedSendMailFormSchema } from './_types';
 import { PaymentReceivedSendMailFormValues } from './_types';
 import { usePaymentReceivedSendMailBoot } from './PaymentReceivedMailBoot';
+import type { SendPaymentReceiveMailBody } from '@bigcapital/sdk-ts';
 import { AppToaster } from '@/components';
 import { useDrawerContext } from '@/components/Drawer/DrawerProvider';
 import { useSendPaymentReceiveMail } from '@/hooks/query';
@@ -43,7 +44,10 @@ export function PaymentReceivedSendMailForm({
     { setSubmitting }: FormikHelpers<PaymentReceivedSendMailFormValues>,
   ) => {
     setSubmitting(true);
-    sendPaymentMail([paymentReceivedId, values])
+    sendPaymentMail([
+      paymentReceivedId,
+      values as unknown as SendPaymentReceiveMailBody,
+    ])
       .then(() => {
         AppToaster.show({
           message: 'The invoice mail has been sent to the customer.',

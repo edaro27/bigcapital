@@ -1,7 +1,6 @@
 import { Knex } from 'knex';
 import { Model } from 'objection';
 import { Global, Module } from '@nestjs/common';
-import { PlanSubscription } from '@/modules/Subscription/models/PlanSubscription';
 import { TenantModel } from '@/modules/System/models/TenantModel';
 import { SystemKnexConnection } from '../SystemDB/SystemDB.constants';
 import { SystemModelsConnection } from './SystemModels.constants';
@@ -13,7 +12,6 @@ import { StripeWebhookEvent } from '@/modules/StripePayment/models/StripeWebhook
 
 const models = [
   SystemUser,
-  PlanSubscription,
   TenantModel,
   TenantMetadata,
   UserTenant,

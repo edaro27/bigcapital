@@ -7,27 +7,23 @@ import { CustomerFormSectionTitle } from './CustomerFormSectionTitle';
 import type { CustomerFormValues } from './utils';
 import {
   openingBalanceFieldShouldUpdate,
-  useIsCustomerForeignCurrency,
   useSetPrimaryBranchToForm,
 } from './utils';
 import {
   FFormGroup,
   FormattedMessage as T,
   InputPrependText,
-  CurrencySelectList,
   BranchSelect,
   FeatureCan,
   FMoneyInputGroup,
-  ExchangeRateInputGroup,
   FDateInput,
   Icon,
   Box,
 } from '@/components';
 import { Features } from '@/constants';
-import { useCurrentOrganizationBaseCurrency } from '@/hooks/query';
 
 export function CustomerFormFinancialSection() {
-  const { currencies, customerId, branches } = useCustomerFormContext();
+  const { customerId, branches } = useCustomerFormContext();
 
   // Sets the primary branch to form.
   useSetPrimaryBranchToForm();
@@ -38,21 +34,7 @@ export function CustomerFormFinancialSection() {
         <T id={'financial'} />
       </CustomerFormSectionTitle>
 
-      <FFormGroup
-        name={'currencyCode'}
-        label={intl.get('currency')}
-        fastField
-        inline
-      >
-        <CurrencySelectList
-          name="currencyCode"
-          items={currencies}
-          disabled={Boolean(customerId)}
-        />
-      </FFormGroup>
-
       <CustomerOpeningBalanceField />
-      <CustomerOpeningBalanceExchangeRateField />
       <CustomerOpeningBalanceAtField />
 
       <FeatureCan feature={Features.Branches}>
@@ -127,28 +109,5 @@ function CustomerOpeningBalanceField() {
         />
       </ControlGroup>
     </FFormGroup>
-  );
-}
-
-function CustomerOpeningBalanceExchangeRateField() {
-  const { values } = useFormikContext<CustomerFormValues>();
-  const { customerId } = useCustomerFormContext();
-  const baseCurrency = useCurrentOrganizationBaseCurrency();
-
-  const isForeignJournal = useIsCustomerForeignCurrency();
-
-  // Can't continue if the customer is not foreign.
-  if (!isForeignJournal || customerId) {
-    return null;
-  }
-  return (
-    <ExchangeRateInputGroup
-      fromCurrency={values.currencyCode}
-      toCurrency={baseCurrency ?? ''}
-      name={'openingBalanceExchangeRate'}
-      onRecalcConfirm={() => {}}
-      onCancel={() => {}}
-      formGroupProps={{ label: ' ' }}
-    />
   );
 }

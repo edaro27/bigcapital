@@ -25113,6 +25113,30 @@
           "pagination"
         ]
       },
+      "ItemPriceTierResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "The unique identifier of the price tier"
+          },
+          "minimumQuantity": {
+            "type": "number",
+            "description": "Minimum quantity at which this unit price applies",
+            "example": 250
+          },
+          "price": {
+            "type": "number",
+            "description": "Unit selling price at this quantity breakpoint",
+            "example": 0.228
+          }
+        },
+        "required": [
+          "id",
+          "minimumQuantity",
+          "price"
+        ]
+      },
       "ItemResponseDto": {
         "type": "object",
         "properties": {
@@ -25165,6 +25189,13 @@
             "type": "string",
             "description": "The formatted selling price of the item",
             "example": "$399.99"
+          },
+          "priceTiers": {
+            "description": "Quantity-based unit selling prices for the item",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemPriceTierResponseDto"
+            }
           },
           "costPrice": {
             "type": "number",
@@ -25290,6 +25321,27 @@
           "updatedAt"
         ]
       },
+      "ItemPriceTierDto": {
+        "type": "object",
+        "properties": {
+          "minimumQuantity": {
+            "type": "number",
+            "description": "Minimum quantity at which this unit price applies",
+            "minimum": 0.001,
+            "example": 250
+          },
+          "price": {
+            "type": "number",
+            "description": "Unit selling price at this quantity breakpoint",
+            "minimum": 0,
+            "example": 0.228
+          }
+        },
+        "required": [
+          "minimumQuantity",
+          "price"
+        ]
+      },
       "EditItemDto": {
         "type": "object",
         "properties": {
@@ -25340,6 +25392,23 @@
             "description": "Selling price of the item",
             "minimum": 0,
             "example": 399.99
+          },
+          "priceTiers": {
+            "description": "Quantity-based unit selling prices ordered by minimum quantity",
+            "example": [
+              {
+                "minimumQuantity": 250,
+                "price": 0.228
+              },
+              {
+                "minimumQuantity": 500,
+                "price": 0.21
+              }
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemPriceTierDto"
+            }
           },
           "sellAccountId": {
             "type": "number",
@@ -25483,6 +25552,23 @@
             "description": "Selling price of the item",
             "minimum": 0,
             "example": 399.99
+          },
+          "priceTiers": {
+            "description": "Quantity-based unit selling prices ordered by minimum quantity",
+            "example": [
+              {
+                "minimumQuantity": 250,
+                "price": 0.228
+              },
+              {
+                "minimumQuantity": 500,
+                "price": 0.21
+              }
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemPriceTierDto"
+            }
           },
           "sellAccountId": {
             "type": "number",

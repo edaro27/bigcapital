@@ -7,7 +7,6 @@ import {
   useCreditNoteFormContext,
 } from './CreditNoteFormProvider';
 import { DashboardInsider } from '@/components';
-import { AutoExchangeRateProvider } from '@/containers/Entries/AutoExchangeProvider';
 
 /**
  * Credit note form page.
@@ -18,9 +17,7 @@ export function CreditNoteFormPage() {
 
   return (
     <CreditNoteFormProvider creditNoteId={idAsInteger}>
-      <AutoExchangeRateProvider>
-        <CreditNoteFormPageContent />
-      </AutoExchangeRateProvider>
+      <CreditNoteFormPageContent />
     </CreditNoteFormProvider>
   );
 }

@@ -13,6 +13,7 @@ import { Expense } from '../models/Expense.model';
 import { events } from '@/common/events/events';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { EditExpenseDto } from '../dtos/Expense.dto';
+import { TransactionLandedCostEntriesService } from '@/modules/BillLandedCosts/TransactionLandedCostEntries.service';
 
 @Injectable()
 export class EditExpense {
@@ -29,6 +30,7 @@ export class EditExpense {
     private uow: UnitOfWork,
     private validator: CommandExpenseValidator,
     private transformDTO: ExpenseDTOTransformer,
+    private transactionLandedCostEntries: TransactionLandedCostEntriesService,
     @Inject(Expense.name)
     private expenseModel: TenantModelProxy<typeof Expense>,
 
@@ -71,16 +73,16 @@ export class EditExpense {
     // Validate the given expense categories not equal zero.
     this.validator.validateCategoriesNotEqualZero(expenseDTO);
 
-    // Validate expense entries that have allocated landed cost cannot be deleted.
-    // this.entriesService.validateLandedCostEntriesNotDeleted(
-    //   oldExpense.categories,
-    //   expenseDTO.categories,
-    // );
-    // // Validate expense entries that have allocated cost amount should be bigger than amount.
-    // this.entriesService.validateLocatedCostEntriesSmallerThanNewEntries(
-    //   oldExpense.categories,
-    //   expenseDTO.categories,
-    // );
+    // Allocated landed costs must retain their source category and cannot
+    // exceed the edited category amount.
+    this.transactionLandedCostEntries.validateLandedCostEntriesNotDeleted(
+      oldExpense.categories,
+      expenseDTO.categories,
+    );
+    this.transactionLandedCostEntries.validateLocatedCostEntriesSmallerThanNewEntries(
+      oldExpense.categories,
+      expenseDTO.categories,
+    );
   };
 
   /**

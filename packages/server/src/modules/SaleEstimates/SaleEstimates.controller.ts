@@ -254,37 +254,6 @@ export class SaleEstimatesController {
     return this.saleEstimatesApplication.rejectSaleEstimate(saleEstimateId);
   }
 
-  @Post(':id/notify-sms')
-  @RequirePermission(
-    SaleEstimateAction.NotifyBySms,
-    AbilitySubject.SaleEstimate,
-  )
-  @ApiOperation({ summary: 'Notify the given sale estimate by SMS.' })
-  @ApiParam({
-    name: 'id',
-    required: true,
-    type: Number,
-    description: 'The sale estimate id',
-  })
-  public notifySaleEstimateBySms(
-    @Param('id', ParseIntPipe) saleEstimateId: number,
-  ) {
-    return this.saleEstimatesApplication.notifySaleEstimateBySms(
-      saleEstimateId,
-    );
-  }
-
-  @Get(':id/sms-details')
-  @RequirePermission(SaleEstimateAction.View, AbilitySubject.SaleEstimate)
-  @ApiOperation({ summary: 'Retrieves the sale estimate SMS details.' })
-  public getSaleEstimateSmsDetails(
-    @Param('id', ParseIntPipe) saleEstimateId: number,
-  ) {
-    return this.saleEstimatesApplication.getSaleEstimateSmsDetails(
-      saleEstimateId,
-    );
-  }
-
   @Post(':id/mail')
   @HttpCode(200)
   @RequirePermission(SaleEstimateAction.Edit, AbilitySubject.SaleEstimate)

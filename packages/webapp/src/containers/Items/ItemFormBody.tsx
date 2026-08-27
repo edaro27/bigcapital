@@ -80,6 +80,7 @@ function ItemFormBodyInner() {
               <InputPrependText text={baseCurrency} />
               <FMoneyInputGroup
                 name={'sellPrice'}
+                decimalsLimit={4}
                 shouldUpdate={sellPriceFieldShouldUpdate}
                 inputGroupProps={{ fill: true }}
                 disabled={!values.sellable}
@@ -171,6 +172,7 @@ function ItemFormBodyInner() {
 
               <FMoneyInputGroup
                 name={'costPrice'}
+                decimalsLimit={4}
                 shouldUpdate={costPriceFieldShouldUpdate}
                 inputGroupProps={{ medium: true }}
                 disabled={!values.purchasable}

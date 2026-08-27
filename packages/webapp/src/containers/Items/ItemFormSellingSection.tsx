@@ -2,6 +2,7 @@ import { ControlGroup } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
 import React from 'react';
 import intl from 'react-intl-universal';
+import { ItemFormPriceTiers } from './ItemFormPriceTiers';
 import { useItemFormContext } from './ItemFormProvider';
 import { ItemFormSectionTitle } from './ItemFormSectionTitle';
 import {
@@ -60,6 +61,7 @@ export function ItemFormSellingSection() {
           <InputPrependText text={baseCurrency} />
           <FMoneyInputGroup
             name={'sellPrice'}
+            decimalsLimit={4}
             shouldUpdate={sellPriceFieldShouldUpdate}
             sellable={values.sellable}
             inputGroupProps={{ fill: true }}
@@ -68,6 +70,8 @@ export function ItemFormSellingSection() {
           />
         </ControlGroup>
       </FFormGroup>
+
+      <ItemFormPriceTiers />
 
       {/*------------- Selling account ------------- */}
       <FFormGroup

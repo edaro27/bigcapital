@@ -17,6 +17,7 @@ export const getDefaultProfitLossQuery = () => ({
   fromDate: moment().startOf('year').format('YYYY-MM-DD'),
   toDate: moment().format('YYYY-MM-DD'),
   displayColumnsType: 'total',
+  displayColumnsBy: 'year',
   filterByOption: 'with-transactions',
 
   previousYear: false,

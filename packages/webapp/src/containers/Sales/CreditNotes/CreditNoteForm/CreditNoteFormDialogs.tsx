@@ -1,9 +1,7 @@
 import { useFormikContext } from 'formik';
 import React from 'react';
 import type { CreditNoteFormValues } from './utils';
-import { DialogsName } from '@/constants/dialogs';
 import { index as CreditNoteNumberDialog } from '@/containers/Dialogs/CreditNoteNumberDialog';
-import { InvoiceExchangeRateChangeDialog } from '@/containers/Sales/Invoices/InvoiceForm/Dialogs/InvoiceExchangeRateChangeDialog';
 
 type CreditNoteNumberSettings = {
   transactionNumber: string;
@@ -35,9 +33,6 @@ export function CreditNoteFormDialogs() {
       <CreditNoteNumberDialog
         dialogName={'credit-number-form'}
         onConfirm={handleCreditNumberFormConfirm}
-      />
-      <InvoiceExchangeRateChangeDialog
-        dialogName={DialogsName.InvoiceExchangeRateChangeNotice}
       />
     </>
   );

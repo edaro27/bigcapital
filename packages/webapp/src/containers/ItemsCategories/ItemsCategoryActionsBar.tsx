@@ -20,12 +20,10 @@ import {
   AdvancedFilterPopover,
   DashboardFilterButton,
   DashboardActionsBar,
-  DashboardRowsHeightButton,
 } from '@/components';
 import { DialogsName } from '@/constants/dialogs';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
-import { useSaveSettings } from '@/hooks/query';
 import { compose } from '@/utils';
 
 interface ItemsCategoryActionsBarInnerProps
@@ -54,11 +52,7 @@ function ItemsCategoryActionsBarInner({
   // #withAlertActions
   openAlert,
 }: ItemsCategoryActionsBarInnerProps) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-  const { fields, itemsCategoriesSettings } = useItemsCategoriesContext();
-  const itemsCategoriesTableSize = itemsCategoriesSettings?.tableSize as
-    | string
-    | undefined;
+  const { fields } = useItemsCategoriesContext();
   const history = useHistory();
 
   const bulkDelete = useBulkDeleteItemCategoriesDialog();
@@ -80,13 +74,6 @@ function ItemsCategoryActionsBarInner({
   const handleExportBtnClick = () => {
     openDialog(DialogsName.Export, { resource: 'item_category' });
   };
-  // Handle table row size change.
-  const handleTableRowSizeChange = (size: string) => {
-    saveSettings({
-      options: [{ group: 'item_categories', key: 'table_size', value: size }],
-    });
-  };
-
   if (itemsCategoriesSelectedRows?.length) {
     return (
       <DashboardActionsBar>
@@ -140,11 +127,6 @@ function ItemsCategoryActionsBarInner({
           icon={<Icon icon="file-export-16" iconSize={16} />}
           text={<T id={'export'} />}
           onClick={handleExportBtnClick}
-        />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={itemsCategoriesTableSize}
-          onChange={handleTableRowSizeChange}
         />
       </NavbarGroup>
     </DashboardActionsBar>

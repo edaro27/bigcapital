@@ -27,7 +27,6 @@ import {
   DashboardFilterButton,
   AdvancedFilterPopover,
   FormattedMessage as T,
-  DashboardRowsHeightButton,
   DashboardActionViewsList,
   DashboardActionsBar,
 } from '@/components';
@@ -41,7 +40,6 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
 import { useRefreshPaymentReceive } from '@/hooks/query/payment-receives';
-import { useSaveSettings } from '@/hooks/query';
 import { compose } from '@/utils';
 
 interface WithPaymentsReceivedActionsProps {
@@ -63,15 +61,9 @@ function PaymentsReceivedActionsBarInner({
   openDialog,
   openDrawer,
 }: PaymentsReceivedActionsBarProps) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
   const history = useHistory();
 
-  const { paymentReceivesViews, fields, paymentReceiveSettings } =
-    usePaymentsReceivedListContext();
-  const paymentReceivesTableSize = paymentReceiveSettings?.tableSize as
-    | string
-    | undefined;
+  const { paymentReceivesViews, fields } = usePaymentsReceivedListContext();
 
   const { downloadAsync: downloadExportPdf } = useDownloadExportPdf();
 
@@ -86,11 +78,6 @@ function PaymentsReceivedActionsBarInner({
   };
   const handleRefreshBtnClick = () => {
     refresh();
-  };
-  const handleTableRowSizeChange = (size: any) => {
-    saveSettings({
-      options: [{ group: 'paymentReceives', key: 'tableSize', value: size }],
-    });
   };
   const handleImportBtnClick = () => {
     history.push('/payments-received/import');
@@ -176,12 +163,6 @@ function PaymentsReceivedActionsBarInner({
           text={<T id={'export'} />}
           onClick={handleExportBtnClick}
         />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={paymentReceivesTableSize}
-          onChange={handleTableRowSizeChange}
-        />
-        <NavbarDivider />
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>
         <Popover

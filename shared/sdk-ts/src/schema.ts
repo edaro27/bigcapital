@@ -5453,6 +5453,20 @@ export interface components {
             /** @description Pagination metadata */
             pagination: components["schemas"]["Pagination"];
         };
+        ItemPriceTierResponseDto: {
+            /** @description The unique identifier of the price tier */
+            id: number;
+            /**
+             * @description Minimum quantity at which this unit price applies
+             * @example 250
+             */
+            minimumQuantity: number;
+            /**
+             * @description Unit selling price at this quantity breakpoint
+             * @example 0.228
+             */
+            price: number;
+        };
         ItemResponseDto: {
             /**
              * @description The unique identifier of the item
@@ -5500,6 +5514,8 @@ export interface components {
              * @example $399.99
              */
             sellPriceFormatted?: string;
+            /** @description Quantity-based unit selling prices for the item */
+            priceTiers?: components["schemas"]["ItemPriceTierResponseDto"][];
             /**
              * @description The cost price of the item
              * @example 299.99
@@ -5597,6 +5613,18 @@ export interface components {
              */
             updatedAt: string;
         };
+        ItemPriceTierDto: {
+            /**
+             * @description Minimum quantity at which this unit price applies
+             * @example 250
+             */
+            minimumQuantity: number;
+            /**
+             * @description Unit selling price at this quantity breakpoint
+             * @example 0.228
+             */
+            price: number;
+        };
         EditItemDto: {
             /**
              * @description Item name
@@ -5639,6 +5667,20 @@ export interface components {
              * @example 399.99
              */
             sellPrice?: number;
+            /**
+             * @description Quantity-based unit selling prices ordered by minimum quantity
+             * @example [
+             *       {
+             *         "minimumQuantity": 250,
+             *         "price": 0.228
+             *       },
+             *       {
+             *         "minimumQuantity": 500,
+             *         "price": 0.21
+             *       }
+             *     ]
+             */
+            priceTiers?: components["schemas"]["ItemPriceTierDto"][];
             /**
              * @description ID of the sell account
              * @example 2001
@@ -5753,6 +5795,20 @@ export interface components {
              * @example 399.99
              */
             sellPrice?: number;
+            /**
+             * @description Quantity-based unit selling prices ordered by minimum quantity
+             * @example [
+             *       {
+             *         "minimumQuantity": 250,
+             *         "price": 0.228
+             *       },
+             *       {
+             *         "minimumQuantity": 500,
+             *         "price": 0.21
+             *       }
+             *     ]
+             */
+            priceTiers?: components["schemas"]["ItemPriceTierDto"][];
             /**
              * @description ID of the sell account
              * @example 2001

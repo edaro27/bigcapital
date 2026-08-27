@@ -21,7 +21,7 @@ export class CustomerWriteGLOpeningBalanceSubscriber {
     trx,
   }: ICustomerEventCreatedPayload) {
     // Writes the customer opening balance journal entries.
-    if (customer.openingBalance) {
+    if (Number(customer.openingBalance)) {
       await this.customerGLEntries.writeCustomerOpeningBalance(
         customer.id,
         trx,
@@ -48,7 +48,7 @@ export class CustomerWriteGLOpeningBalanceSubscriber {
     customer,
     trx,
   }: ICustomerOpeningBalanceEditedPayload) {
-    if (customer.openingBalance) {
+    if (Number(customer.openingBalance)) {
       await this.customerGLEntries.rewriteCustomerOpeningBalance(
         customer.id,
         trx,

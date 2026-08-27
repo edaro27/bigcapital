@@ -26,10 +26,9 @@ import {
   FormattedMessage as T,
   AdvancedFilterPopover,
   DashboardFilterButton,
-  DashboardRowsHeightButton,
   DashboardActionsBar,
 } from '@/components';
-import { Can, If, DashboardActionViewsList } from '@/components';
+import { Can, DashboardActionViewsList } from '@/components';
 import { SaleInvoiceAction, AbilitySubject } from '@/constants/abilityOption';
 import { DialogsName } from '@/constants/dialogs';
 import { DRAWERS } from '@/constants/drawers';
@@ -37,7 +36,6 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
 import { useRefreshInvoices } from '@/hooks/query/invoices';
-import { useSaveSettings } from '@/hooks/query';
 import { compose } from '@/utils';
 
 interface WithInvoiceActionsProps {
@@ -59,15 +57,11 @@ function InvoiceActionsBar({
   openDialog,
   openDrawer,
 }: InvoiceActionsBarProps) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
   const history = useHistory();
   const { openBulkDeleteDialog, isValidatingBulkDeleteInvoices } =
     useBulkDeleteInvoicesDialog();
 
-  const { invoicesViews, invoicesFields, invoiceSettings } =
-    useInvoicesListContext();
-  const invoicesTableSize = invoiceSettings?.tableSize as string | undefined;
+  const { invoicesViews, invoicesFields } = useInvoicesListContext();
 
   const { downloadAsync: downloadExportPdf } = useDownloadExportPdf();
 
@@ -83,12 +77,6 @@ function InvoiceActionsBar({
 
   const handleRefreshBtnClick = () => {
     refresh();
-  };
-
-  const handleTableRowSizeChange = (size: any) => {
-    saveSettings({
-      options: [{ group: 'salesInvoices', key: 'tableSize', value: size }],
-    });
   };
 
   const handleImportBtnClick = () => {
@@ -177,12 +165,6 @@ function InvoiceActionsBar({
           text={<T id={'export'} />}
           onClick={handleExportBtnClick}
         />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={invoicesTableSize}
-          onChange={handleTableRowSizeChange}
-        />
-        <NavbarDivider />
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>
         <Popover

@@ -8,12 +8,9 @@ import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { useBillFormContext } from './BillFormProvider';
-import {
-  BillExchangeRateInputField,
-  BillProjectSelectButton,
-} from './components';
+import { BillExchangeRateInputField } from './components';
 import { vendorsFieldShouldUpdate, type BillFormValues } from './utils';
-import { FeatureCan, Stack, FormattedMessage as T } from '@/components';
+import { Stack, FormattedMessage as T } from '@/components';
 import {
   FFormGroup,
   FieldRequiredHint,
@@ -23,10 +20,8 @@ import {
   FDateInput,
   FInputGroup,
 } from '@/components';
-import { Features } from '@/constants';
 import { CLASSES } from '@/constants/classes';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
-import { ProjectsSelect } from '@/containers/Projects/components';
 import { momentFormatter, compose } from '@/utils';
 
 const getBillFieldsStyle = (theme: Theme) => css`
@@ -51,7 +46,7 @@ const getBillFieldsStyle = (theme: Theme) => css`
  */
 function BillFormHeader() {
   // Bill form context.
-  const { vendors, projects } = useBillFormContext();
+  const { vendors } = useBillFormContext();
 
   const theme = useTheme();
   const billFieldsClassName = getBillFieldsStyle(theme);
@@ -61,7 +56,7 @@ function BillFormHeader() {
       {/* ------- Vendor name ------ */}
       <BillFormVendorField />
 
-      {/* ----------- Exchange rate ----------- */}
+      {/* Manual compatibility for legacy foreign-currency vendors. */}
       <BillExchangeRateInputField
         formGroupProps={{ label: ' ', inline: true }}
       />
@@ -124,22 +119,6 @@ function BillFormHeader() {
         <FInputGroup name={'referenceNo'} />
       </FFormGroup>
 
-      {/*------------ Project name -----------*/}
-      <FeatureCan feature={Features.Projects}>
-        <FFormGroup
-          name={'projectId'}
-          label={intl.get('bill.project_name.label')}
-          inline={true}
-          className={classNames('form-group--select-list', Classes.FILL)}
-        >
-          <ProjectsSelect
-            name={'projectId'}
-            projects={projects}
-            input={BillProjectSelectButton}
-            popoverFill={true}
-          />
-        </FFormGroup>
-      </FeatureCan>
     </Stack>
   );
 }
@@ -170,6 +149,7 @@ function BillFormVendorField() {
           onItemChange={(contact: VendorOption) => {
             setFieldValue('vendorId', contact.id);
             setFieldValue('currencyCode', contact?.currencyCode);
+            setFieldValue('exchangeRate', 1);
           }}
           allowCreate={true}
           fastField={true}

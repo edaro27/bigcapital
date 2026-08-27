@@ -6,10 +6,7 @@ import DashboardTopbarUser from '@/components/Dashboard/TopbarUser';
 import { CLASSES } from '@/constants/classes';
 import { withDashboard } from '@/containers/Dashboard/withDashboard';
 import { ApiKeysActions } from '@/containers/Preferences/ApiKeys/ApiKeysActions';
-import { BranchesActions } from '@/containers/Preferences/Branches/BranchesActions';
-import { CurrenciesActions } from '@/containers/Preferences/Currencies/CurrenciesActions';
 import { UsersActions } from '@/containers/Preferences/Users/UsersActions';
-import { WarehousesActions } from '@/containers/Preferences/Warehouses/WarehousesActions';
 import { compose } from '@/utils';
 
 import '@/style/pages/Preferences/Topbar.scss';
@@ -32,21 +29,6 @@ function PreferencesTopbar({ preferencesPageTitle }) {
         <Route pathname="/preferences">
           <Switch>
             <Route exact path={'/preferences/users'} component={UsersActions} />
-            <Route
-              exact
-              path={'/preferences/currencies'}
-              component={CurrenciesActions}
-            />
-            <Route
-              exact
-              path={'/preferences/warehouses'}
-              component={WarehousesActions}
-            />
-            <Route
-              exact
-              path={'/preferences/branches'}
-              component={BranchesActions}
-            />
             <Route
               exact
               path={'/preferences/api-keys'}

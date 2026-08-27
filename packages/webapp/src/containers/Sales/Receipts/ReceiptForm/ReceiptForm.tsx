@@ -4,10 +4,7 @@ import { Formik, Form, FormikHelpers } from 'formik';
 import { sumBy, isEmpty } from 'lodash';
 import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';
-import {
-  ReceiptSyncAutoExRateToForm,
-  ReceiptSyncIncrementSettingsToForm,
-} from './components';
+import { ReceiptSyncIncrementSettingsToForm } from './components';
 import {
   EditReceiptFormSchema,
   CreateReceiptFormSchema,
@@ -186,7 +183,6 @@ function ReceiptFormRoot({}: ReceiptFormRootProps) {
 
         {/*---------- Effects ---------*/}
         <ReceiptSyncIncrementSettingsToForm />
-        <ReceiptSyncAutoExRateToForm />
       </Form>
     </Formik>
   );

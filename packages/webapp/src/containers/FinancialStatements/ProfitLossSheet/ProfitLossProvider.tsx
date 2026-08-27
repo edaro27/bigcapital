@@ -11,8 +11,8 @@ type ProfitLossSheetContextValue = {
   isLoading: boolean;
   isFetching: boolean;
   sheetRefetch: UseProfitLossSheetResult['refetch'];
-  httpQuery: Record<string, unknown>;
-  query: Record<string, unknown>;
+  httpQuery: ProfitLossTableQuery;
+  query: ProfitLossTableQuery;
 };
 
 type ProfitLossSheetProviderProps = {
@@ -32,7 +32,7 @@ function ProfitLossSheetProvider({
   ...props
 }: ProfitLossSheetProviderProps) {
   const httpQuery = useMemo(
-    () => transformFilterFormToQuery(query) as Record<string, unknown>,
+    () => transformFilterFormToQuery(query) as ProfitLossTableQuery,
     [query],
   );
 
@@ -41,7 +41,7 @@ function ProfitLossSheetProvider({
     isFetching,
     isLoading,
     refetch,
-  } = useProfitLossSheet(httpQuery as ProfitLossTableQuery);
+  } = useProfitLossSheet(httpQuery);
 
   const provider: ProfitLossSheetContextValue = {
     profitLossSheet,

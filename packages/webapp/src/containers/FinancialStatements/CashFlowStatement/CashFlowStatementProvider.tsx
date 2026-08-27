@@ -1,6 +1,7 @@
 import React from 'react';
 import { transformFilterFormToQuery } from '../common';
 import { FinancialReportPage } from '../FinancialReportPage';
+import type { CashflowStatementTableQuery } from '@bigcapital/sdk-ts';
 import { useCashFlowStatementReport } from '@/hooks/query';
 
 type UseCashFlowResult = ReturnType<typeof useCashFlowStatementReport>;
@@ -10,9 +11,9 @@ type CashFlowStatementContextValue = {
   isCashFlowFetching: boolean;
   isCashFlowLoading: boolean;
   refetchCashFlow: UseCashFlowResult['refetch'];
-  query: Record<string, unknown>;
+  query: CashflowStatementTableQuery;
   filter: Record<string, unknown>;
-  httpQuery: Record<string, unknown>;
+  httpQuery: CashflowStatementTableQuery;
 };
 
 type CashFlowStatementProviderProps = {
@@ -32,7 +33,7 @@ function CashFlowStatementProvider({
   ...props
 }: CashFlowStatementProviderProps) {
   const httpQuery = React.useMemo(
-    () => transformFilterFormToQuery(filter) as Record<string, unknown>,
+    () => transformFilterFormToQuery(filter) as CashflowStatementTableQuery,
     [filter],
   );
   const {

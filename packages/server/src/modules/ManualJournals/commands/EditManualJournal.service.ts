@@ -13,6 +13,7 @@ import { events } from '@/common/events/events';
 import { ManualJournal } from '../models/ManualJournal';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { EditManualJournalDto } from '../dtos/ManualJournal.dto';
+import { ManualJournalBranchesDTOTransformer } from '@/modules/Branches/integrations/ManualJournals/ManualJournalDTOTransformer.service';
 
 @Injectable()
 export class EditManualJournal {
@@ -20,6 +21,7 @@ export class EditManualJournal {
     private eventPublisher: EventEmitter2,
     private uow: UnitOfWork,
     private validator: CommandManualJournalValidators,
+    private branchesDTOTransformer: ManualJournalBranchesDTOTransformer,
 
     @Inject(ManualJournal.name)
     private manualJournalModel: TenantModelProxy<typeof ManualJournal>,
@@ -101,9 +103,8 @@ export class EditManualJournal {
     await this.authorize(manualJournalId, manualJournalDTO);
 
     // Transform manual journal DTO to model.
-    const manualJournalObj = this.transformEditDTOToModel(
-      manualJournalDTO,
-      oldManualJournal,
+    const manualJournalObj = await this.branchesDTOTransformer.transformDTO(
+      this.transformEditDTOToModel(manualJournalDTO, oldManualJournal),
     );
     // Edits the manual journal transactions with associated transactions
     // under unit-of-work envirement.

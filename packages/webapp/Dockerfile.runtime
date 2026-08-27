@@ -1,0 +1,11 @@
+FROM nginxinc/nginx-unprivileged:stable-alpine@sha256:44e36330f74d4f3a1d4e222acca9e23b401fb87811a7597024502bb759c4dd49
+
+COPY --chown=nginx:nginx ./nginx/sites/default.conf /etc/nginx/conf.d/default.conf
+COPY --chown=nginx:nginx ./dist /usr/share/nginx/html
+
+USER 101:101
+
+EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget -q --spider http://127.0.0.1:8080/

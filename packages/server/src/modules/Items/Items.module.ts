@@ -19,6 +19,7 @@ import { ItemsExportable } from './ItemsExportable.service';
 import { ItemsImportable } from './ItemsImportable.service';
 import { BulkDeleteItemsService } from './BulkDeleteItems.service';
 import { ValidateBulkDeleteItemsService } from './ValidateBulkDeleteItems.service';
+import { ItemPriceTiersService } from './ItemPriceTiers.service';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { ValidateBulkDeleteItemsService } from './ValidateBulkDeleteItems.servic
     ItemsImportable,
     BulkDeleteItemsService,
     ValidateBulkDeleteItemsService,
+    ItemPriceTiersService,
   ],
   exports: [ItemsEntriesService, ItemsExportable, ItemsImportable],
 })

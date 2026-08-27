@@ -12,6 +12,7 @@ export const transformBuildDto = (
 ): BuildOrganizationDto => {
   return {
     ...buildDTO,
+    baseCurrency: 'USD',
     dateFormat: defaultTo(buildDTO.dateFormat, 'DD MMM YYYY'),
   };
 };

@@ -1,4 +1,3 @@
-import { x } from '@xstyled/emotion';
 import { FastField } from 'formik';
 import React from 'react';
 import { useInvoiceFormContext } from './InvoiceFormProvider';
@@ -39,6 +38,7 @@ export function InvoiceItemsEntriesEditorField() {
           linesNumber={4}
           currencyCode={values.currencyCode}
           isInclusiveTax={values.inclusiveExclusiveTax === TaxType.Inclusive}
+          enablePriceTiers
         />
       )}
     </FastField>

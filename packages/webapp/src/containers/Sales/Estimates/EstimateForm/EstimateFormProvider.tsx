@@ -3,7 +3,6 @@ import { ITEMS_FILTER_ROLES } from './utils';
 import type { PdfTemplateResponse } from '@bigcapital/sdk-ts';
 import type { Item, Customer } from '@bigcapital/sdk-ts';
 import { Features } from '@/constants';
-import { useProjects } from '@/containers/Projects/hooks';
 import {
   useEstimate,
   useCustomers,
@@ -97,7 +96,6 @@ function EstimateFormProvider({
   const { featureCan } = useFeatureCan();
   const isWarehouseFeatureCan = featureCan(Features.Warehouses);
   const isBranchFeatureCan = featureCan(Features.Branches);
-  const isProjectsFeatureCan = featureCan(Features.Projects);
 
   const {
     data: estimate,
@@ -134,11 +132,7 @@ function EstimateFormProvider({
     isSuccess: isBranchesSuccess,
   } = useBranches(query, { enabled: isBranchFeatureCan });
 
-  // Fetches the projects list.
-  const { data: projectsData, isLoading: isProjectsLoading } = useProjects(
-    {},
-    { enabled: !!isProjectsFeatureCan },
-  );
+  const isProjectsLoading = false;
 
   // Fetches branding templates of invoice.
   const { data: brandingTemplates, isLoading: isBrandingTemplatesLoading } =
@@ -178,7 +172,7 @@ function EstimateFormProvider({
     customers: customersData?.data ?? [],
     branches,
     warehouses,
-    projects: projectsData?.data?.projects ?? [],
+    projects: [],
     isNewMode,
 
     isItemsFetching,

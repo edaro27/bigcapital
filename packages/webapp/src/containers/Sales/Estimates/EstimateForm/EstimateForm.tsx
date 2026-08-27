@@ -4,10 +4,7 @@ import { Formik, Form, FormikHelpers } from 'formik';
 import { sumBy, isEmpty, defaultTo } from 'lodash';
 import intl from 'react-intl-universal';
 import { useHistory } from 'react-router-dom';
-import {
-  EstimateIncrementSyncSettingsToForm,
-  EstimateSyncAutoExRateToForm,
-} from './components';
+import { EstimateIncrementSyncSettingsToForm } from './components';
 import { EstimateFloatingActions } from './EstimateFloatingActions';
 import {
   CreateEstimateFormSchema,
@@ -189,7 +186,6 @@ function EstimateFormInner({}: EstimateFormRootProps) {
 
         {/*------- Effects -------*/}
         <EstimateIncrementSyncSettingsToForm />
-        <EstimateSyncAutoExRateToForm />
       </Form>
     </Formik>
   );

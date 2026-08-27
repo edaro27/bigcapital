@@ -40,10 +40,17 @@ function AccountTransactionsAllProvider({
     accountId,
     pageSize: 50,
   });
+  type AccountTransactionsPage = NonNullable<
+    typeof cashflowTransactionsPages
+  >['pages'][number];
   // Memorized the cashflow account transactions.
-  const cashflowTransactions = useFlattenInfinityPages(
+  const cashflowTransactions = useFlattenInfinityPages<
+    AccountTransactionsPage,
+    BankingTransactionResponse
+  >(
     isCashflowTransactionsSuccess ? cashflowTransactionsPages : undefined,
-    (page) => page?.transactions ?? [],
+    (page) =>
+      (page?.transactions ?? []) as unknown as BankingTransactionResponse[],
   );
   // Handle the observer inersection.
   const handleObserverInteract = React.useCallback(() => {

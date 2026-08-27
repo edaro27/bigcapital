@@ -21,13 +21,11 @@ import {
   DashboardActionViewsList,
   DashboardFilterButton,
   AdvancedFilterPopover,
-  DashboardRowsHeightButton,
   DashboardActionsBar,
 } from '@/components';
 import { PaymentMadeAction, AbilitySubject } from '@/constants/abilityOption';
 import { DialogsName } from '@/constants/dialogs';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
-import { useSaveSettings } from '@/hooks/query';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
 import { useRefreshPaymentMades } from '@/hooks/query/payment-mades';
 import { compose } from '@/utils';
@@ -49,17 +47,11 @@ function PaymentMadeActionsBarInner({
   paymentMadesSelectedRows,
   openDialog,
 }: PaymentMadeActionsBarProps) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
   const history = useHistory();
 
   const { downloadAsync: downloadExportPdf } = useDownloadExportPdf();
 
-  const { paymentMadesViews, fields, billPaymentSettings } =
-    usePaymentMadesListContext();
-  const paymentMadesTableSize = billPaymentSettings?.tableSize as
-    | string
-    | undefined;
+  const { paymentMadesViews, fields } = usePaymentMadesListContext();
 
   const { refresh } = useRefreshPaymentMades();
 
@@ -71,11 +63,6 @@ function PaymentMadeActionsBarInner({
   };
   const handleRefreshBtnClick = () => {
     refresh();
-  };
-  const handleTableRowSizeChange = (size: any) => {
-    saveSettings({
-      options: [{ group: 'billPayments', key: 'tableSize', value: size }],
-    });
   };
   const handleImportBtnClick = () => {
     history.push('/payments-made/import');
@@ -161,12 +148,6 @@ function PaymentMadeActionsBarInner({
           onClick={handleExportBtnClick}
         />
 
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={paymentMadesTableSize}
-          onChange={handleTableRowSizeChange}
-        />
-        <NavbarDivider />
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>
         <Button

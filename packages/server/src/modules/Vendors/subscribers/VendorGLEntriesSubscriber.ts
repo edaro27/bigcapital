@@ -24,7 +24,7 @@ export class VendorsWriteGLOpeningSubscriber {
     trx,
   }: IVendorEventCreatedPayload) {
     // Writes the vendor opening balance journal entries.
-    if (vendor.openingBalance) {
+    if (Number(vendor.openingBalance)) {
       await this.vendorGLEntriesStorage.writeVendorOpeningBalance(
         vendor.id,
         trx,
@@ -53,7 +53,7 @@ export class VendorsWriteGLOpeningSubscriber {
     vendor,
     trx,
   }: IVendorOpeningBalanceEditedPayload) {
-    if (vendor.openingBalance) {
+    if (Number(vendor.openingBalance)) {
       await this.vendorGLEntriesStorage.rewriteVendorOpeningBalance(
         vendor.id,
         trx,

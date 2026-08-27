@@ -12,7 +12,6 @@ import {
   FormattedMessage as T,
 } from '@/components';
 import { Col, Row } from '@/components';
-import { getAllCurrenciesOptions } from '@/constants/currencies';
 import { getFiscalYear } from '@/constants/fiscalYearOptions';
 import { getLanguages } from '@/constants/languagesOptions';
 import { useIsDarkMode } from '@/hooks/useDarkMode';
@@ -27,7 +26,6 @@ export function SetupOrganizationForm({
 }: FormikProps<SetupOrganizationFormValues>) {
   const FiscalYear = getFiscalYear();
   const Languages = getLanguages();
-  const currencies = getAllCurrenciesOptions();
   const isDarkMode = useIsDarkMode();
 
   return (
@@ -74,16 +72,7 @@ export function SetupOrganizationForm({
             label={intl.get('base_currency')}
             fastField={true}
           >
-            <FSelect
-              name={'baseCurrency'}
-              items={currencies}
-              popoverProps={{ minimal: true }}
-              valueAccessor={'key'}
-              textAccessor={'name'}
-              placeholder={<T id={'select_base_currency'} />}
-              buttonProps={{ large: true }}
-              fastField
-            />
+            <FInputGroup name={'baseCurrency'} large disabled fastField />
           </FFormGroup>
         </Col>
 

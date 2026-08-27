@@ -7,7 +7,6 @@ import {
   MenuItem,
   Menu,
   Tag,
-  MenuDivider,
   Classes,
 } from '@blueprintjs/core';
 import {
@@ -65,16 +64,12 @@ export function EstimateDetailsStatus({
   );
 }
 
-interface EstimateMoreMenuItemsInnerProps extends WithAlertActionsProps {
-  payload: { onNotifyViaSMS: () => void };
-}
+interface EstimateMoreMenuItemsInnerProps extends WithAlertActionsProps {}
 
 function EstimateMoreMenuItemsInner({
   // # withAlertActions,
   openAlert,
 
-  // # rest
-  payload: { onNotifyViaSMS },
 }: EstimateMoreMenuItemsInnerProps) {
   const { estimateId, estimate } = useEstimateDetailDrawerContext();
 
@@ -96,11 +91,6 @@ function EstimateMoreMenuItemsInner({
       minimal={true}
       content={
         <Menu>
-          <MenuItem
-            onClick={onNotifyViaSMS}
-            text={<T id={'notify_via_sms.dialog.notify_via_sms'} />}
-          />
-          <MenuDivider />
           <Choose>
             <Choose.When
               condition={!!estimate.isDelivered && !!estimate.isRejected}

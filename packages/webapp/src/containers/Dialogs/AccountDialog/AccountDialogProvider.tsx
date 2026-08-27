@@ -5,7 +5,6 @@ import { DialogContent } from '@/components';
 import {
   useCreateAccount,
   useAccountsTypes,
-  useCurrencies,
   useAccount,
   useAccounts,
   useEditAccount,
@@ -49,8 +48,8 @@ function AccountDialogProvider({
     },
   );
 
-  // Handle fetch Currencies data table
-  const { data: currencies, isLoading: isCurrenciesLoading } = useCurrencies();
+  const currencies: [] = [];
+  const isCurrenciesLoading = false;
   const isNewMode = !payload?.action;
 
   // Retrieves the disabled fields of the form.

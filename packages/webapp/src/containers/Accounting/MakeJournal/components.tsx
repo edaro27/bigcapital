@@ -16,13 +16,10 @@ import {
   MoneyFieldCell,
   InputGroupCell,
   ContactsListFieldCell,
-  BranchesListFieldCell,
-  ProjectsListFieldCell,
 } from '@/components/DataTableCells';
-import { CellType, Features, Align } from '@/constants';
+import { CellType, Align } from '@/constants';
 import { useUpdateEffect } from '@/hooks';
 import { useCurrentOrganizationBaseCurrency } from '@/hooks/query';
-import { useFeatureCan } from '@/hooks/state';
 import { transactionNumber } from '@/utils';
 
 type JournalExchangeRateInputFieldRootProps = Omit<
@@ -38,7 +35,6 @@ export function ContactHeaderCell() {
     <>
       <T id={'contact'} />
       <Hint
-        // @ts-expect-error Hint.content is typed as string but renders ReactNode via Tooltip
         content={<T id={'contact_column_hint'} />}
         position={Position.LEFT_BOTTOM}
       />
@@ -111,8 +107,6 @@ ActionsCellRenderer.cellType = CellType.Button;
  * Retrieve columns of make journal entries table.
  */
 export const useJournalTableEntriesColumns = () => {
-  const { featureCan } = useFeatureCan();
-
   return React.useMemo(
     () => [
       {
@@ -149,32 +143,6 @@ export const useJournalTableEntriesColumns = () => {
         width: 120,
       },
 
-      ...(featureCan(Features.Branches)
-        ? [
-            {
-              Header: intl.get('project'),
-              id: 'projectId',
-              accessor: 'projectId',
-              Cell: ProjectsListFieldCell,
-              className: 'project_id',
-              disableSortBy: true,
-              width: 120,
-            },
-          ]
-        : []),
-
-      ...(featureCan(Features.Branches)
-        ? [
-            {
-              Header: intl.get('branch'),
-              id: 'branchId',
-              accessor: 'branchId',
-              Cell: BranchesListFieldCell,
-              disableSortBy: true,
-              width: 120,
-            },
-          ]
-        : []),
       {
         Header: intl.get('note'),
         accessor: 'note',

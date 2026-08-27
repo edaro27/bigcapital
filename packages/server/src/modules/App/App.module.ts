@@ -36,8 +36,6 @@ import { ExpensesModule } from '../Expenses/Expenses.module';
 import { ItemCategoryModule } from '../ItemCategories/ItemCategory.module';
 import { TaxRatesModule } from '../TaxRates/TaxRate.module';
 import { PdfTemplatesModule } from '../PdfTemplate/PdfTemplates.module';
-import { BranchesModule } from '../Branches/Branches.module';
-import { WarehousesModule } from '../Warehouses/Warehouses.module';
 import { SerializeInterceptor } from '@/common/interceptors/serialize.interceptor';
 import { ToJsonInterceptor } from '@/common/interceptors/to-json.interceptor';
 import { ValidationPipe } from '@/common/pipes/ClassValidation.pipe';
@@ -68,25 +66,20 @@ import { BankingTransactionsModule } from '../BankingTransactions/BankingTransac
 import { TransactionsLockingModule } from '../TransactionsLocking/TransactionsLocking.module';
 import { SettingsModule } from '../Settings/Settings.module';
 import { InventoryAdjustmentsModule } from '../InventoryAdjutments/InventoryAdjustments.module';
-import { PostHogModule } from '../EventsTracker/postHog.module';
-import { EventTrackerModule } from '../EventsTracker/EventTracker.module';
 import { MailModule } from '../Mail/Mail.module';
 import { FinancialStatementsModule } from '../FinancialStatements/FinancialStatements.module';
 import { StripePaymentModule } from '../StripePayment/StripePayment.module';
 import { FeaturesModule } from '../Features/Features.module';
 import { InventoryCostModule } from '../InventoryCost/InventoryCost.module';
-import { WarehousesTransfersModule } from '../WarehousesTransfers/WarehouseTransfers.module';
 import { DashboardModule } from '../Dashboard/Dashboard.module';
 import { PaymentLinksModule } from '../PaymentLinks/PaymentLinks.module';
 import { RolesModule } from '../Roles/Roles.module';
-import { SubscriptionModule } from '../Subscription/Subscription.module';
 import { OrganizationModule } from '../Organization/Organization.module';
 import { WorkspacesModule } from '../EE/Workspaces/Workspaces.module';
 import { TenantDBManagerModule } from '../TenantDBManager/TenantDBManager.module';
 import { PaymentServicesModule } from '../PaymentServices/PaymentServices.module';
 import { AuthModule } from '../Auth/Auth.module';
 import { TenancyModule } from '../Tenancy/Tenancy.module';
-import { LoopsModule } from '../Loops/Loops.module';
 import { AttachmentsModule } from '../Attachments/Attachment.module';
 import { S3Module } from '../S3/S3.module';
 import { ExportModule } from '../Export/Export.module';
@@ -94,13 +87,11 @@ import { ImportModule } from '../Import/Import.module';
 import { CreditNotesApplyInvoiceModule } from '../CreditNotesApplyInvoice/CreditNotesApplyInvoice.module';
 import { ResourceModule } from '../Resource/Resource.module';
 import { ViewsModule } from '../Views/Views.module';
-import { CurrenciesModule } from '../Currencies/Currencies.module';
 import { MiscellaneousModule } from '../Miscellaneous/Miscellaneous.module';
 import { UsersModule } from '../UsersModule/Users.module';
 import { ContactsModule } from '../Contacts/Contacts.module';
 import { BankingPlaidModule } from '../BankingPlaid/BankingPlaid.module';
 import { BankingCategorizeModule } from '../BankingCategorize/BankingCategorize.module';
-import { ExchangeRatesModule } from '../ExchangeRates/ExchangeRates.module';
 import { TenantModelsInitializeModule } from '../Tenancy/TenantModelsInitialize.module';
 import { BillLandedCostsModule } from '../BillLandedCosts/BillLandedCosts.module';
 import { SocketModule } from '../Socket/Socket.module';
@@ -205,9 +196,6 @@ import { AppThrottleModule } from './AppThrottle.module';
     ExpensesModule,
     TaxRatesModule,
     PdfTemplatesModule,
-    BranchesModule,
-    WarehousesModule,
-    WarehousesTransfersModule,
     CustomersModule,
     VendorsModule,
     SaleInvoicesModule,
@@ -238,32 +226,26 @@ import { AppThrottleModule } from './AppThrottle.module';
     FeaturesModule,
     InventoryAdjustmentsModule,
     InventoryCostModule,
-    PostHogModule,
-    EventTrackerModule,
     FinancialStatementsModule,
     StripePaymentModule,
     DashboardModule,
     PaymentLinksModule,
     RolesModule,
-    SubscriptionModule,
     OrganizationModule,
     WorkspacesModule,
     TenantDBManagerModule,
     PaymentServicesModule,
-    LoopsModule,
     AttachmentsModule,
     S3Module,
     ExportModule,
     ImportModule,
     ResourceModule,
     ViewsModule,
-    CurrenciesModule,
     MiscellaneousModule,
     UsersModule,
     ContactsModule,
     SocketModule,
     EEModule,
-    ExchangeRatesModule,
   ],
   controllers: [AppController],
   providers: [

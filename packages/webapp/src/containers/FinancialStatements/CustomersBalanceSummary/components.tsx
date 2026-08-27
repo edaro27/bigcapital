@@ -7,7 +7,6 @@ import {
   Text,
 } from '@blueprintjs/core';
 import classNames from 'classnames';
-import * as R from 'ramda';
 import React from 'react';
 import intl from 'react-intl-universal';
 import { FinancialLoadingBar } from '../FinancialLoadingBar';
@@ -69,16 +68,22 @@ const percentageColumnAccessor = () => ({
   align: Align.Right,
 });
 
-const isColumnKey = (key: CustomersBalanceColumnKey) => R.pathEq(['key'], key);
+interface CustomerBalanceColumn {
+  key: string;
+}
 
-const dynamicColumns = (columns) => {
-  return R.map(
-    R.compose(
-      R.when(isColumnKey('name'), accountNameColumnAccessor),
-      R.when(isColumnKey('total'), totalColumnAccessor),
-      R.when(isColumnKey('percentage_of_column'), percentageColumnAccessor),
-    ),
-  )(columns);
+const dynamicColumns = (columns: CustomerBalanceColumn[]) => {
+  return columns.map((column) => {
+    switch (column.key as CustomersBalanceColumnKey) {
+      case 'name':
+        return accountNameColumnAccessor();
+      case 'percentage_of_column':
+        return percentageColumnAccessor();
+      case 'total':
+      default:
+        return totalColumnAccessor();
+    }
+  });
 };
 
 /**

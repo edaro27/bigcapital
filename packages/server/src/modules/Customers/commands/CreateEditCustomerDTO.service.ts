@@ -45,8 +45,7 @@ export class CreateEditCustomerDTO {
 
     return {
       ...commonDTO,
-      currencyCode:
-        customerDTO.currencyCode || tenantMeta?.metadata?.baseCurrency,
+      currencyCode: tenantMeta?.metadata?.baseCurrency || 'USD',
       active: defaultTo(customerDTO.active, true),
       contactService: ContactService.Customer,
       ...(!isEmpty(customerDTO.openingBalanceAt)
@@ -56,10 +55,7 @@ export class CreateEditCustomerDTO {
             ).toMySqlDateTime(),
           }
         : {}),
-      openingBalanceExchangeRate: defaultTo(
-        customerDTO.openingBalanceExchangeRate,
-        1,
-      ),
+      openingBalanceExchangeRate: 1,
     };
   };
 

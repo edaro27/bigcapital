@@ -1,11 +1,8 @@
-import * as R from 'ramda';
 import intl from 'react-intl-universal';
 import type { CashFlowColumnKey } from '@bigcapital/sdk-ts';
 import { CellTextSpan } from '@/components/Datatable/Cells';
 import { Align } from '@/constants';
 import { getColumnWidth } from '@/utils';
-
-const isColumnKey = (key: CashFlowColumnKey) => R.pathEq(['key'], key);
 
 interface ReportTableColumn {
   key: string;
@@ -66,21 +63,13 @@ const totalMapper = (
   money: true,
 });
 
-const isMatchesDateRange = (r: string) => R.match(/^date-range/g, r).length > 0;
-
-export const dynamicColumns = (
-  columns: ReportTableColumn[],
-  data: unknown[],
-) => {
-  const mapper = (column, index) => {
-    return R.compose(
-      R.when(
-        R.pathSatisfies(isMatchesDateRange, ['key']),
-        R.curry(dateRangeMapper)(data, index),
-      ),
-      R.when(isColumnKey('name'), accountNameMapper),
-      R.when(isColumnKey('total'), R.curry(totalMapper)(data, index)),
-    )(column);
-  };
-  return columns.map(mapper);
-};
+export const dynamicColumns = (columns: ReportTableColumn[], data: unknown[]) =>
+  columns.map((column, index) => {
+    if (/^date-range/.test(column.key)) {
+      return dateRangeMapper(data, index, column);
+    }
+    if ((column.key as CashFlowColumnKey) === 'name') {
+      return accountNameMapper(column);
+    }
+    return totalMapper(data, index, column);
+  });

@@ -19,7 +19,6 @@ import {
 } from '@/components';
 import {
   FFormGroup,
-  FSelect,
   AccountsSelect,
   FieldRequiredHint,
   Hint,
@@ -53,7 +52,7 @@ const getFieldsStyle = (theme: Theme) => css`
  * Expense form header.
  */
 export function ExpenseFormHeader() {
-  const { currencies, accounts, customers } = useExpenseFormContext();
+  const { accounts, customers } = useExpenseFormContext();
   const theme = useTheme() as unknown as Theme;
   const fieldsClassName = getFieldsStyle(theme);
 
@@ -104,26 +103,7 @@ export function ExpenseFormHeader() {
         />
       </FFormGroup>
 
-      <FFormGroup
-        name={'currencyCode'}
-        label={intl.get('currency')}
-        className={classNames(Classes.FILL)}
-        inline={true}
-        fastField={true}
-      >
-        <FSelect
-          name={'currencyCode'}
-          items={currencies}
-          valueAccessor={'currencyCode'}
-          textAccessor={'currencyCode'}
-          labelAccessor={'currencyCode'}
-          popoverProps={{ minimal: true }}
-          fill={true}
-          fastField={true}
-        />
-      </FFormGroup>
-
-      {/* ----------- Exchange rate ----------- */}
+      {/* Manual compatibility for legacy foreign-currency expenses. */}
       <ExpensesExchangeRateInputField
         name={'exchangeRate'}
         formGroupProps={{ label: ' ', inline: true }}

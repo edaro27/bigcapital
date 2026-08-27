@@ -13,7 +13,6 @@ import { Features } from '@/constants';
 import {
   useVendor,
   useContact,
-  useCurrencies,
   useCreateVendor,
   useEditVendor,
   useBranches,
@@ -75,9 +74,8 @@ function VendorFormProvider({
   const { featureCan } = useFeatureCan();
   const isBranchFeatureCan = featureCan(Features.Branches);
 
-  // Handle fetch Currencies data table
-  const { data: currencies, isLoading: isCurrenciesLoading } =
-    useCurrencies(undefined);
+  const currencies: CurrenciesListResponse = [];
+  const isCurrenciesLoading = false;
 
   // Handle fetch vendor details.
   const { data: vendor, isLoading: isVendorLoading } = useVendor(vendorId, {

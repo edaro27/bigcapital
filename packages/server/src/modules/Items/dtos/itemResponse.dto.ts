@@ -1,5 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Item } from '../models/Item';
+
+export class ItemPriceTierResponseDto {
+  @ApiProperty({ description: 'The unique identifier of the price tier' })
+  id: number;
+
+  @ApiProperty({
+    description: 'Minimum quantity at which this unit price applies',
+    example: 250,
+  })
+  minimumQuantity: number;
+
+  @ApiProperty({
+    description: 'Unit selling price at this quantity breakpoint',
+    example: 0.228,
+  })
+  price: number;
+}
 
 export class ItemResponseDto {
   @ApiProperty({
@@ -59,6 +75,13 @@ export class ItemResponseDto {
     required: false,
   })
   sellPriceFormatted?: string;
+
+  @ApiProperty({
+    description: 'Quantity-based unit selling prices for the item',
+    type: [ItemPriceTierResponseDto],
+    required: false,
+  })
+  priceTiers?: ItemPriceTierResponseDto[];
 
   @ApiProperty({
     description: 'The cost price of the item',

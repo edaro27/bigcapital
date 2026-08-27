@@ -13,7 +13,7 @@ import {
   MenuItem,
 } from '@blueprintjs/core';
 import { isEmpty } from 'lodash';
-import React, { useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useBulkDeleteReceiptsDialog } from './hooks/use-bulk-delete-receipts-dialog';
 import { useReceiptsListContext } from './ReceiptsListProvider';
@@ -24,7 +24,6 @@ import {
   AdvancedFilterPopover,
   DashboardFilterButton,
   FormattedMessage as T,
-  DashboardRowsHeightButton,
 } from '@/components';
 import {
   Can,
@@ -39,7 +38,6 @@ import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 import { useDownloadExportPdf } from '@/hooks/query/FinancialReports/use-export-pdf';
 import { useRefreshReceipts } from '@/hooks/query/receipts';
-import { useSaveSettings } from '@/hooks/query';
 import { compose } from '@/utils';
 
 /**
@@ -60,13 +58,10 @@ function ReceiptActionsBarInner({
   // #withDrawerActions
   openDrawer,
 }) {
-  const { mutateAsync: saveSettings } = useSaveSettings();
-
   const history = useHistory();
 
   // Sale receipts list context.
-  const { receiptsViews, fields, receiptSettings } = useReceiptsListContext();
-  const receiptsTableSize = receiptSettings?.tableSize;
+  const { receiptsViews, fields } = useReceiptsListContext();
 
   // Exports pdf document.
   const { downloadAsync: downloadExportPdf } = useDownloadExportPdf();
@@ -88,13 +83,6 @@ function ReceiptActionsBarInner({
   // Handle click a refresh sale estimates
   const handleRefreshBtnClick = () => {
     refresh();
-  };
-
-  // Handle table row size change.
-  const handleTableRowSizeChange = (size) => {
-    saveSettings({
-      options: [{ group: 'salesReceipts', key: 'tableSize', value: size }],
-    });
   };
 
   // Handle the import button click.
@@ -199,12 +187,6 @@ function ReceiptActionsBarInner({
           text={<T id={'export'} />}
           onClick={handleExportBtnClick}
         />
-        <NavbarDivider />
-        <DashboardRowsHeightButton
-          initialValue={receiptsTableSize}
-          onChange={handleTableRowSizeChange}
-        />
-        <NavbarDivider />
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>
         <Popover

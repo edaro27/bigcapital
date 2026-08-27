@@ -100,11 +100,12 @@ function VendorCreditNoteFormHeaderFieldsInner({
       {/* ----------- Vendor name ----------- */}
       <VendorCreditFormVendorSelect />
 
-      {/* ----------- Exchange rate ----------- */}
+      {/* Manual compatibility for legacy foreign-currency vendors. */}
       <VendorCreditNoteExchangeRateInputField
         name={'exchangeRate'}
         formGroupProps={{ label: ' ', inline: true }}
       />
+
       {/* ------- Vendor Credit date ------- */}
       <FFormGroup
         name={'vendorCreditDate'}
@@ -193,6 +194,7 @@ function VendorCreditFormVendorSelect() {
           onItemChange={(contact: VendorOption) => {
             setFieldValue('vendorId', contact.id);
             setFieldValue('currencyCode', contact?.currencyCode);
+            setFieldValue('exchangeRate', 1);
           }}
           popoverFill={true}
           allowCreate={true}

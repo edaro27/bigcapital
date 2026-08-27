@@ -12,8 +12,12 @@ COPY --chown=node:node package.json pnpm-lock.yaml pnpm-workspace.yaml lerna.jso
 COPY --chown=node:node packages/server/package.json ./packages/server/
 COPY --chown=node:node shared ./shared
 
-# Install all dependencies (including devDependencies for build)
-RUN pnpm install --frozen-lockfile --ignore-scripts
+# Install all dependencies (including devDependencies for build). The lockfile
+# is part of the reviewed build input, so avoid re-fetching registry metadata
+# for every locked package while still verifying package integrity hashes.
+RUN --mount=type=cache,id=bigcapital-pnpm,target=/pnpm/store,sharing=locked \
+    pnpm config set store-dir /pnpm/store && \
+    pnpm install --frozen-lockfile --ignore-scripts --trust-lockfile
 
 # Copy source code
 COPY --chown=node:node ./packages/server ./packages/server
@@ -39,8 +43,11 @@ COPY --chown=nodejs:nodejs package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY --chown=nodejs:nodejs packages/server/package.json ./packages/server/
 COPY --chown=nodejs:nodejs shared ./shared
 
-# Install only production dependencies
-RUN pnpm install --prod --frozen-lockfile --ignore-scripts && \
+# Install only production dependencies. Reuse the builder's content-addressed
+# package cache and trust the same reviewed, frozen lockfile.
+RUN --mount=type=cache,id=bigcapital-pnpm,target=/pnpm/store,sharing=locked \
+    pnpm config set store-dir /pnpm/store && \
+    pnpm install --prod --frozen-lockfile --ignore-scripts --trust-lockfile && \
     rm -rf \
       /usr/local/lib/node_modules/npm \
       /usr/local/lib/node_modules/corepack \

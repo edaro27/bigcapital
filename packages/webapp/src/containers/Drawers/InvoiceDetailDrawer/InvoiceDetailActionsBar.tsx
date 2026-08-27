@@ -106,11 +106,6 @@ function InvoiceDetailActionsBarInner({
   const handleBadDebtInvoice = () => {
     openDialog('write-off-bad-debt', { invoiceId });
   };
-  // Handle notify via SMS.
-  const handleNotifyViaSMS = () => {
-    openDialog('notify-invoice-via-sms', { invoiceId });
-  };
-
   // Handle cancele write-off invoice.
   const handleCancelBadDebtInvoice = () => {
     openAlert('cancel-bad-debt', { invoiceId });
@@ -190,7 +185,6 @@ function InvoiceDetailActionsBarInner({
             payload={{
               onBadDebt: handleBadDebtInvoice,
               onCancelBadDebt: handleCancelBadDebtInvoice,
-              onNotifyViaSMS: handleNotifyViaSMS,
               onConvert: handleConvertToCreitNote,
               onDeliver: handleDeliverInvoice,
             }}

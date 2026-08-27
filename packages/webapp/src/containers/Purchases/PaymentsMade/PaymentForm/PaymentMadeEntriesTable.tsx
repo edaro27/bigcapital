@@ -62,7 +62,6 @@ export function PaymentMadeEntriesTable({
 
   return (
     <CloudLoadingIndicator isLoading={isNewEntriesFetching}>
-      {/* @ts-expect-error DataTableEditable requires actions/name props not provided here */}
       <DataTableEditable
         progressBarLoading={isNewEntriesFetching}
         className={classNames(CLASSES.DATATABLE_EDITOR_ITEMS_ENTRIES)}

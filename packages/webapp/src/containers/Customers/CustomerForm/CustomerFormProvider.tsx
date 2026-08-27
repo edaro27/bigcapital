@@ -9,7 +9,6 @@ import { useLocation } from 'react-router-dom';
 import { Features } from '@/constants';
 import {
   useCustomer,
-  useCurrencies,
   useCreateCustomer,
   useEditCustomer,
   useContact,
@@ -79,9 +78,8 @@ export function CustomerFormProvider({
     contactId,
     { enabled: !!contactId },
   );
-  // Handle fetch Currencies data table
-  const { data: currencies, isLoading: isCurrenciesLoading } =
-    useCurrencies(undefined);
+  const currencies: CurrenciesListResponse = [];
+  const isCurrenciesLoading = false;
 
   // Fetches the branches list.
   const {

@@ -8,7 +8,6 @@ import {
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { usePaymentReceiveDetailContext } from './PaymentReceiveDetailProvider';
-import { PaymentReceiveMoreMenuItems } from './utils';
 import {
   Can,
   Icon,
@@ -69,11 +68,6 @@ function PaymentsReceivedActionsBar({
     openAlert('payment-received-delete', { paymentReceiveId });
   };
 
-  // Handle notify via SMS.
-  const handleNotifyViaSMS = () => {
-    openDialog('notify-payment-via-sms', { paymentReceiveId });
-  };
-
   // Handle print payment receive.
   const handlePrintPaymentReceive = () => {
     openDialog('payment-pdf-preview', { paymentReceiveId });
@@ -120,17 +114,6 @@ function PaymentsReceivedActionsBar({
             text={<T id={'delete'} />}
             intent={Intent.DANGER}
             onClick={handleDeletePaymentReceive}
-          />
-        </Can>
-        <Can
-          I={PaymentReceiveAction.NotifyBySms}
-          a={AbilitySubject.PaymentReceive}
-        >
-          <NavbarDivider />
-          <PaymentReceiveMoreMenuItems
-            payload={{
-              onNotifyViaSMS: handleNotifyViaSMS,
-            }}
           />
         </Can>
       </NavbarGroup>

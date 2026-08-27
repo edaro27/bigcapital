@@ -45,6 +45,12 @@ export class SaleInvoiceCostGLEntries {
 
     const ledger = this.getInventoryCostLotsLedger(inventoryCostLotTrans);
 
+    // The inventory-cost event is shared with sales receipts. When this item
+    // has no invoice cost lots, there is intentionally nothing to post.
+    if (ledger.isEmpty()) {
+      return;
+    }
+
     // Commit the ledger to the storage.
     await this.ledgerStorage.commit(ledger, trx);
   };

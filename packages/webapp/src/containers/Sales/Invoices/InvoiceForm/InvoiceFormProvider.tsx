@@ -16,7 +16,6 @@ import type {
   GetPaymentServicesResponse,
 } from '@bigcapital/sdk-ts';
 import { Features } from '@/constants';
-import { useProjects } from '@/containers/Projects/hooks';
 import {
   useInvoice,
   useItems,
@@ -108,7 +107,6 @@ function InvoiceFormProvider({
   const { featureCan } = useFeatureCan();
   const isWarehouseFeatureCan = featureCan(Features.Warehouses);
   const isBranchFeatureCan = featureCan(Features.Branches);
-  const isProjectsFeatureCan = featureCan(Features.Projects);
 
   // Fetch invoice data.
   const { data: invoice, isLoading: isInvoiceLoading } = useInvoice(invoiceId);
@@ -116,11 +114,7 @@ function InvoiceFormProvider({
   // Fetch tax rates.
   const { data: taxRates, isLoading: isTaxRatesLoading } = useTaxRates();
 
-  // Fetch project list.
-  const { data: projectsData, isLoading: isProjectsLoading } = useProjects(
-    {},
-    { enabled: !!isProjectsFeatureCan },
-  );
+  const isProjectsLoading = false;
 
   // Fetches the estimate by the given id.
   const { data: estimate, isLoading: isEstimateLoading } = useEstimate(
@@ -211,9 +205,7 @@ function InvoiceFormProvider({
     submitPayload,
     branches: branches ?? [],
     warehouses: warehouses ?? [],
-    projects:
-      (projectsData as { data?: { projects?: unknown[] } })?.data?.projects ??
-      [],
+    projects: [],
     taxRates: taxRates ?? [],
     brandingTemplates: brandingTemplates?.templates ?? [],
 

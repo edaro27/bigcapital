@@ -2,7 +2,6 @@ import { useFormikContext } from 'formik';
 import type { InvoiceFormValues } from './utils';
 import { DialogsName } from '@/constants/dialogs';
 import { index as InvoiceNumberDialog } from '@/containers/Dialogs/InvoiceNumberDialog';
-import { InvoiceExchangeRateChangeDialog } from '@/containers/Sales/Invoices/InvoiceForm/Dialogs/InvoiceExchangeRateChangeDialog';
 
 type InvoiceNumberSettings = {
   transactionNumber: string;
@@ -32,9 +31,6 @@ export function InvoiceFormDialogs() {
       <InvoiceNumberDialog
         dialogName={DialogsName.InvoiceNumberSettings}
         onConfirm={handleInvoiceNumberFormConfirm}
-      />
-      <InvoiceExchangeRateChangeDialog
-        dialogName={DialogsName.InvoiceExchangeRateChangeNotice}
       />
     </>
   );

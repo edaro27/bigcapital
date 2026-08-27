@@ -1,57 +1,38 @@
 import { useFormikContext } from 'formik';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import {
   useCreditNoteIsForeignCustomer,
-  useCreditNoteSubtotal,
   type CreditNoteFormValues,
 } from './utils';
-import type { WithDialogActionsProps } from '@/containers/Dialog/withDialogActions';
 import { ExchangeRateInputGroup } from '@/components';
-import { DialogsName } from '@/constants/dialogs';
-import { withDialogActions } from '@/containers/Dialog/withDialogActions';
-import {
-  useSyncExRateToForm,
-  withExchangeRateFetchingLoading,
-  withExchangeRateItemEntriesPriceRecalc,
-} from '@/containers/Entries/withExRateItemEntriesPriceRecalc';
 import { useCurrentOrganizationBaseCurrency } from '@/hooks/query';
-import { transactionNumber, compose } from '@/utils';
+import { transactionNumber } from '@/utils';
 import { useCreditNoteFormContext } from './CreditNoteFormProvider';
 
-type CreditNoteExchangeRateInputFieldRootProps = React.ComponentProps<
-  typeof ExchangeRateInputGroup
+type CreditNoteExchangeRateInputFieldProps = Omit<
+  React.ComponentProps<typeof ExchangeRateInputGroup>,
+  'name' | 'fromCurrency' | 'toCurrency'
 >;
 
-/**
- * Credit note exchange rate input field.
- */
-const CreditNoteExchangeRateInputFieldRoot = ({
+/** Manual exchange-rate entry retained for legacy foreign-currency records. */
+export function CreditNoteExchangeRateInputField({
   ...props
-}: CreditNoteExchangeRateInputFieldRootProps) => {
+}: CreditNoteExchangeRateInputFieldProps) {
   const baseCurrency = useCurrentOrganizationBaseCurrency();
   const { values } = useFormikContext<CreditNoteFormValues>();
-  const isForeignCustomer = useCreditNoteIsForeignCustomer();
 
-  // Can't continue if the customer is not foreign.
-  if (!isForeignCustomer) {
-    return null;
-  }
+  if (!useCreditNoteIsForeignCustomer()) return null;
+
   return (
     <ExchangeRateInputGroup
       {...props}
       name={'exchangeRate'}
       fromCurrency={values.currencyCode}
-      toCurrency={baseCurrency ?? ''}
+      toCurrency={baseCurrency ?? 'USD'}
       formGroupProps={{ label: ' ', inline: true }}
-      withPopoverRecalcConfirm
     />
   );
-};
-
-export const CreditNoteExchangeRateInputField = compose(
-  withExchangeRateFetchingLoading,
-  withExchangeRateItemEntriesPriceRecalc,
-)(CreditNoteExchangeRateInputFieldRoot);
+}
 
 type CreditNoteSyncIncrementSettingsProps = Record<string, never>;
 
@@ -89,31 +70,3 @@ export const CreditNoteSyncIncrementSettingsToForm =
 
     return null;
   };
-
-type CreditNoteExchangeRateSyncProps = {
-  openDialog: WithDialogActionsProps['openDialog'];
-};
-
-/**
- * Syncs the realtime exchange rate to the credit note form and shows up popup to the user
- * as an indication the entries rates have been re-calculated.
- */
-export const CreditNoteExchangeRateSync = compose(withDialogActions)(({
-  openDialog,
-}: CreditNoteExchangeRateSyncProps) => {
-  const subtotal = useCreditNoteSubtotal();
-  const timeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  useSyncExRateToForm({
-    onSynced: () => {
-      // If the total bigger then zero show alert to the user after adjusting entries.
-      if (subtotal > 0) {
-        if (timeout.current) clearTimeout(timeout.current);
-        timeout.current = setTimeout(() => {
-          openDialog(DialogsName.InvoiceExchangeRateChangeNotice);
-        }, 500);
-      }
-    },
-  });
-  return null;
-});

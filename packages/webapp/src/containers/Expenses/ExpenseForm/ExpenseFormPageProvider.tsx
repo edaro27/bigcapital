@@ -3,9 +3,7 @@ import React, { createContext } from 'react';
 import type { SettingsGroup } from '@bigcapital/sdk-ts';
 import { DashboardInsider } from '@/components/Dashboard';
 import { Features } from '@/constants';
-import { useProjects } from '@/containers/Projects/hooks';
 import {
-  useCurrencies,
   useCustomers,
   useExpense,
   useAccounts,
@@ -37,9 +35,8 @@ function ExpenseFormPageProvider({
   // Features guard.
   const { featureCan } = useFeatureCan();
   const isBranchFeatureCan = featureCan(Features.Branches);
-  const isProjectsFeatureCan = featureCan(Features.Projects);
-
-  const { data: currencies, isLoading: isCurrenciesLoading } = useCurrencies();
+  const currencies: [] = [];
+  const isCurrenciesLoading = false;
 
   // Fetches customers list.
   const { data: customersData, isLoading: isCustomersLoading } = useCustomers();
@@ -59,11 +56,7 @@ function ExpenseFormPageProvider({
   // Fetch accounts list.
   const { data: accounts, isLoading: isAccountsLoading } = useAccounts();
 
-  // Fetch the  projects list.
-  const { data: projectsData, isLoading: isProjectsLoading } = useProjects(
-    {},
-    { enabled: !!isProjectsFeatureCan },
-  );
+  const isProjectsLoading = false;
 
   // Create and edit expense mutate.
   const { mutateAsync: createExpenseMutate } = useCreateExpense();
@@ -99,7 +92,7 @@ function ExpenseFormPageProvider({
     expense,
     accounts: accounts ?? [],
     branches: branches ?? [],
-    projects: projectsData?.projects ?? [],
+    projects: [],
 
     isCurrenciesLoading,
     isExpenseLoading,

@@ -9,9 +9,34 @@ import {
   MaxLength,
   Min,
   IsNotEmpty,
+  ArrayUnique,
+  ValidateNested,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, ToNumber } from '@/common/decorators/Validators';
+import { Type } from 'class-transformer';
+
+export class ItemPriceTierDto {
+  @ToNumber()
+  @IsNumber({ maxDecimalPlaces: 3 })
+  @Min(0.001)
+  @ApiProperty({
+    description: 'Minimum quantity at which this unit price applies',
+    minimum: 0.001,
+    example: 250,
+  })
+  minimumQuantity: number;
+
+  @ToNumber()
+  @IsNumber({ maxDecimalPlaces: 4 })
+  @Min(0)
+  @ApiProperty({
+    description: 'Unit selling price at this quantity breakpoint',
+    minimum: 0,
+    example: 0.228,
+  })
+  price: number;
+}
 
 export class CommandItemDto {
   @IsString()
@@ -55,7 +80,7 @@ export class CommandItemDto {
 
   @IsOptional()
   @ToNumber()
-  @IsNumber({ maxDecimalPlaces: 3 })
+  @IsNumber({ maxDecimalPlaces: 4 })
   @Min(0)
   @ValidateIf((o) => o.purchasable === true)
   @ApiProperty({
@@ -91,7 +116,7 @@ export class CommandItemDto {
 
   @IsOptional()
   @ToNumber()
-  @IsNumber({ maxDecimalPlaces: 3 })
+  @IsNumber({ maxDecimalPlaces: 4 })
   @Min(0)
   @ValidateIf((o) => o.sellable === true)
   @ApiProperty({
@@ -101,6 +126,23 @@ export class CommandItemDto {
     example: 399.99,
   })
   sellPrice?: number;
+
+  @IsOptional()
+  @IsArray()
+  @ArrayUnique((priceTier: ItemPriceTierDto) => priceTier.minimumQuantity)
+  @ValidateNested({ each: true })
+  @Type(() => ItemPriceTierDto)
+  @ApiProperty({
+    description:
+      'Quantity-based unit selling prices ordered by minimum quantity',
+    required: false,
+    type: [ItemPriceTierDto],
+    example: [
+      { minimumQuantity: 250, price: 0.228 },
+      { minimumQuantity: 500, price: 0.21 },
+    ],
+  })
+  priceTiers?: ItemPriceTierDto[];
 
   @IsOptional()
   @ToNumber()

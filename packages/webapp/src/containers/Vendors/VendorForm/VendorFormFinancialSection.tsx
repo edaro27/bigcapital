@@ -3,7 +3,6 @@ import { ErrorMessage, useFormikContext } from 'formik';
 import intl from 'react-intl-universal';
 import {
   openingBalanceFieldShouldUpdate,
-  useIsVendorForeignCurrency,
   useSetPrimaryBranchToForm,
 } from './utils';
 import type { VendorFormValues } from './utils';
@@ -13,20 +12,17 @@ import {
   FFormGroup,
   FormattedMessage as T,
   InputPrependText,
-  CurrencySelectList,
   BranchSelect,
   FeatureCan,
   FMoneyInputGroup,
-  ExchangeRateInputGroup,
   FDateInput,
   Icon,
   Box,
 } from '@/components';
 import { Features } from '@/constants';
-import { useCurrentOrganizationBaseCurrency } from '@/hooks/query';
 
 export function VendorFormFinancialSection() {
-  const { currencies, vendorId, branches } = useVendorFormContext();
+  const { vendorId, branches } = useVendorFormContext();
 
   // Sets the primary branch to form.
   useSetPrimaryBranchToForm();
@@ -37,22 +33,7 @@ export function VendorFormFinancialSection() {
         <T id={'financial_details'} />
       </VendorFormSectionTitle>
 
-      <FFormGroup
-        name={'currencyCode'}
-        label={intl.get('currency')}
-        fastField
-        inline
-      >
-        <CurrencySelectList
-          name="currencyCode"
-          items={currencies}
-          disabled={Boolean(vendorId)}
-          fastField
-        />
-      </FFormGroup>
-
       <VendorOpeningBalanceField />
-      <VendorOpeningBalanceExchangeRateField />
       <VendorOpeningBalanceAtField />
 
       <FeatureCan feature={Features.Branches}>
@@ -129,28 +110,5 @@ function VendorOpeningBalanceField() {
         />
       </ControlGroup>
     </FFormGroup>
-  );
-}
-
-function VendorOpeningBalanceExchangeRateField() {
-  const { values } = useFormikContext<VendorFormValues>();
-  const { vendorId } = useVendorFormContext();
-  const baseCurrency = useCurrentOrganizationBaseCurrency();
-
-  const isForeignVendor = useIsVendorForeignCurrency();
-
-  // Can't continue if the vendor is not foreign.
-  if (!isForeignVendor || vendorId) {
-    return null;
-  }
-  return (
-    <ExchangeRateInputGroup
-      fromCurrency={values.currencyCode}
-      toCurrency={baseCurrency ?? ''}
-      name={'openingBalanceExchangeRate'}
-      onRecalcConfirm={() => {}}
-      onCancel={() => {}}
-      formGroupProps={{ label: ' ' }}
-    />
   );
 }

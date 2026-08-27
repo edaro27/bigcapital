@@ -1,8 +1,9 @@
 // @ts-nocheck
 import { sumBy, isEmpty, last, keyBy, groupBy } from 'lodash';
 import * as R from 'ramda';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { useItemEntriesTableContext } from './ItemEntriesTableProvider';
+import { updateEntryQuantityPrice } from './priceTiers';
 import { useItem } from '@/hooks/query';
 import {
   toSafeNumber,
@@ -244,21 +245,39 @@ export const getExlusiveTaxAmount = (amount: number, taxRate: number) => {
  * @returns {Function}
  */
 export const useComposeRowsOnEditTableCell = () => {
-  const { taxRates, isInclusiveTax, localValue, defaultEntry } =
-    useItemEntriesTableContext();
+  const {
+    taxRates,
+    isInclusiveTax,
+    localValue,
+    defaultEntry,
+    enablePriceTiers,
+    items,
+  } = useItemEntriesTableContext();
 
   return useCallback(
     (rowIndex, columnId, value) => {
+      const updateCell =
+        enablePriceTiers && columnId === 'quantity'
+          ? updateEntryQuantityPrice(rowIndex, value, items)
+          : updateTableCell(rowIndex, columnId, value);
+
       return R.compose(
         assignEntriesTaxAmount(isInclusiveTax),
         assignEntriesTaxRate(taxRates),
         orderingLinesIndexes,
         updateAutoAddNewLine(defaultEntry, ['itemId']),
         updateItemsEntriesTotal,
-        updateTableCell(rowIndex, columnId, value),
+        updateCell,
       )(localValue);
     },
-    [taxRates, isInclusiveTax, localValue, defaultEntry],
+    [
+      taxRates,
+      isInclusiveTax,
+      localValue,
+      defaultEntry,
+      enablePriceTiers,
+      items,
+    ],
   );
 };
 

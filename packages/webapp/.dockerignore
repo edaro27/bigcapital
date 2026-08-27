@@ -1,0 +1,7 @@
+*
+!Dockerfile.runtime
+!dist/
+!dist/**
+!nginx/
+!nginx/sites/
+!nginx/sites/default.conf

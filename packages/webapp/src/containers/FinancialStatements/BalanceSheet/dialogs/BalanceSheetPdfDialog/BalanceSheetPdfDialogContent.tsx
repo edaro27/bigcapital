@@ -6,10 +6,14 @@ import {
   FormattedMessage as T,
 } from '@/components';
 import { useBalanceSheetPdf } from '@/hooks/query';
+import type { BalanceSheetPdfQuery } from '@bigcapital/sdk-ts';
 
 export function BalanceSheetPdfDialogContent() {
   const { httpQuery } = useBalanceSheetContext();
-  const { isLoading, isLoaded, pdfUrl } = useBalanceSheetPdf({ ...httpQuery });
+  const { isLoading, pdfUrl } = useBalanceSheetPdf(
+    httpQuery as BalanceSheetPdfQuery,
+  );
+  const isLoaded = !isLoading && Boolean(pdfUrl);
 
   return (
     <DialogContent>

@@ -7,7 +7,6 @@ import {
   useInvoiceFormContext,
 } from './InvoiceFormProvider';
 import { DashboardInsider } from '@/components';
-import { AutoExchangeRateProvider } from '@/containers/Entries/AutoExchangeProvider';
 
 /**
  * Invoice form page.
@@ -18,9 +17,7 @@ export function InvoiceFormPage() {
 
   return (
     <InvoiceFormProvider invoiceId={invoiceId}>
-      <AutoExchangeRateProvider>
-        <InvoiceFormPageContent />
-      </AutoExchangeRateProvider>
+      <InvoiceFormPageContent />
     </InvoiceFormProvider>
   );
 }

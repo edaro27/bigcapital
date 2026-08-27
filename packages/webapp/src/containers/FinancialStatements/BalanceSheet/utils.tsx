@@ -1,4 +1,4 @@
-import { BalanceSheetTableQuery } from '@bigcapital/sdk-ts';
+import type { BalanceSheetTableQuery } from '@bigcapital/sdk-ts';
 import { castArray } from 'lodash';
 import moment from 'moment';
 import * as R from 'ramda';
@@ -13,16 +13,22 @@ interface FormSetFieldValue {
   setFieldValue: FormikContextType<Record<string, unknown>>['setFieldValue'];
 }
 
+type BalanceSheetFilterQuery = BalanceSheetTableQuery & {
+  filterByOption: string;
+};
+
 /**
  * Retrieves the default balance sheet query.
  * @returns {}
  */
-export const getDefaultBalanceSheetQuery = (): BalanceSheetTableQuery => ({
+export const getDefaultBalanceSheetQuery = (): BalanceSheetFilterQuery => ({
   fromDate: moment().startOf('year').format('YYYY-MM-DD'),
   toDate: moment().format('YYYY-MM-DD'),
   basis: 'cash',
   displayColumnsType: 'total',
+  displayColumnsBy: 'year',
   filterByOption: 'without-zero-balance',
+  accountIds: [],
 
   previousYear: false,
   previousYearAmountChange: false,

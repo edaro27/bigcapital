@@ -1,9 +1,7 @@
 import { useFormikContext } from 'formik';
 import React from 'react';
 import type { ReceiptFormValues } from './utils';
-import { DialogsName } from '@/constants/dialogs';
 import { index as ReceiptNumberDialog } from '@/containers/Dialogs/ReceiptNumberDialog';
-import { InvoiceExchangeRateChangeDialog } from '@/containers/Sales/Invoices/InvoiceForm/Dialogs/InvoiceExchangeRateChangeDialog';
 
 type ReceiptNumberFormSettings = {
   transactionNumber: string;
@@ -35,9 +33,6 @@ export function ReceiptFormDialogs() {
       <ReceiptNumberDialog
         dialogName={'receipt-number-form'}
         onConfirm={handleReceiptNumberFormConfirm}
-      />
-      <InvoiceExchangeRateChangeDialog
-        dialogName={DialogsName.InvoiceExchangeRateChangeNotice}
       />
     </>
   );

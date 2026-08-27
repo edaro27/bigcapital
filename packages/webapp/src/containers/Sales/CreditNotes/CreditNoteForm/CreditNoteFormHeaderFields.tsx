@@ -6,6 +6,7 @@ import { FastField, ErrorMessage, useFormikContext } from 'formik';
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
+import type { Customer } from '@bigcapital/sdk-ts';
 import { CreditNoteExchangeRateInputField } from './components';
 import { useCreditNoteFormContext } from './CreditNoteFormProvider';
 import { CreditNoteTransactionNoField } from './CreditNoteTransactionNoField';
@@ -23,7 +24,6 @@ import {
   FDateInput,
 } from '@/components';
 import { CLASSES } from '@/constants/classes';
-import { useCustomerUpdateExRate } from '@/containers/Entries/withExRateItemEntriesPriceRecalc';
 
 const getCreditNoteFieldsStyle = (theme: Theme & { bpPrefix?: string }) => css`
   .${theme.bpPrefix}-form-group {
@@ -53,7 +53,7 @@ export function CreditNoteFormHeaderFields() {
       {/* ----------- Customer name ----------- */}
       <CreditNoteCustomersSelect />
 
-      {/* ----------- Exchange rate ----------- */}
+      {/* Manual compatibility for legacy foreign-currency customers. */}
       <CreditNoteExchangeRateInputField />
 
       {/* ----------- Credit note date ----------- */}
@@ -97,17 +97,13 @@ function CreditNoteCustomersSelect() {
   const { setFieldValue, values } = useFormikContext<CreditNoteFormValues>();
   const { customers } = useCreditNoteFormContext();
 
-  const updateEntries = useCustomerUpdateExRate();
-
   // Handles item change.
-  const handleItemChange = (customer: {
-    id: number;
-    currency_code: string;
-  }) => {
+  const handleItemChange = (
+    customer: Pick<Customer, 'id' | 'currencyCode'>,
+  ) => {
     setFieldValue('customerId', customer.id);
-    setFieldValue('currencyCode', customer?.currency_code);
-
-    updateEntries(customer);
+    setFieldValue('currencyCode', customer.currencyCode);
+    setFieldValue('exchangeRate', 1);
   };
 
   return (

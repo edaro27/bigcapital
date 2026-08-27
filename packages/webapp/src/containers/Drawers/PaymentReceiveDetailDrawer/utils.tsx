@@ -1,15 +1,6 @@
-import {
-  Button,
-  Popover,
-  PopoverInteractionKind,
-  Position,
-  MenuItem,
-  Menu,
-} from '@blueprintjs/core';
 import React from 'react';
 import intl from 'react-intl-universal';
 import { usePaymentReceiveDetailContext } from './PaymentReceiveDetailProvider';
-import { Icon } from '@/components';
 import { getColumnWidth } from '@/utils';
 
 /**
@@ -71,38 +62,3 @@ export const usePaymentReceiveEntriesColumns = () => {
     [entries],
   );
 };
-
-interface PaymentReceiveMoreMenuItemsPayload {
-  onNotifyViaSMS: () => void;
-}
-
-interface PaymentReceiveMoreMenuItemsProps {
-  payload: PaymentReceiveMoreMenuItemsPayload;
-}
-
-export function PaymentReceiveMoreMenuItems({
-  payload,
-}: PaymentReceiveMoreMenuItemsProps) {
-  const { onNotifyViaSMS } = payload;
-
-  return (
-    <Popover
-      minimal={true}
-      content={
-        <Menu>
-          <MenuItem
-            onClick={onNotifyViaSMS}
-            text={intl.get('notify_via_sms.dialog.notify_via_sms')}
-          />
-        </Menu>
-      }
-      interactionKind={PopoverInteractionKind.CLICK}
-      position={Position.BOTTOM_LEFT}
-      modifiers={{
-        offset: { offset: '0, 4' },
-      }}
-    >
-      <Button icon={<Icon icon="more-vert" iconSize={16} />} minimal={true} />
-    </Popover>
-  );
-}

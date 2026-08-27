@@ -1,15 +1,11 @@
 // @ts-nocheck
-import _, { isEmpty, includes } from 'lodash';
+import _, { isEmpty } from 'lodash';
 import * as R from 'ramda';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import {
-  ISidebarMenuItemType,
-  ISidebarSubscriptionAbility,
-} from './interfaces';
+import { ISidebarMenuItemType } from './interfaces';
 import { SidebarMenu } from '@/constants/sidebarMenu';
 import { useAbilityContext } from '@/hooks';
-import { useSubscription } from '@/hooks/query';
 import {
   useSidebarSubmnuActions,
   useDialogActions,
@@ -92,36 +88,6 @@ function useFilterSidebarItemAbilityPredicater() {
 }
 
 /**
- * Filters the sidebar item based on the subscription state.
- */
-function useFilterSidebarItemSubscriptionPredicater() {
-  const { isSubscriptionActive, isSubscriptionInactive } = useSubscription();
-
-  return {
-    predicate: (item) => {
-      const { subscription } = item;
-
-      if (subscription) {
-        const isActive = includes(subscription, [
-          ISidebarSubscriptionAbility.Active,
-        ])
-          ? isSubscriptionActive
-          : true;
-
-        const isInactive = includes(subscription, [
-          ISidebarSubscriptionAbility.Inactive,
-        ])
-          ? isSubscriptionInactive
-          : true;
-
-        return isActive && isInactive;
-      }
-      return true;
-    },
-  };
-}
-
-/**
  * Filters sidebar menu items based on ability of the item permission.
  * @param   {} menu
  * @returns {}
@@ -129,9 +95,6 @@ function useFilterSidebarItemSubscriptionPredicater() {
 function useFilterSidebarMenuAbility(menu) {
   const { predicate: predFeature } = useFilterSidebarItemFeaturePredicater();
   const { predicate: predAbility } = useFilterSidebarItemAbilityPredicater();
-  const { predicate: predSubscription } =
-    useFilterSidebarItemSubscriptionPredicater();
-
   return deepdash.filterDeep(
     menu,
     (item) => predFeature(item) && predAbility(item),

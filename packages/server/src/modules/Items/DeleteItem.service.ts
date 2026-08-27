@@ -10,6 +10,7 @@ import { Item } from './models/Item';
 import { ERRORS } from './Items.constants';
 import { UnitOfWork } from '../Tenancy/TenancyDB/UnitOfWork.service';
 import { TenantModelProxy } from '../System/models/TenantBaseModel';
+import { ItemPriceTiersService } from './ItemPriceTiers.service';
 
 @Injectable()
 export class DeleteItemService {
@@ -22,6 +23,7 @@ export class DeleteItemService {
   constructor(
     private readonly eventEmitter: EventEmitter2,
     private readonly uow: UnitOfWork,
+    private readonly itemPriceTiersService: ItemPriceTiersService,
 
     @Inject(Item.name)
     private readonly itemModel: TenantModelProxy<typeof Item>,
@@ -49,6 +51,11 @@ export class DeleteItemService {
         trx,
         oldItem,
       } as IItemEventDeletingPayload);
+
+      // Price tiers are item configuration, not transaction history. Remove
+      // them inside the transaction before checking for dependent records. If
+      // a real dependency blocks deletion, the transaction restores the tiers.
+      await this.itemPriceTiersService.replacePriceTiers(itemId, [], trx);
 
       // Deletes the item.
       await this.itemModel().query(trx).findById(itemId).deleteIfNoRelations({

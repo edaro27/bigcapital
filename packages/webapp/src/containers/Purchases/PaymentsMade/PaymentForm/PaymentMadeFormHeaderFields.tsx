@@ -99,7 +99,7 @@ function PaymentMadeFormHeaderFieldsInner() {
       {/* ------------ Vendor name ------------ */}
       <PaymentFormVendorSelect />
 
-      {/* ----------- Exchange rate ----------- */}
+      {/* Manual compatibility for legacy foreign-currency vendors. */}
       <PaymentMadeExchangeRateInputField
         name={'exchangeRate'}
         formGroupProps={{ label: ' ', inline: true }}
@@ -232,6 +232,7 @@ function PaymentFormVendorSelect() {
           onItemChange={(contact: VendorContact) => {
             setFieldValue('vendorId', contact.id);
             setFieldValue('currencyCode', contact?.currencyCode);
+            setFieldValue('exchangeRate', 1);
             setPaymentVendorId(Number(contact.id));
           }}
           disabled={!isNewMode}

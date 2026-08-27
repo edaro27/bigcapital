@@ -24,7 +24,7 @@ export class ManualJournalBranchesDTOTransformer {
       return DTO;
     }
     return {
-      ...DTO,
+      ...omit(DTO, ['branchId']),
       entries: DTO.entries.map((e) => omit(e, ['branchId'])),
     };
   };

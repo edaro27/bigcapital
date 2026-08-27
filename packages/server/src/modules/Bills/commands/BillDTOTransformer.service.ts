@@ -47,9 +47,7 @@ export class BillDTOTransformer {
   private getBillLandedCostAmount(billDTO: CreateBillDto): number {
     const costEntries = billDTO.entries.filter((entry) => entry.landedCost);
 
-    // return this.getBillEntriesTotal(costEntries);
-
-    return 0;
+    return this.getBillEntriesTotal(costEntries as ItemEntry[]);
   }
 
   /**
