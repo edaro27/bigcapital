@@ -2382,5 +2382,11 @@
   "api_key.display_warning": "This API key will only be shown once. Please copy and save it securely.",
   "api_key.label": "API Key",
   "api_key.copy_to_clipboard": "Copy to clipboard",
-  "the_expenses_has_been_deleted_successfully": "The expenses have been deleted successfully."
+  "the_expenses_has_been_deleted_successfully": "The expenses have been deleted successfully.",
+  "invoice.field.sales_channel": "Sales Channel",
+  "invoice.sales_channel.select": "Select a sales channel",
+  "sidebar.sales_channels": "Sales Channels",
+  "sidebar.sales_by_channel": "Sales by Channel",
+  "sales_by_channel": "Sales by Channel",
+  "sales_by_channel.description": "Summarize invoice totals by internal sales channel."
 }

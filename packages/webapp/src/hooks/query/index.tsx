@@ -2,6 +2,7 @@
 export * from './authentication';
 export * from './currencies';
 export * from './tax-rates';
+export * from './sales-channels';
 export * from './exchange-rates';
 export * from './misc';
 export * from './attachments';

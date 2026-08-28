@@ -170,6 +170,15 @@ export const SidebarMenu: SidebarMenuItem[] = [
             },
           },
           {
+            text: <T id={'sidebar.sales_channels'} />,
+            href: '/sales-channels',
+            type: ISidebarMenuItemType.Link,
+            permission: {
+              subject: AbilitySubject.Invoice,
+              ability: SaleInvoiceAction.View,
+            },
+          },
+          {
             text: <T id={'sidebar.receipts'} />,
             href: '/receipts',
             type: ISidebarMenuItemType.Link,
@@ -665,6 +674,15 @@ export const SidebarMenu: SidebarMenuItem[] = [
             permission: {
               subject: AbilitySubject.Report,
               ability: ReportsAction.READ_SALES_BY_ITEMS,
+            },
+          },
+          {
+            text: <T id={'sidebar.sales_by_channel'} />,
+            href: '/financial-reports/sales-by-channel',
+            type: ISidebarMenuItemType.Link,
+            permission: {
+              subject: AbilitySubject.Invoice,
+              ability: SaleInvoiceAction.View,
             },
           },
           {

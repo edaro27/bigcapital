@@ -5,6 +5,7 @@ import {
   ReportsAction,
   AbilitySubject,
   AuditLogAction,
+  SaleInvoiceAction,
 } from '@/constants/abilityOption';
 
 export const financialReportMenus: FinancialSection[] = [
@@ -119,6 +120,13 @@ export const financialReportMenus: FinancialSection[] = [
         link: '/financial-reports/sales-by-items',
         subject: AbilitySubject.Report,
         ability: ReportsAction.READ_SALES_BY_ITEMS,
+      },
+      {
+        title: <T id={'sales_by_channel'} />,
+        desc: <T id={'sales_by_channel.description'} />,
+        link: '/financial-reports/sales-by-channel',
+        subject: AbilitySubject.Invoice,
+        ability: SaleInvoiceAction.View,
       },
       {
         title: <T id={'customers_balance_summary'} />,

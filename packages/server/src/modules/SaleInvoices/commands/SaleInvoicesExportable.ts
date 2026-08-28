@@ -22,6 +22,7 @@ export class SaleInvoicesExportable extends Exportable {
     const filterQuery = (query) => {
       query.withGraphFetched('branch');
       query.withGraphFetched('warehouse');
+      query.withGraphFetched('salesChannel');
     };
     const parsedQuery = {
       sortOrder: 'desc',

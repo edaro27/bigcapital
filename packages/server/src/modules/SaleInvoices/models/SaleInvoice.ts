@@ -21,6 +21,7 @@ import { InjectModelMeta } from '@/modules/Tenancy/TenancyModels/decorators/Inje
 import { SaleInvoiceMeta } from './SaleInvoice.meta';
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { SaleInvoiceDefaultViews } from '../constants';
+import type { SalesChannel } from '@/modules/SalesChannels/models/SalesChannel.model';
 
 @InjectAttachable()
 @ExportableModel()
@@ -54,6 +55,7 @@ export class SaleInvoice extends TenantBaseModel {
   public customerId: number;
   public invoiceNo: string;
   public referenceNo: string;
+  public salesChannelId?: number | null;
 
   public pdfTemplateId: number;
   public userId: number;
@@ -68,6 +70,7 @@ export class SaleInvoice extends TenantBaseModel {
   public paymentMethods!: TransactionPaymentServiceEntry[];
   public branch?: Branch;
   public customer?: Customer;
+  public salesChannel?: SalesChannel;
   /**
    * Table name
    */
@@ -511,6 +514,9 @@ export class SaleInvoice extends TenantBaseModel {
       ItemEntry,
     } = require('../../TransactionItemEntry/models/ItemEntry');
     const { Customer } = require('../../Customers/models/Customer');
+    const {
+      SalesChannel,
+    } = require('../../SalesChannels/models/SalesChannel.model');
     // const InventoryCostLotTracker = require('models/InventoryCostLotTracker');
     const {
       PaymentReceivedEntry,
@@ -561,6 +567,19 @@ export class SaleInvoice extends TenantBaseModel {
         },
         filter(query) {
           query.where('contact_service', 'Customer');
+        },
+      },
+
+      /**
+       * Internal sales-channel classification. This relation is deliberately
+       * excluded from customer-facing invoice template transformations.
+       */
+      salesChannel: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: SalesChannel,
+        join: {
+          from: 'sales_invoices.salesChannelId',
+          to: 'sales_channels.id',
         },
       },
 

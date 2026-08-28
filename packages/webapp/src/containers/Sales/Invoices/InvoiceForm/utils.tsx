@@ -58,6 +58,7 @@ export type InvoiceFormValues = {
   invoiceNo: string;
   invoiceNoManually: string;
   referenceNo: string;
+  salesChannelId: string | number;
   delivered: boolean | '';
   inclusiveExclusiveTax: TaxType;
   fromEstimateId?: string;
@@ -110,6 +111,7 @@ export const defaultInvoice: InvoiceFormValues = {
   // Holds the invoice number that entered manually only.
   invoiceNoManually: '',
   referenceNo: '',
+  salesChannelId: '',
   invoiceMessage: '',
   termsConditions: '',
   exchangeRate: '1',

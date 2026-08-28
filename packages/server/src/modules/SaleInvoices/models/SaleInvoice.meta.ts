@@ -49,6 +49,15 @@ export const SaleInvoiceMeta = {
       column: 'reference_no',
       fieldType: 'text',
     },
+    sales_channel: {
+      name: 'invoice.field.sales_channel',
+      column: 'sales_channel_id',
+      fieldType: 'relation',
+      relationType: 'enumeration',
+      relationKey: 'salesChannel',
+      relationEntityLabel: 'name',
+      relationEntityKey: 'id',
+    },
     invoice_message: {
       name: 'invoice.field.invoice_message',
       column: 'invoice_message',
@@ -110,6 +119,11 @@ export const SaleInvoiceMeta = {
     referenceNo: {
       name: 'invoice.field.reference_no',
       type: 'text',
+    },
+    salesChannel: {
+      name: 'invoice.field.sales_channel',
+      type: 'text',
+      accessor: 'salesChannel.name',
     },
     invoiceNo: {
       name: 'invoice.field.invoice_no',
@@ -214,6 +228,12 @@ export const SaleInvoiceMeta = {
     referenceNo: {
       name: 'invoice.field.reference_no',
       fieldType: 'text',
+    },
+    salesChannelId: {
+      name: 'invoice.field.sales_channel',
+      fieldType: 'relation',
+      relationModel: 'SalesChannel',
+      relationImportMatch: 'name',
     },
     invoiceNo: {
       name: 'invoice.field.invoice_no',

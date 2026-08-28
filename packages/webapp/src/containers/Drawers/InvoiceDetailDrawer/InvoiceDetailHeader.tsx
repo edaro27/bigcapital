@@ -82,6 +82,10 @@ export function InvoiceDetailHeader() {
               children={defaultTo(invoice.referenceNo, '--')}
             />
             <DetailItem
+              label={intl.get('invoice.field.sales_channel')}
+              children={defaultTo(invoice.salesChannel?.name, 'Unspecified')}
+            />
+            <DetailItem
               label={intl.get('invoice.details.created_at')}
               children={invoice.createdAtFormatted}
             />

@@ -1,7 +1,7 @@
 .homepage {
   &__container {
     display: flex;
-    
+
     margin: 22px 32px;
     background-color: transparent;
     align-items: flex-start;
@@ -23,7 +23,7 @@
         background-color: transparent;
         transition: 0.2s;
 
-        a{
+        a {
           text-decoration: none;
         }
 
@@ -108,5 +108,12 @@
         justify-content: center;
       }
     }
+  }
+}
+
+.homepage-shortcuts {
+  .financial-reports__item {
+    min-height: 64px;
+    padding: 16px 18px;
   }
 }

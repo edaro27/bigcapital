@@ -1419,714 +1419,6 @@
         ]
       }
     },
-    "/api/branches": {
-      "get": {
-        "operationId": "BranchesController_getBranches",
-        "summary": "Retrieves the branches.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The branches have been successfully retrieved.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BranchResponseDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Branches"
-        ]
-      },
-      "post": {
-        "operationId": "BranchesController_createBranch",
-        "summary": "Create a new branch.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateBranchDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "The branch has been successfully created.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BranchResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "The branch not found."
-          }
-        },
-        "tags": [
-          "Branches"
-        ]
-      }
-    },
-    "/api/branches/{id}": {
-      "get": {
-        "operationId": "BranchesController_getBranch",
-        "summary": "Retrieves the branch details.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The branch details have been successfully retrieved.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BranchResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "The branch not found."
-          }
-        },
-        "tags": [
-          "Branches"
-        ]
-      },
-      "put": {
-        "operationId": "BranchesController_editBranch",
-        "summary": "Edit the given branch.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EditBranchDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "The branch has been successfully edited.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BranchResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "The branch not found."
-          }
-        },
-        "tags": [
-          "Branches"
-        ]
-      },
-      "delete": {
-        "operationId": "BranchesController_deleteBranch",
-        "summary": "Delete the given branch.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The branch has been successfully deleted."
-          },
-          "404": {
-            "description": "The branch not found."
-          }
-        },
-        "tags": [
-          "Branches"
-        ]
-      }
-    },
-    "/api/branches/activate": {
-      "post": {
-        "operationId": "BranchesController_activateBranches",
-        "summary": "Activate the branches feature.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The branches feature has been successfully activated."
-          }
-        },
-        "tags": [
-          "Branches"
-        ]
-      }
-    },
-    "/api/branches/{id}/mark-as-primary": {
-      "put": {
-        "operationId": "BranchesController_markBranchAsPrimary",
-        "summary": "Mark the given branch as primary.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The branch has been successfully marked as primary.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BranchResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "The branch not found."
-          }
-        },
-        "tags": [
-          "Branches"
-        ]
-      }
-    },
-    "/api/warehouses": {
-      "post": {
-        "operationId": "WarehousesController_createWarehouse",
-        "summary": "Create a warehouse",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateWarehouseDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Warehouses"
-        ]
-      },
-      "get": {
-        "operationId": "WarehousesController_getWarehouses",
-        "summary": "Get all warehouses",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The warehouses have been successfully retrieved.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WarehouseResponseDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Warehouses"
-        ]
-      }
-    },
-    "/api/warehouses/{id}": {
-      "put": {
-        "operationId": "WarehousesController_editWarehouse",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EditWarehouseDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Warehouses"
-        ]
-      },
-      "delete": {
-        "operationId": "WarehousesController_deleteWarehouse",
-        "summary": "Delete a warehouse",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Warehouses"
-        ]
-      },
-      "get": {
-        "operationId": "WarehousesController_getWarehouse",
-        "summary": "Get a warehouse",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The warehouse details have been successfully retrieved.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WarehouseResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Warehouses"
-        ]
-      }
-    },
-    "/api/warehouses/activate": {
-      "post": {
-        "operationId": "WarehousesController_activateWarehouses",
-        "summary": "Activate a warehouse",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Warehouses"
-        ]
-      }
-    },
-    "/api/warehouses/{id}/mark-primary": {
-      "put": {
-        "operationId": "WarehousesController_markWarehousePrimary",
-        "summary": "Mark a warehouse as primary",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Warehouses"
-        ]
-      }
-    },
-    "/api/items/{id}/warehouses": {
-      "get": {
-        "operationId": "WarehouseItemsController_getItemWarehouses",
-        "summary": "Retrieves the item associated warehouses.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "The item id",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The item associated warehouses have been successfully retrieved.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ItemWarehousesResponseDto"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "The item not found."
-          }
-        },
-        "tags": [
-          "Warehouses"
-        ]
-      }
-    },
     "/api/accounts/validate-bulk-delete": {
       "post": {
         "operationId": "AccountsController_validateBulkDeleteAccounts",
@@ -6166,6 +5458,356 @@
         ]
       }
     },
+    "/api/sales-channels": {
+      "get": {
+        "operationId": "SalesChannelsController_list",
+        "summary": "List sales channels.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeInactive",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SalesChannelResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Sales Channels"
+        ]
+      },
+      "post": {
+        "operationId": "SalesChannelsController_create",
+        "summary": "Create a sales channel.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSalesChannelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesChannelResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Sales Channels"
+        ]
+      }
+    },
+    "/api/sales-channels/{id}": {
+      "put": {
+        "operationId": "SalesChannelsController_edit",
+        "summary": "Edit a sales channel.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditSalesChannelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesChannelResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Sales Channels"
+        ]
+      }
+    },
+    "/api/sales-channels/{id}/archive": {
+      "put": {
+        "operationId": "SalesChannelsController_archive",
+        "summary": "Archive a sales channel.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesChannelResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Sales Channels"
+        ]
+      }
+    },
+    "/api/sales-channels/{id}/restore": {
+      "put": {
+        "operationId": "SalesChannelsController_restore",
+        "summary": "Restore an archived sales channel.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesChannelResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Sales Channels"
+        ]
+      }
+    },
+    "/api/reports/sales-by-channel": {
+      "get": {
+        "operationId": "SalesByChannelReportController_report",
+        "summary": "Sales totals grouped by internal sales channel.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromDate",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "toDate",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-12-31",
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeDrafts",
+            "required": false,
+            "in": "query",
+            "description": "Include draft invoices. Delivered invoices are used by default.",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "salesChannelId",
+            "required": false,
+            "in": "query",
+            "description": "Limit the report to one sales channel.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "accept",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesByChannelReportResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
     "/api/item-categories": {
       "post": {
         "operationId": "ItemCategoryController_createItemCategory",
@@ -7042,10 +6684,10 @@
         ]
       }
     },
-    "/api/warehouse-transfers": {
-      "post": {
-        "operationId": "WarehouseTransfersController_createWarehouseTransfer",
-        "summary": "Create a new warehouse transfer transaction.",
+    "/api/landed-cost/transactions": {
+      "get": {
+        "operationId": "BillAllocateLandedCostController_getLandedCostTransactions",
+        "summary": "Get landed cost transactions",
         "parameters": [
           {
             "name": "Authorization",
@@ -7064,6 +6706,49 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of landed cost transactions."
+          }
+        },
+        "tags": [
+          "Landed Cost"
+        ]
+      }
+    },
+    "/api/landed-cost/bills/{billId}/allocate": {
+      "post": {
+        "operationId": "BillAllocateLandedCostController_calculateLandedCost",
+        "summary": "Allocate landed cost to bill items",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "billId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
             }
           }
         ],
@@ -7072,23 +6757,25 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateWarehouseTransferDto"
+                "$ref": "#/components/schemas/AllocateBillLandedCostDto"
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "The warehouse transfer transaction has been created successfully."
+          "201": {
+            "description": "Landed cost allocated successfully."
           }
         },
         "tags": [
-          "Warehouse Transfers"
+          "Landed Cost"
         ]
-      },
-      "get": {
-        "operationId": "WarehouseTransfersController_getWarehousesTransfers",
-        "summary": "Retrieve warehouse transfer transactions with pagination.",
+      }
+    },
+    "/api/landed-cost/{allocatedLandedCostId}": {
+      "delete": {
+        "operationId": "BillAllocateLandedCostController_deleteAllocatedLandedCost",
+        "summary": "Delete allocated landed cost",
         "parameters": [
           {
             "name": "Authorization",
@@ -7108,264 +6795,84 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "allocatedLandedCostId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "The warehouse transfer transactions have been retrieved successfully.",
+            "description": "Allocated landed cost deleted successfully."
+          }
+        },
+        "tags": [
+          "Landed Cost"
+        ]
+      }
+    },
+    "/api/landed-cost/bills/{billId}/transactions": {
+      "get": {
+        "operationId": "BillAllocateLandedCostController_getBillLandedCostTransactions",
+        "summary": "Get bill landed cost transactions",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "billId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of bill landed cost transactions.",
             "content": {
               "application/json": {
                 "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/PaginatedResponseDto"
+                  "type": "object",
+                  "properties": {
+                    "billId": {
+                      "type": "number"
                     },
-                    {
-                      "properties": {
-                        "data": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/WarehouseTransferResponseDto"
-                          }
-                        }
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/BillLandedCostTransactionDto"
                       }
                     }
-                  ]
+                  }
                 }
               }
             }
           }
         },
         "tags": [
-          "Warehouse Transfers"
-        ]
-      }
-    },
-    "/api/warehouse-transfers/{id}": {
-      "put": {
-        "operationId": "WarehouseTransfersController_editWarehouseTransfer",
-        "summary": "Edit the given warehouse transfer transaction.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EditWarehouseTransferDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "The warehouse transfer transaction has been edited successfully."
-          }
-        },
-        "tags": [
-          "Warehouse Transfers"
-        ]
-      },
-      "get": {
-        "operationId": "WarehouseTransfersController_getWarehouseTransfer",
-        "summary": "Retrieve warehouse transfer transaction details.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The warehouse transfer transaction details have been retrieved successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WarehouseTransferResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Warehouse Transfers"
-        ]
-      },
-      "delete": {
-        "operationId": "WarehouseTransfersController_deleteWarehouseTransfer",
-        "summary": "Delete the given warehouse transfer transaction.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The warehouse transfer transaction has been deleted successfully."
-          }
-        },
-        "tags": [
-          "Warehouse Transfers"
-        ]
-      }
-    },
-    "/api/warehouse-transfers/{id}/initiate": {
-      "put": {
-        "operationId": "WarehouseTransfersController_initiateTransfer",
-        "summary": "Initiate the given warehouse transfer.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The warehouse transfer has been initiated successfully."
-          }
-        },
-        "tags": [
-          "Warehouse Transfers"
-        ]
-      }
-    },
-    "/api/warehouse-transfers/{id}/transferred": {
-      "put": {
-        "operationId": "WarehouseTransfersController_deliverTransfer",
-        "summary": "Mark the given warehouse transfer as transferred.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The warehouse transfer has been marked as transferred successfully."
-          }
-        },
-        "tags": [
-          "Warehouse Transfers"
+          "Landed Cost"
         ]
       }
     },
@@ -8738,55 +8245,6 @@
         ]
       }
     },
-    "/api/sale-estimates/{id}/notify-sms": {
-      "post": {
-        "operationId": "SaleEstimatesController_notifySaleEstimateBySms",
-        "summary": "Notify the given sale estimate by SMS.",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "The sale estimate id",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Sale Estimates"
-        ]
-      }
-    },
-    "/api/sale-estimates/{id}/sms-details": {
-      "get": {
-        "operationId": "SaleEstimatesController_getSaleEstimateSmsDetails",
-        "summary": "Retrieves the sale estimate SMS details.",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Sale Estimates"
-        ]
-      }
-    },
     "/api/sale-estimates/{id}/mail": {
       "post": {
         "operationId": "SaleEstimatesController_sendSaleEstimateMail",
@@ -10028,198 +9486,6 @@
         },
         "tags": [
           "Bills"
-        ]
-      }
-    },
-    "/api/landed-cost/transactions": {
-      "get": {
-        "operationId": "BillAllocateLandedCostController_getLandedCostTransactions",
-        "summary": "Get landed cost transactions",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of landed cost transactions."
-          }
-        },
-        "tags": [
-          "Landed Cost"
-        ]
-      }
-    },
-    "/api/landed-cost/bills/{billId}/allocate": {
-      "post": {
-        "operationId": "BillAllocateLandedCostController_calculateLandedCost",
-        "summary": "Allocate landed cost to bill items",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "billId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AllocateBillLandedCostDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Landed cost allocated successfully."
-          }
-        },
-        "tags": [
-          "Landed Cost"
-        ]
-      }
-    },
-    "/api/landed-cost/{allocatedLandedCostId}": {
-      "delete": {
-        "operationId": "BillAllocateLandedCostController_deleteAllocatedLandedCost",
-        "summary": "Delete allocated landed cost",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "allocatedLandedCostId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Allocated landed cost deleted successfully."
-          }
-        },
-        "tags": [
-          "Landed Cost"
-        ]
-      }
-    },
-    "/api/landed-cost/bills/{billId}/transactions": {
-      "get": {
-        "operationId": "BillAllocateLandedCostController_getBillLandedCostTransactions",
-        "summary": "Get bill landed cost transactions",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "billId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of bill landed cost transactions.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "billId": {
-                      "type": "number"
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/BillLandedCostTransactionDto"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Landed Cost"
         ]
       }
     },
@@ -22230,162 +21496,6 @@
         ]
       }
     },
-    "/api/subscription": {
-      "get": {
-        "operationId": "SubscriptionsController_getSubscriptions",
-        "summary": "Get all subscriptions for the current tenant",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "List of subscriptions retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SubscriptionsListResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Subscriptions"
-        ]
-      }
-    },
-    "/api/subscription/lemon": {
-      "get": {
-        "operationId": "SubscriptionsController_getLemonSubscriptions",
-        "summary": "Get Lemon Squeezy subscription details for the current tenant",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Lemon subscription details retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LemonSubscriptionsListResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Subscriptions"
-        ]
-      }
-    },
-    "/api/subscription/lemon/checkout_url": {
-      "post": {
-        "operationId": "SubscriptionsController_getCheckoutUrl",
-        "summary": "Get LemonSqueezy checkout URL",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "variantId": {
-                    "type": "string",
-                    "description": "The variant ID for the subscription plan"
-                  }
-                },
-                "required": [
-                  "variantId"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Checkout URL retrieved successfully"
-          }
-        },
-        "tags": [
-          "Subscriptions"
-        ]
-      }
-    },
-    "/api/subscription/cancel": {
-      "post": {
-        "operationId": "SubscriptionsController_cancelSubscription",
-        "summary": "Cancel the current organization subscription",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Subscription canceled successfully"
-          }
-        },
-        "tags": [
-          "Subscriptions"
-        ]
-      }
-    },
-    "/api/subscription/resume": {
-      "post": {
-        "operationId": "SubscriptionsController_resumeSubscription",
-        "summary": "Resume the current organization subscription",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Subscription resumed successfully"
-          }
-        },
-        "tags": [
-          "Subscriptions"
-        ]
-      }
-    },
-    "/api/subscription/change": {
-      "post": {
-        "operationId": "SubscriptionsController_changeSubscriptionPlan",
-        "summary": "Change the subscription plan of the current organization",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "variant_id": {
-                    "type": "number",
-                    "description": "The variant ID for the new subscription plan"
-                  }
-                },
-                "required": [
-                  "variant_id"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Subscription plan changed successfully"
-          }
-        },
-        "tags": [
-          "Subscriptions"
-        ]
-      }
-    },
-    "/api/webhooks/lemon": {
-      "post": {
-        "operationId": "SubscriptionsLemonWebhook_lemonWebhooks",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Subscriptions"
-        ]
-      }
-    },
     "/api/organization/build": {
       "post": {
         "operationId": "OrganizationController_build",
@@ -23155,272 +22265,6 @@
         },
         "tags": [
           "Views"
-        ]
-      }
-    },
-    "/api/currencies": {
-      "post": {
-        "operationId": "CurrenciesController_create",
-        "summary": "Create a new currency",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateCurrencyDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "The currency has been successfully created.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CurrencyResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input data."
-          }
-        },
-        "tags": [
-          "Currencies"
-        ]
-      },
-      "get": {
-        "operationId": "CurrenciesController_findAll",
-        "summary": "Get all currencies",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of all currencies.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/CurrencyResponseDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Currencies"
-        ]
-      }
-    },
-    "/api/currencies/{id}": {
-      "put": {
-        "operationId": "CurrenciesController_edit",
-        "summary": "Edit an existing currency",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "Currency ID",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EditCurrencyDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "The currency has been successfully updated.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CurrencyResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid input data."
-          },
-          "404": {
-            "description": "Currency not found."
-          }
-        },
-        "tags": [
-          "Currencies"
-        ]
-      }
-    },
-    "/api/currencies/{code}": {
-      "delete": {
-        "operationId": "CurrenciesController_delete",
-        "summary": "Delete a currency by code",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "code",
-            "required": true,
-            "in": "path",
-            "description": "Currency code",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The currency has been successfully deleted."
-          },
-          "404": {
-            "description": "Currency not found."
-          }
-        },
-        "tags": [
-          "Currencies"
-        ]
-      }
-    },
-    "/api/currencies/{currencyCode}": {
-      "get": {
-        "operationId": "CurrenciesController_findOne",
-        "summary": "Get a currency by code",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "currencyCode",
-            "required": true,
-            "in": "path",
-            "description": "Currency code",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The currency details.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CurrencyResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Currency not found."
-          }
-        },
-        "tags": [
-          "Currencies"
         ]
       }
     },
@@ -24263,52 +23107,6 @@
         },
         "tags": [
           "Audit logs"
-        ]
-      }
-    },
-    "/api/exchange-rates/latest": {
-      "get": {
-        "operationId": "ExchangeRatesController_getLatestExchangeRate",
-        "summary": "Get the latest exchange rate",
-        "parameters": [
-          {
-            "name": "from_currency",
-            "required": false,
-            "in": "query",
-            "description": "Source currency code (ISO 4217)",
-            "schema": {
-              "example": "USD",
-              "type": "string"
-            }
-          },
-          {
-            "name": "to_currency",
-            "required": false,
-            "in": "query",
-            "description": "Target currency code (ISO 4217)",
-            "schema": {
-              "example": "EUR",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully retrieved exchange rate",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ExchangeRateLatestResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid currency code or service error"
-          }
-        },
-        "tags": [
-          "Exchange Rates"
         ]
       }
     }
@@ -25945,391 +24743,6 @@
           "publish"
         ]
       },
-      "BranchResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "description": "Branch ID",
-            "example": 1
-          },
-          "name": {
-            "type": "string",
-            "description": "Branch name",
-            "example": "Main Branch"
-          },
-          "code": {
-            "type": "string",
-            "description": "Branch code",
-            "example": "BR001"
-          },
-          "address": {
-            "type": "string",
-            "description": "Branch address",
-            "example": "123 Main Street"
-          },
-          "city": {
-            "type": "string",
-            "description": "Branch city",
-            "example": "New York"
-          },
-          "country": {
-            "type": "string",
-            "description": "Branch country",
-            "example": "USA"
-          },
-          "phoneNumber": {
-            "type": "string",
-            "description": "Branch phone number",
-            "example": "+1-555-123-4567"
-          },
-          "email": {
-            "type": "string",
-            "description": "Branch email",
-            "example": "branch@example.com"
-          },
-          "website": {
-            "type": "string",
-            "description": "Branch website",
-            "example": "https://www.example.com/branch"
-          },
-          "primary": {
-            "type": "boolean",
-            "description": "Whether this is the primary branch",
-            "example": true
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "Creation timestamp",
-            "example": "2024-03-20T10:00:00Z"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "Last update timestamp",
-            "example": "2024-03-20T10:00:00Z"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "code",
-          "address",
-          "city",
-          "country",
-          "phoneNumber",
-          "email",
-          "website",
-          "primary",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
-      "CreateBranchDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Branch name",
-            "example": "Main Branch"
-          },
-          "primary": {
-            "type": "boolean",
-            "description": "Whether this is the primary branch",
-            "example": true,
-            "default": false
-          },
-          "code": {
-            "type": "string",
-            "description": "Branch code",
-            "example": "BR001"
-          },
-          "address": {
-            "type": "string",
-            "description": "Branch address",
-            "example": "123 Main Street"
-          },
-          "city": {
-            "type": "string",
-            "description": "Branch city",
-            "example": "New York"
-          },
-          "country": {
-            "type": "string",
-            "description": "Branch country",
-            "example": "USA"
-          },
-          "phoneNumber": {
-            "type": "string",
-            "description": "Branch phone number",
-            "example": "+1-555-123-4567"
-          },
-          "email": {
-            "type": "string",
-            "description": "Branch email",
-            "example": "branch@example.com"
-          },
-          "website": {
-            "type": "string",
-            "description": "Branch website",
-            "example": "https://www.example.com/branch"
-          }
-        },
-        "required": [
-          "name"
-        ]
-      },
-      "EditBranchDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Branch name",
-            "example": "Main Branch"
-          },
-          "primary": {
-            "type": "boolean",
-            "description": "Whether this is the primary branch",
-            "example": true,
-            "default": false
-          },
-          "code": {
-            "type": "string",
-            "description": "Branch code",
-            "example": "BR001"
-          },
-          "address": {
-            "type": "string",
-            "description": "Branch address",
-            "example": "123 Main Street"
-          },
-          "city": {
-            "type": "string",
-            "description": "Branch city",
-            "example": "New York"
-          },
-          "country": {
-            "type": "string",
-            "description": "Branch country",
-            "example": "USA"
-          },
-          "phoneNumber": {
-            "type": "string",
-            "description": "Branch phone number",
-            "example": "+1-555-123-4567"
-          },
-          "email": {
-            "type": "string",
-            "description": "Branch email",
-            "example": "branch@example.com"
-          },
-          "website": {
-            "type": "string",
-            "description": "Branch website",
-            "example": "https://www.example.com/branch"
-          }
-        },
-        "required": [
-          "name"
-        ]
-      },
-      "WarehouseResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "description": "The unique identifier of the warehouse",
-            "example": 1
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the warehouse",
-            "example": "Main Warehouse"
-          },
-          "code": {
-            "type": "string",
-            "description": "The unique code identifier for the warehouse",
-            "example": "WH-001"
-          },
-          "city": {
-            "type": "string",
-            "description": "The city where the warehouse is located",
-            "example": "New York"
-          },
-          "country": {
-            "type": "string",
-            "description": "The country where the warehouse is located",
-            "example": "United States"
-          },
-          "address": {
-            "type": "string",
-            "description": "The full address of the warehouse",
-            "example": "123 Warehouse Street, New York, NY 10001"
-          },
-          "primary": {
-            "type": "boolean",
-            "description": "Indicates if this is the primary warehouse",
-            "example": true
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "code",
-          "city",
-          "country",
-          "address",
-          "primary"
-        ]
-      },
-      "CreateWarehouseDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "The name of the warehouse"
-          },
-          "primary": {
-            "type": "boolean",
-            "description": "Whether the warehouse is primary"
-          },
-          "code": {
-            "type": "string",
-            "description": "The code of the warehouse"
-          },
-          "address": {
-            "type": "string",
-            "description": "The address of the warehouse"
-          },
-          "city": {
-            "type": "string",
-            "description": "The city of the warehouse"
-          },
-          "country": {
-            "type": "string",
-            "description": "The country of the warehouse"
-          },
-          "phoneNumber": {
-            "type": "string",
-            "description": "The phone number of the warehouse"
-          },
-          "email": {
-            "type": "string",
-            "description": "The email of the warehouse"
-          },
-          "website": {
-            "type": "string",
-            "description": "The website of the warehouse"
-          }
-        },
-        "required": [
-          "name",
-          "primary",
-          "code",
-          "address",
-          "city",
-          "country",
-          "phoneNumber",
-          "email",
-          "website"
-        ]
-      },
-      "EditWarehouseDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "The name of the warehouse"
-          },
-          "primary": {
-            "type": "boolean",
-            "description": "Whether the warehouse is primary"
-          },
-          "code": {
-            "type": "string",
-            "description": "The code of the warehouse"
-          },
-          "address": {
-            "type": "string",
-            "description": "The address of the warehouse"
-          },
-          "city": {
-            "type": "string",
-            "description": "The city of the warehouse"
-          },
-          "country": {
-            "type": "string",
-            "description": "The country of the warehouse"
-          },
-          "phoneNumber": {
-            "type": "string",
-            "description": "The phone number of the warehouse"
-          },
-          "email": {
-            "type": "string",
-            "description": "The email of the warehouse"
-          },
-          "website": {
-            "type": "string",
-            "description": "The website of the warehouse"
-          }
-        },
-        "required": [
-          "name",
-          "primary",
-          "code",
-          "address",
-          "city",
-          "country",
-          "phoneNumber",
-          "email",
-          "website"
-        ]
-      },
-      "ItemWarehousesResponseDto": {
-        "type": "object",
-        "properties": {
-          "warehouseId": {
-            "type": "number",
-            "example": 1,
-            "description": "The unique identifier of the warehouse."
-          },
-          "warehouseName": {
-            "type": "string",
-            "example": "Main Warehouse",
-            "description": "The name of the warehouse."
-          },
-          "warehouseCode": {
-            "type": "string",
-            "example": "WH-001",
-            "description": "The code of the warehouse."
-          },
-          "quantityOnHand": {
-            "type": "number",
-            "example": 150,
-            "description": "The quantity on hand of the item in the warehouse."
-          },
-          "quantityOnHandFormatted": {
-            "type": "string",
-            "example": "150",
-            "description": "The formatted quantity on hand of the item in the warehouse."
-          },
-          "availableForSale": {
-            "type": "number",
-            "example": 150,
-            "description": "The quantity available for sale in the warehouse."
-          }
-        },
-        "required": [
-          "warehouseId",
-          "warehouseName",
-          "warehouseCode",
-          "quantityOnHand",
-          "quantityOnHandFormatted",
-          "availableForSale"
-        ]
-      },
       "ValidateBulkDeleteResponseDto": {
         "type": "object",
         "properties": {
@@ -27008,6 +25421,41 @@
           "defaultTemplateId"
         ]
       },
+      "SalesChannelResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "E-commerce"
+          },
+          "active": {
+            "type": "boolean",
+            "example": true
+          },
+          "sortOrder": {
+            "type": "number",
+            "example": 0
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "active",
+          "sortOrder"
+        ]
+      },
       "ItemEntryDto": {
         "type": "object",
         "properties": {
@@ -27435,6 +25883,21 @@
             "description": "The reference number",
             "example": "REF-001"
           },
+          "salesChannelId": {
+            "type": "number",
+            "description": "Internal sales channel ID",
+            "example": 1,
+            "nullable": true
+          },
+          "salesChannel": {
+            "description": "Internal sales channel",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SalesChannelResponseDto"
+              }
+            ]
+          },
           "customerId": {
             "type": "number",
             "description": "The ID of the customer",
@@ -27796,6 +26259,12 @@
             "description": "Reference number",
             "example": "REF-001"
           },
+          "salesChannelId": {
+            "type": "number",
+            "description": "Internal sales channel ID",
+            "nullable": true,
+            "example": 1
+          },
           "delivered": {
             "type": "boolean",
             "description": "Whether the invoice is delivered",
@@ -27931,6 +26400,12 @@
             "type": "string",
             "description": "Reference number",
             "example": "REF-001"
+          },
+          "salesChannelId": {
+            "type": "number",
+            "description": "Internal sales channel ID",
+            "nullable": true,
+            "example": 1
           },
           "delivered": {
             "type": "boolean",
@@ -28493,20 +26968,6 @@
             "description": "The email body message",
             "example": "We have received your payment."
           },
-          "toOptions": {
-            "description": "Available recipient address options",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PaymentReceiveMailAddressItemDto"
-            }
-          },
-          "fromOptions": {
-            "description": "Available sender address options",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PaymentReceiveMailAddressItemDto"
-            }
-          },
           "formatArgs": {
             "type": "object",
             "description": "Template format arguments"
@@ -28521,9 +26982,88 @@
           "from",
           "to",
           "subject",
-          "message",
-          "toOptions",
-          "fromOptions"
+          "message"
+        ]
+      },
+      "BranchResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Branch ID",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Branch name",
+            "example": "Main Branch"
+          },
+          "code": {
+            "type": "string",
+            "description": "Branch code",
+            "example": "BR001"
+          },
+          "address": {
+            "type": "string",
+            "description": "Branch address",
+            "example": "123 Main Street"
+          },
+          "city": {
+            "type": "string",
+            "description": "Branch city",
+            "example": "New York"
+          },
+          "country": {
+            "type": "string",
+            "description": "Branch country",
+            "example": "USA"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Branch phone number",
+            "example": "+1-555-123-4567"
+          },
+          "email": {
+            "type": "string",
+            "description": "Branch email",
+            "example": "branch@example.com"
+          },
+          "website": {
+            "type": "string",
+            "description": "Branch website",
+            "example": "https://www.example.com/branch"
+          },
+          "primary": {
+            "type": "boolean",
+            "description": "Whether this is the primary branch",
+            "example": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Creation timestamp",
+            "example": "2024-03-20T10:00:00Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last update timestamp",
+            "example": "2024-03-20T10:00:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "code",
+          "address",
+          "city",
+          "country",
+          "phoneNumber",
+          "email",
+          "website",
+          "primary",
+          "createdAt",
+          "updatedAt"
         ]
       },
       "PaymentReceivedEntryResponseDto": {
@@ -29690,6 +28230,162 @@
           "clientSecret"
         ]
       },
+      "CreateSalesChannelDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "E-commerce",
+            "maxLength": 120
+          },
+          "sortOrder": {
+            "type": "number",
+            "example": 0,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "EditSalesChannelDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "E-commerce",
+            "maxLength": 120
+          },
+          "sortOrder": {
+            "type": "number",
+            "example": 0,
+            "minimum": 0
+          }
+        }
+      },
+      "SalesByChannelRowDto": {
+        "type": "object",
+        "properties": {
+          "salesChannelId": {
+            "type": "number",
+            "nullable": true,
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "E-commerce"
+          },
+          "archived": {
+            "type": "boolean",
+            "example": false
+          },
+          "invoiceCount": {
+            "type": "number",
+            "example": 12
+          },
+          "subtotal": {
+            "type": "number",
+            "example": 1200
+          },
+          "discounts": {
+            "type": "number",
+            "example": 50
+          },
+          "tax": {
+            "type": "number",
+            "example": 92
+          },
+          "total": {
+            "type": "number",
+            "example": 1242
+          },
+          "paid": {
+            "type": "number",
+            "example": 1000
+          },
+          "due": {
+            "type": "number",
+            "example": 242
+          }
+        },
+        "required": [
+          "salesChannelId",
+          "name",
+          "archived",
+          "invoiceCount",
+          "subtotal",
+          "discounts",
+          "tax",
+          "total",
+          "paid",
+          "due"
+        ]
+      },
+      "SalesByChannelQueryDto": {
+        "type": "object",
+        "properties": {
+          "fromDate": {
+            "type": "string",
+            "example": "2026-01-01"
+          },
+          "toDate": {
+            "type": "string",
+            "example": "2026-12-31"
+          },
+          "includeDrafts": {
+            "type": "boolean",
+            "description": "Include draft invoices. Delivered invoices are used by default.",
+            "default": false
+          },
+          "salesChannelId": {
+            "type": "number",
+            "description": "Limit the report to one sales channel."
+          }
+        }
+      },
+      "SalesByChannelReportMetaDto": {
+        "type": "object",
+        "properties": {
+          "baseCurrency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "sheetName": {
+            "type": "string",
+            "example": "Sales by Channel"
+          }
+        },
+        "required": [
+          "baseCurrency",
+          "sheetName"
+        ]
+      },
+      "SalesByChannelReportResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SalesByChannelRowDto"
+            }
+          },
+          "total": {
+            "$ref": "#/components/schemas/SalesByChannelRowDto"
+          },
+          "query": {
+            "$ref": "#/components/schemas/SalesByChannelQueryDto"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/SalesByChannelReportMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "query",
+          "meta"
+        ]
+      },
       "ValidateBulkDeleteItemCategoriesResponseDto": {
         "type": "object",
         "properties": {
@@ -30352,289 +29048,97 @@
           "attachments"
         ]
       },
-      "WarehouseTransferEntryResponseDto": {
+      "BillLandedCostTransactionDto": {
         "type": "object",
         "properties": {
           "id": {
             "type": "number",
-            "description": "The ID of the warehouse transfer entry",
+            "description": "The unique identifier of the landed cost transaction",
             "example": 1
           },
-          "itemId": {
+          "billId": {
             "type": "number",
-            "description": "The ID of the item being transferred",
-            "example": 1
+            "description": "The bill id the landed cost is allocated to",
+            "example": 10
           },
-          "quantity": {
+          "fromTransactionId": {
             "type": "number",
-            "description": "The quantity of items being transferred",
-            "example": 100
+            "description": "The id of the source transaction the cost was allocated from",
+            "example": 5
           },
-          "cost": {
-            "type": "number",
-            "description": "The cost per unit of the item",
-            "example": 10.5
-          },
-          "total": {
-            "type": "number",
-            "description": "The total cost of the transfer entry",
-            "example": 1050
-          },
-          "formattedQuantity": {
+          "fromTransactionType": {
             "type": "string",
-            "description": "The formatted quantity of items being transferred",
-            "example": "100.00"
+            "description": "The type of the source transaction (Bill or Expense)",
+            "example": "Expense"
           },
-          "formattedCost": {
-            "type": "string",
-            "description": "The formatted cost per unit of the item",
-            "example": "$10.50"
-          },
-          "formattedTotal": {
-            "type": "string",
-            "description": "The formatted total cost of the transfer entry",
-            "example": "$1,050.00"
-          },
-          "item": {
-            "type": "object",
-            "description": "The item details"
-          }
-        },
-        "required": [
-          "id",
-          "itemId",
-          "quantity",
-          "cost",
-          "total",
-          "formattedQuantity",
-          "formattedCost",
-          "formattedTotal",
-          "item"
-        ]
-      },
-      "WarehouseTransferResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
+          "fromTransactionEntryId": {
             "type": "number",
-            "description": "The ID of the warehouse transfer",
-            "example": 1
-          },
-          "date": {
-            "format": "date-time",
-            "type": "string",
-            "description": "The date of the warehouse transfer",
-            "example": "2024-03-20"
-          },
-          "formattedDate": {
-            "type": "string",
-            "description": "The formatted date of the warehouse transfer",
-            "example": "Mar 20, 2024"
-          },
-          "transactionNumber": {
-            "type": "string",
-            "description": "The transaction number of the warehouse transfer",
-            "example": "WT-2024-001"
-          },
-          "fromWarehouseId": {
-            "type": "number",
-            "description": "The ID of the source warehouse",
-            "example": 1
-          },
-          "toWarehouseId": {
-            "type": "number",
-            "description": "The ID of the destination warehouse",
+            "description": "The entry id of the source transaction",
             "example": 2
           },
-          "transferInitiatedAt": {
-            "format": "date-time",
+          "allocationMethod": {
             "type": "string",
-            "description": "The date when the transfer was initiated",
-            "example": "2024-03-20T10:00:00Z"
+            "description": "The allocation method used to distribute the cost",
+            "example": "quantity"
           },
-          "transferDeliveredAt": {
-            "format": "date-time",
+          "allocationMethodFormatted": {
             "type": "string",
-            "description": "The date when the transfer was delivered",
-            "example": "2024-03-21T15:00:00Z"
+            "description": "The translated label of the allocation method",
+            "example": "Quantity"
           },
-          "isInitiated": {
-            "type": "boolean",
-            "description": "Whether the transfer has been initiated",
-            "example": true
-          },
-          "isTransferred": {
-            "type": "boolean",
-            "description": "Whether the transfer has been completed",
-            "example": true
-          },
-          "fromWarehouse": {
-            "type": "object",
-            "description": "The source warehouse details"
-          },
-          "toWarehouse": {
-            "type": "object",
-            "description": "The destination warehouse details"
-          },
-          "entries": {
-            "description": "The entries of the warehouse transfer",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/WarehouseTransferEntryResponseDto"
-            }
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "The creation date of the warehouse transfer",
-            "example": "2024-03-20T09:00:00Z"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "The last update date of the warehouse transfer",
-            "example": "2024-03-21T15:00:00Z"
-          }
-        },
-        "required": [
-          "id",
-          "date",
-          "formattedDate",
-          "transactionNumber",
-          "fromWarehouseId",
-          "toWarehouseId",
-          "transferInitiatedAt",
-          "transferDeliveredAt",
-          "isInitiated",
-          "isTransferred",
-          "fromWarehouse",
-          "toWarehouse",
-          "entries",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
-      "CreateWarehouseTransferDto": {
-        "type": "object",
-        "properties": {
-          "fromWarehouseId": {
+          "costAccountId": {
             "type": "number",
-            "description": "The id of the warehouse to transfer from",
+            "description": "The cost account id the landed cost is posted to",
+            "example": 1020
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the landed cost transaction",
+            "example": "Freight charges"
+          },
+          "amount": {
+            "type": "number",
+            "description": "The allocated landed cost amount",
+            "example": 150
+          },
+          "localAmount": {
+            "type": "number",
+            "description": "The allocated landed cost amount in the base currency",
+            "example": 150
+          },
+          "currencyCode": {
+            "type": "string",
+            "description": "The currency code of the landed cost transaction",
+            "example": "USD"
+          },
+          "exchangeRate": {
+            "type": "number",
+            "description": "The exchange rate applied to the amount",
             "example": 1
           },
-          "toWarehouseId": {
-            "type": "number",
-            "description": "The id of the warehouse to transfer to",
-            "example": 2
-          },
-          "date": {
-            "format": "date-time",
+          "name": {
             "type": "string",
-            "description": "The date of the warehouse transfer",
-            "example": "2021-01-01"
+            "description": "The resolved name of the source item or expense account",
+            "example": "Widget A"
           },
-          "transactionNumber": {
+          "formattedAmount": {
             "type": "string",
-            "description": "The transaction number of the warehouse transfer",
-            "example": "123456"
+            "description": "Formatted allocated amount",
+            "example": "$150.00"
           },
-          "transferInitiated": {
-            "type": "boolean",
-            "description": "Whether the warehouse transfer has been initiated",
-            "example": false
-          },
-          "transferDelivered": {
-            "type": "boolean",
-            "description": "Whether the warehouse transfer has been delivered",
-            "example": false
-          },
-          "entries": {
-            "description": "The entries of the warehouse transfer",
-            "example": [
-              {
-                "index": 1,
-                "itemId": 1,
-                "description": "This is a description",
-                "quantity": 100,
-                "cost": 100
-              }
-            ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "formattedLocalAmount": {
+            "type": "string",
+            "description": "Formatted allocated amount in the base currency",
+            "example": "$150.00"
           }
         },
         "required": [
-          "fromWarehouseId",
-          "toWarehouseId",
-          "date",
-          "transactionNumber",
-          "transferInitiated",
-          "transferDelivered",
-          "entries"
+          "id"
         ]
       },
-      "EditWarehouseTransferDto": {
+      "AllocateBillLandedCostDto": {
         "type": "object",
-        "properties": {
-          "fromWarehouseId": {
-            "type": "number",
-            "description": "The id of the warehouse to transfer from",
-            "example": 1
-          },
-          "toWarehouseId": {
-            "type": "number",
-            "description": "The id of the warehouse to transfer to",
-            "example": 2
-          },
-          "date": {
-            "format": "date-time",
-            "type": "string",
-            "description": "The date of the warehouse transfer",
-            "example": "2021-01-01"
-          },
-          "transactionNumber": {
-            "type": "string",
-            "description": "The transaction number of the warehouse transfer",
-            "example": "123456"
-          },
-          "transferInitiated": {
-            "type": "boolean",
-            "description": "Whether the warehouse transfer has been initiated",
-            "example": false
-          },
-          "transferDelivered": {
-            "type": "boolean",
-            "description": "Whether the warehouse transfer has been delivered",
-            "example": false
-          },
-          "entries": {
-            "description": "The entries of the warehouse transfer",
-            "example": [
-              {
-                "index": 1,
-                "itemId": 1,
-                "description": "This is a description",
-                "quantity": 100,
-                "cost": 100
-              }
-            ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "fromWarehouseId",
-          "toWarehouseId",
-          "date",
-          "transactionNumber",
-          "transferInitiated",
-          "transferDelivered",
-          "entries"
-        ]
+        "properties": {}
       },
       "ValidateBulkDeleteCustomersResponseDto": {
         "type": "object",
@@ -32408,6 +30912,55 @@
           "defaultTemplateId"
         ]
       },
+      "WarehouseResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "The unique identifier of the warehouse",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the warehouse",
+            "example": "Main Warehouse"
+          },
+          "code": {
+            "type": "string",
+            "description": "The unique code identifier for the warehouse",
+            "example": "WH-001"
+          },
+          "city": {
+            "type": "string",
+            "description": "The city where the warehouse is located",
+            "example": "New York"
+          },
+          "country": {
+            "type": "string",
+            "description": "The country where the warehouse is located",
+            "example": "United States"
+          },
+          "address": {
+            "type": "string",
+            "description": "The full address of the warehouse",
+            "example": "123 Warehouse Street, New York, NY 10001"
+          },
+          "primary": {
+            "type": "boolean",
+            "description": "Indicates if this is the primary warehouse",
+            "example": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "code",
+          "city",
+          "country",
+          "address",
+          "primary"
+        ]
+      },
       "SaleReceiptResponseDto": {
         "type": "object",
         "properties": {
@@ -32780,6 +31333,11 @@
             "type": "number",
             "description": "The adjustment of the sale receipt",
             "example": 1
+          },
+          "isInclusiveTax": {
+            "type": "boolean",
+            "description": "Whether line-item tax is included in the entered rates",
+            "example": false
           }
         },
         "required": [
@@ -32904,6 +31462,11 @@
             "type": "number",
             "description": "The adjustment of the sale receipt",
             "example": 1
+          },
+          "isInclusiveTax": {
+            "type": "boolean",
+            "description": "Whether line-item tax is included in the entered rates",
+            "example": false
           }
         },
         "required": [
@@ -33700,98 +32263,6 @@
           "entries"
         ]
       },
-      "BillLandedCostTransactionDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "description": "The unique identifier of the landed cost transaction",
-            "example": 1
-          },
-          "billId": {
-            "type": "number",
-            "description": "The bill id the landed cost is allocated to",
-            "example": 10
-          },
-          "fromTransactionId": {
-            "type": "number",
-            "description": "The id of the source transaction the cost was allocated from",
-            "example": 5
-          },
-          "fromTransactionType": {
-            "type": "string",
-            "description": "The type of the source transaction (Bill or Expense)",
-            "example": "Expense"
-          },
-          "fromTransactionEntryId": {
-            "type": "number",
-            "description": "The entry id of the source transaction",
-            "example": 2
-          },
-          "allocationMethod": {
-            "type": "string",
-            "description": "The allocation method used to distribute the cost",
-            "example": "quantity"
-          },
-          "allocationMethodFormatted": {
-            "type": "string",
-            "description": "The translated label of the allocation method",
-            "example": "Quantity"
-          },
-          "costAccountId": {
-            "type": "number",
-            "description": "The cost account id the landed cost is posted to",
-            "example": 1020
-          },
-          "description": {
-            "type": "string",
-            "description": "The description of the landed cost transaction",
-            "example": "Freight charges"
-          },
-          "amount": {
-            "type": "number",
-            "description": "The allocated landed cost amount",
-            "example": 150
-          },
-          "localAmount": {
-            "type": "number",
-            "description": "The allocated landed cost amount in the base currency",
-            "example": 150
-          },
-          "currencyCode": {
-            "type": "string",
-            "description": "The currency code of the landed cost transaction",
-            "example": "USD"
-          },
-          "exchangeRate": {
-            "type": "number",
-            "description": "The exchange rate applied to the amount",
-            "example": 1
-          },
-          "name": {
-            "type": "string",
-            "description": "The resolved name of the source item or expense account",
-            "example": "Widget A"
-          },
-          "formattedAmount": {
-            "type": "string",
-            "description": "Formatted allocated amount",
-            "example": "$150.00"
-          },
-          "formattedLocalAmount": {
-            "type": "string",
-            "description": "Formatted allocated amount in the base currency",
-            "example": "$150.00"
-          }
-        },
-        "required": [
-          "id"
-        ]
-      },
-      "AllocateBillLandedCostDto": {
-        "type": "object",
-        "properties": {}
-      },
       "ManualJournalEntryResponseDto": {
         "type": "object",
         "properties": {
@@ -34514,6 +32985,11 @@
               "percentage",
               "amount"
             ]
+          },
+          "isInclusiveTax": {
+            "type": "boolean",
+            "description": "Whether line-item tax is included in the entered rates",
+            "example": false
           }
         },
         "required": [
@@ -34633,6 +33109,11 @@
               "percentage",
               "amount"
             ]
+          },
+          "isInclusiveTax": {
+            "type": "boolean",
+            "description": "Whether line-item tax is included in the entered rates",
+            "example": false
           }
         },
         "required": [
@@ -35262,6 +33743,11 @@
             "description": "The exchange rate of the vendor credit",
             "example": 1
           },
+          "isInclusiveTax": {
+            "type": "boolean",
+            "description": "Whether line-item tax is included in the entered rates",
+            "example": false
+          },
           "vendorCreditNumber": {
             "type": "string",
             "description": "The vendor credit number",
@@ -35372,6 +33858,11 @@
             "type": "number",
             "description": "The exchange rate of the vendor credit",
             "example": 1
+          },
+          "isInclusiveTax": {
+            "type": "boolean",
+            "description": "Whether line-item tax is included in the entered rates",
+            "example": false
           },
           "vendorCreditNumber": {
             "type": "string",
@@ -43596,201 +42087,6 @@
           "permissions"
         ]
       },
-      "SubscriptionResponseDto": {
-        "type": "object",
-        "properties": {
-          "slug": {
-            "type": "string",
-            "example": "main"
-          },
-          "status": {
-            "type": "string",
-            "example": "active",
-            "enum": [
-              "active",
-              "inactive",
-              "on_trial",
-              "canceled"
-            ]
-          },
-          "active": {
-            "type": "boolean",
-            "example": true
-          },
-          "inactive": {
-            "type": "boolean",
-            "example": false
-          },
-          "onTrial": {
-            "type": "boolean",
-            "example": false
-          },
-          "canceled": {
-            "type": "boolean",
-            "example": false
-          },
-          "ended": {
-            "type": "boolean",
-            "example": false
-          },
-          "paymentStatus": {
-            "type": "string",
-            "example": "succeed",
-            "enum": [
-              "succeed",
-              "failed"
-            ]
-          },
-          "startsAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2024-01-01T00:00:00.000Z",
-            "nullable": true
-          },
-          "endsAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2024-02-01T00:00:00.000Z",
-            "nullable": true
-          },
-          "canceledAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": null,
-            "nullable": true
-          },
-          "trialEndsAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2024-01-07T00:00:00.000Z",
-            "nullable": true
-          },
-          "statusFormatted": {
-            "type": "string",
-            "example": "Active"
-          },
-          "canceledAtFormatted": {
-            "type": "string",
-            "example": null,
-            "nullable": true
-          },
-          "endsAtFormatted": {
-            "type": "string",
-            "example": "Jan 1, 2024",
-            "nullable": true
-          },
-          "trialStartsAtFormatted": {
-            "type": "string",
-            "example": null,
-            "nullable": true
-          },
-          "trialEndsAtFormatted": {
-            "type": "string",
-            "example": "Jan 7, 2024",
-            "nullable": true
-          },
-          "planName": {
-            "type": "string",
-            "example": "Standard"
-          },
-          "planSlug": {
-            "type": "string",
-            "example": "standard"
-          },
-          "planPrice": {
-            "type": "number",
-            "example": 10
-          },
-          "planPriceCurrency": {
-            "type": "string",
-            "example": "USD"
-          },
-          "planPriceFormatted": {
-            "type": "string",
-            "example": "$10"
-          },
-          "planPeriod": {
-            "type": "string",
-            "example": "month"
-          }
-        },
-        "required": [
-          "slug",
-          "status",
-          "active",
-          "inactive",
-          "onTrial",
-          "canceled",
-          "ended",
-          "paymentStatus",
-          "statusFormatted",
-          "planName",
-          "planSlug",
-          "planPrice",
-          "planPriceCurrency",
-          "planPriceFormatted",
-          "planPeriod"
-        ]
-      },
-      "SubscriptionsListResponseDto": {
-        "type": "object",
-        "properties": {
-          "subscriptions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SubscriptionResponseDto"
-            }
-          }
-        },
-        "required": [
-          "subscriptions"
-        ]
-      },
-      "LemonSubscriptionUrlsDto": {
-        "type": "object",
-        "properties": {
-          "updatePaymentMethod": {
-            "type": "string",
-            "example": "https://.../update-payment-method",
-            "nullable": true
-          },
-          "customerPortal": {
-            "type": "string",
-            "example": "https://.../customer-portal",
-            "nullable": true
-          }
-        }
-      },
-      "LemonSubscriptionResponseDto": {
-        "type": "object",
-        "properties": {
-          "slug": {
-            "type": "string",
-            "example": "main"
-          },
-          "urls": {
-            "$ref": "#/components/schemas/LemonSubscriptionUrlsDto"
-          }
-        },
-        "required": [
-          "slug",
-          "urls"
-        ]
-      },
-      "LemonSubscriptionsListResponseDto": {
-        "type": "object",
-        "properties": {
-          "lemonSubscriptions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LemonSubscriptionResponseDto"
-            }
-          }
-        },
-        "required": [
-          "lemonSubscriptions"
-        ]
-      },
       "OrgBaseCurrencyMutateLockDto": {
         "type": "object",
         "properties": {
@@ -44717,101 +43013,6 @@
           "updatedAt"
         ]
       },
-      "CurrencyResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "description": "The unique identifier of the currency",
-            "example": 1
-          },
-          "currencyName": {
-            "type": "string",
-            "description": "The name of the currency",
-            "example": "US Dollar"
-          },
-          "currencyCode": {
-            "type": "string",
-            "description": "The code of the currency",
-            "example": "USD"
-          },
-          "currencySign": {
-            "type": "string",
-            "description": "The sign/symbol of the currency",
-            "example": "$"
-          },
-          "isBaseCurrency": {
-            "type": "boolean",
-            "description": "Whether this is the base currency for the organization",
-            "example": true
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "The creation timestamp",
-            "example": "2024-03-20T10:00:00Z"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "The last update timestamp",
-            "example": "2024-03-20T10:00:00Z"
-          }
-        },
-        "required": [
-          "id",
-          "currencyName",
-          "currencyCode",
-          "currencySign",
-          "isBaseCurrency",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
-      "CreateCurrencyDto": {
-        "type": "object",
-        "properties": {
-          "currencyName": {
-            "type": "string",
-            "example": "USD",
-            "description": "The currency name"
-          },
-          "currencyCode": {
-            "type": "string",
-            "example": "USD",
-            "description": "The currency code"
-          },
-          "currencySign": {
-            "type": "string",
-            "example": "$",
-            "description": "The currency sign"
-          }
-        },
-        "required": [
-          "currencyName",
-          "currencyCode",
-          "currencySign"
-        ]
-      },
-      "EditCurrencyDto": {
-        "type": "object",
-        "properties": {
-          "currencyName": {
-            "type": "string",
-            "example": "USD",
-            "description": "The currency name"
-          },
-          "currencySign": {
-            "type": "string",
-            "example": "$",
-            "description": "The currency sign"
-          }
-        },
-        "required": [
-          "currencyName",
-          "currencySign"
-        ]
-      },
       "DateFormatResponseDto": {
         "type": "object",
         "properties": {
@@ -45173,31 +43374,6 @@
         "required": [
           "data",
           "pagination"
-        ]
-      },
-      "ExchangeRateLatestResponseDto": {
-        "type": "object",
-        "properties": {
-          "baseCurrency": {
-            "type": "string",
-            "description": "The base currency code",
-            "example": "USD"
-          },
-          "toCurrency": {
-            "type": "string",
-            "description": "The target currency code",
-            "example": "EUR"
-          },
-          "exchangeRate": {
-            "type": "number",
-            "description": "The exchange rate value",
-            "example": 0.85
-          }
-        },
-        "required": [
-          "baseCurrency",
-          "toCurrency",
-          "exchangeRate"
         ]
       }
     }

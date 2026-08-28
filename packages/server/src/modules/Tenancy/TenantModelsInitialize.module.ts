@@ -7,6 +7,7 @@ import { TENANCY_DB_CONNECTION } from './TenancyDB/TenancyDB.constants';
 
 const RegisteredModels = [
   'SaleInvoice',
+  'SalesChannel',
   'Bill',
   'Expense',
   'BankTransaction',

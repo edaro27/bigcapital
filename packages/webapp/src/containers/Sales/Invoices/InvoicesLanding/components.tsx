@@ -240,6 +240,14 @@ export function useInvoicesTableColumns(): DataTableColumn<InvoiceTableRow>[] {
           textOverview: true,
         },
         {
+          id: 'sales_channel',
+          Header: intl.get('invoice.field.sales_channel'),
+          accessor: 'salesChannel.name',
+          width: 130,
+          clickable: true,
+          textOverview: true,
+        },
+        {
           id: 'amount',
           Header: intl.get('amount'),
           accessor: 'totalFormatted',

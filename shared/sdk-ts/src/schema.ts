@@ -449,164 +449,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/branches": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Retrieves the branches. */
-        get: operations["BranchesController_getBranches"];
-        put?: never;
-        /** Create a new branch. */
-        post: operations["BranchesController_createBranch"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/branches/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Retrieves the branch details. */
-        get: operations["BranchesController_getBranch"];
-        /** Edit the given branch. */
-        put: operations["BranchesController_editBranch"];
-        post?: never;
-        /** Delete the given branch. */
-        delete: operations["BranchesController_deleteBranch"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/branches/activate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Activate the branches feature. */
-        post: operations["BranchesController_activateBranches"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/branches/{id}/mark-as-primary": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Mark the given branch as primary. */
-        put: operations["BranchesController_markBranchAsPrimary"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/warehouses": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get all warehouses */
-        get: operations["WarehousesController_getWarehouses"];
-        put?: never;
-        /** Create a warehouse */
-        post: operations["WarehousesController_createWarehouse"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/warehouses/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get a warehouse */
-        get: operations["WarehousesController_getWarehouse"];
-        put: operations["WarehousesController_editWarehouse"];
-        post?: never;
-        /** Delete a warehouse */
-        delete: operations["WarehousesController_deleteWarehouse"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/warehouses/activate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Activate a warehouse */
-        post: operations["WarehousesController_activateWarehouses"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/warehouses/{id}/mark-primary": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Mark a warehouse as primary */
-        put: operations["WarehousesController_markWarehousePrimary"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/items/{id}/warehouses": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Retrieves the item associated warehouses. */
-        get: operations["WarehouseItemsController_getItemWarehouses"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/accounts/validate-bulk-delete": {
         parameters: {
             query?: never;
@@ -1683,6 +1525,92 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/sales-channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List sales channels. */
+        get: operations["SalesChannelsController_list"];
+        put?: never;
+        /** Create a sales channel. */
+        post: operations["SalesChannelsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sales-channels/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Edit a sales channel. */
+        put: operations["SalesChannelsController_edit"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sales-channels/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Archive a sales channel. */
+        put: operations["SalesChannelsController_archive"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sales-channels/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Restore an archived sales channel. */
+        put: operations["SalesChannelsController_restore"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reports/sales-by-channel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Sales totals grouped by internal sales channel. */
+        get: operations["SalesByChannelReportController_report"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/item-categories": {
         parameters: {
             query?: never;
@@ -1842,53 +1770,16 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/warehouse-transfers": {
+    "/api/landed-cost/transactions": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Retrieve warehouse transfer transactions with pagination. */
-        get: operations["WarehouseTransfersController_getWarehousesTransfers"];
+        /** Get landed cost transactions */
+        get: operations["BillAllocateLandedCostController_getLandedCostTransactions"];
         put?: never;
-        /** Create a new warehouse transfer transaction. */
-        post: operations["WarehouseTransfersController_createWarehouseTransfer"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/warehouse-transfers/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Retrieve warehouse transfer transaction details. */
-        get: operations["WarehouseTransfersController_getWarehouseTransfer"];
-        /** Edit the given warehouse transfer transaction. */
-        put: operations["WarehouseTransfersController_editWarehouseTransfer"];
-        post?: never;
-        /** Delete the given warehouse transfer transaction. */
-        delete: operations["WarehouseTransfersController_deleteWarehouseTransfer"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/warehouse-transfers/{id}/initiate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Initiate the given warehouse transfer. */
-        put: operations["WarehouseTransfersController_initiateTransfer"];
         post?: never;
         delete?: never;
         options?: never;
@@ -1896,7 +1787,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/warehouse-transfers/{id}/transferred": {
+    "/api/landed-cost/bills/{billId}/allocate": {
         parameters: {
             query?: never;
             header?: never;
@@ -1904,8 +1795,42 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        /** Mark the given warehouse transfer as transferred. */
-        put: operations["WarehouseTransfersController_deliverTransfer"];
+        put?: never;
+        /** Allocate landed cost to bill items */
+        post: operations["BillAllocateLandedCostController_calculateLandedCost"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/landed-cost/{allocatedLandedCostId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete allocated landed cost */
+        delete: operations["BillAllocateLandedCostController_deleteAllocatedLandedCost"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/landed-cost/bills/{billId}/transactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get bill landed cost transactions */
+        get: operations["BillAllocateLandedCostController_getBillLandedCostTransactions"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -2228,40 +2153,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/sale-estimates/{id}/notify-sms": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Notify the given sale estimate by SMS. */
-        post: operations["SaleEstimatesController_notifySaleEstimateBySms"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/sale-estimates/{id}/sms-details": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Retrieves the sale estimate SMS details. */
-        get: operations["SaleEstimatesController_getSaleEstimateSmsDetails"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/sale-estimates/{id}/mail": {
         parameters: {
             query?: never;
@@ -2517,74 +2408,6 @@ export interface paths {
         };
         /** Retrieves the due bills. */
         get: operations["BillsController_getDueBills"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/landed-cost/transactions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get landed cost transactions */
-        get: operations["BillAllocateLandedCostController_getLandedCostTransactions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/landed-cost/bills/{billId}/allocate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Allocate landed cost to bill items */
-        post: operations["BillAllocateLandedCostController_calculateLandedCost"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/landed-cost/{allocatedLandedCostId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** Delete allocated landed cost */
-        delete: operations["BillAllocateLandedCostController_deleteAllocatedLandedCost"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/landed-cost/bills/{billId}/transactions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get bill landed cost transactions */
-        get: operations["BillAllocateLandedCostController_getBillLandedCostTransactions"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4171,124 +3994,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/subscription": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get all subscriptions for the current tenant */
-        get: operations["SubscriptionsController_getSubscriptions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/subscription/lemon": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get Lemon Squeezy subscription details for the current tenant */
-        get: operations["SubscriptionsController_getLemonSubscriptions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/subscription/lemon/checkout_url": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Get LemonSqueezy checkout URL */
-        post: operations["SubscriptionsController_getCheckoutUrl"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/subscription/cancel": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Cancel the current organization subscription */
-        post: operations["SubscriptionsController_cancelSubscription"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/subscription/resume": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Resume the current organization subscription */
-        post: operations["SubscriptionsController_resumeSubscription"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/subscription/change": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Change the subscription plan of the current organization */
-        post: operations["SubscriptionsController_changeSubscriptionPlan"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/webhooks/lemon": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["SubscriptionsLemonWebhook_lemonWebhooks"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/organization/build": {
         parameters: {
             query?: never;
@@ -4580,75 +4285,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/currencies": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get all currencies */
-        get: operations["CurrenciesController_findAll"];
-        put?: never;
-        /** Create a new currency */
-        post: operations["CurrenciesController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/currencies/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Edit an existing currency */
-        put: operations["CurrenciesController_edit"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/currencies/{code}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** Delete a currency by code */
-        delete: operations["CurrenciesController_delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/currencies/{currencyCode}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get a currency by code */
-        get: operations["CurrenciesController_findOne"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/date-formats": {
         parameters: {
             query?: never;
@@ -4914,23 +4550,6 @@ export interface paths {
         };
         /** List financial audit log entries for the tenant. */
         get: operations["AuditLogsController_getAuditLogs"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/exchange-rates/latest": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get the latest exchange rate */
-        get: operations["ExchangeRatesController_getLatestExchangeRate"];
         put?: never;
         post?: never;
         delete?: never;
@@ -6044,275 +5663,6 @@ export interface components {
             /** @description ID of the branch (optional) */
             branchId?: number;
         };
-        BranchResponseDto: {
-            /**
-             * @description Branch ID
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description Branch name
-             * @example Main Branch
-             */
-            name: string;
-            /**
-             * @description Branch code
-             * @example BR001
-             */
-            code: string;
-            /**
-             * @description Branch address
-             * @example 123 Main Street
-             */
-            address: string;
-            /**
-             * @description Branch city
-             * @example New York
-             */
-            city: string;
-            /**
-             * @description Branch country
-             * @example USA
-             */
-            country: string;
-            /**
-             * @description Branch phone number
-             * @example +1-555-123-4567
-             */
-            phoneNumber: string;
-            /**
-             * @description Branch email
-             * @example branch@example.com
-             */
-            email: string;
-            /**
-             * @description Branch website
-             * @example https://www.example.com/branch
-             */
-            website: string;
-            /**
-             * @description Whether this is the primary branch
-             * @example true
-             */
-            primary: boolean;
-            /**
-             * Format: date-time
-             * @description Creation timestamp
-             * @example 2024-03-20T10:00:00Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description Last update timestamp
-             * @example 2024-03-20T10:00:00Z
-             */
-            updatedAt: string;
-        };
-        CreateBranchDto: {
-            /**
-             * @description Branch name
-             * @example Main Branch
-             */
-            name: string;
-            /**
-             * @description Whether this is the primary branch
-             * @default false
-             * @example true
-             */
-            primary: boolean;
-            /**
-             * @description Branch code
-             * @example BR001
-             */
-            code?: string;
-            /**
-             * @description Branch address
-             * @example 123 Main Street
-             */
-            address?: string;
-            /**
-             * @description Branch city
-             * @example New York
-             */
-            city?: string;
-            /**
-             * @description Branch country
-             * @example USA
-             */
-            country?: string;
-            /**
-             * @description Branch phone number
-             * @example +1-555-123-4567
-             */
-            phoneNumber?: string;
-            /**
-             * @description Branch email
-             * @example branch@example.com
-             */
-            email?: string;
-            /**
-             * @description Branch website
-             * @example https://www.example.com/branch
-             */
-            website?: string;
-        };
-        EditBranchDto: {
-            /**
-             * @description Branch name
-             * @example Main Branch
-             */
-            name: string;
-            /**
-             * @description Whether this is the primary branch
-             * @default false
-             * @example true
-             */
-            primary: boolean;
-            /**
-             * @description Branch code
-             * @example BR001
-             */
-            code?: string;
-            /**
-             * @description Branch address
-             * @example 123 Main Street
-             */
-            address?: string;
-            /**
-             * @description Branch city
-             * @example New York
-             */
-            city?: string;
-            /**
-             * @description Branch country
-             * @example USA
-             */
-            country?: string;
-            /**
-             * @description Branch phone number
-             * @example +1-555-123-4567
-             */
-            phoneNumber?: string;
-            /**
-             * @description Branch email
-             * @example branch@example.com
-             */
-            email?: string;
-            /**
-             * @description Branch website
-             * @example https://www.example.com/branch
-             */
-            website?: string;
-        };
-        WarehouseResponseDto: {
-            /**
-             * @description The unique identifier of the warehouse
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description The name of the warehouse
-             * @example Main Warehouse
-             */
-            name: string;
-            /**
-             * @description The unique code identifier for the warehouse
-             * @example WH-001
-             */
-            code: string;
-            /**
-             * @description The city where the warehouse is located
-             * @example New York
-             */
-            city: string;
-            /**
-             * @description The country where the warehouse is located
-             * @example United States
-             */
-            country: string;
-            /**
-             * @description The full address of the warehouse
-             * @example 123 Warehouse Street, New York, NY 10001
-             */
-            address: string;
-            /**
-             * @description Indicates if this is the primary warehouse
-             * @example true
-             */
-            primary: boolean;
-        };
-        CreateWarehouseDto: {
-            /** @description The name of the warehouse */
-            name: string;
-            /** @description Whether the warehouse is primary */
-            primary: boolean;
-            /** @description The code of the warehouse */
-            code: string;
-            /** @description The address of the warehouse */
-            address: string;
-            /** @description The city of the warehouse */
-            city: string;
-            /** @description The country of the warehouse */
-            country: string;
-            /** @description The phone number of the warehouse */
-            phoneNumber: string;
-            /** @description The email of the warehouse */
-            email: string;
-            /** @description The website of the warehouse */
-            website: string;
-        };
-        EditWarehouseDto: {
-            /** @description The name of the warehouse */
-            name: string;
-            /** @description Whether the warehouse is primary */
-            primary: boolean;
-            /** @description The code of the warehouse */
-            code: string;
-            /** @description The address of the warehouse */
-            address: string;
-            /** @description The city of the warehouse */
-            city: string;
-            /** @description The country of the warehouse */
-            country: string;
-            /** @description The phone number of the warehouse */
-            phoneNumber: string;
-            /** @description The email of the warehouse */
-            email: string;
-            /** @description The website of the warehouse */
-            website: string;
-        };
-        ItemWarehousesResponseDto: {
-            /**
-             * @description The unique identifier of the warehouse.
-             * @example 1
-             */
-            warehouseId: number;
-            /**
-             * @description The name of the warehouse.
-             * @example Main Warehouse
-             */
-            warehouseName: string;
-            /**
-             * @description The code of the warehouse.
-             * @example WH-001
-             */
-            warehouseCode: string;
-            /**
-             * @description The quantity on hand of the item in the warehouse.
-             * @example 150
-             */
-            quantityOnHand: number;
-            /**
-             * @description The formatted quantity on hand of the item in the warehouse.
-             * @example 150
-             */
-            quantityOnHandFormatted: string;
-            /**
-             * @description The quantity available for sale in the warehouse.
-             * @example 150
-             */
-            availableForSale: number;
-        };
         ValidateBulkDeleteResponseDto: {
             /**
              * @description Number of items that can be deleted
@@ -6802,6 +6152,20 @@ export interface components {
              */
             defaultTemplateId: number | null;
         };
+        SalesChannelResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example E-commerce */
+            name: string;
+            /** @example true */
+            active: boolean;
+            /** @example 0 */
+            sortOrder: number;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
         ItemEntryDto: {
             /**
              * @description The index of the item entry
@@ -7086,6 +6450,13 @@ export interface components {
              * @example REF-001
              */
             referenceNo?: string;
+            /**
+             * @description Internal sales channel ID
+             * @example 1
+             */
+            salesChannelId?: number | null;
+            /** @description Internal sales channel */
+            salesChannel?: components["schemas"]["SalesChannelResponseDto"] | null;
             /**
              * @description The ID of the customer
              * @example 1
@@ -7372,6 +6743,11 @@ export interface components {
              */
             referenceNo?: string;
             /**
+             * @description Internal sales channel ID
+             * @example 1
+             */
+            salesChannelId?: number | null;
+            /**
              * @description Whether the invoice is delivered
              * @default false
              */
@@ -7479,6 +6855,11 @@ export interface components {
              * @example REF-001
              */
             referenceNo?: string;
+            /**
+             * @description Internal sales channel ID
+             * @example 1
+             */
+            salesChannelId?: number | null;
             /**
              * @description Whether the invoice is delivered
              * @default false
@@ -7854,10 +7235,6 @@ export interface components {
              * @example We have received your payment.
              */
             message: string;
-            /** @description Available recipient address options */
-            toOptions: components["schemas"]["PaymentReceiveMailAddressItemDto"][];
-            /** @description Available sender address options */
-            fromOptions: components["schemas"]["PaymentReceiveMailAddressItemDto"][];
             /** @description Template format arguments */
             formatArgs?: Record<string, never>;
             /**
@@ -7865,6 +7242,70 @@ export interface components {
              * @example true
              */
             attachPdf?: boolean;
+        };
+        BranchResponseDto: {
+            /**
+             * @description Branch ID
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description Branch name
+             * @example Main Branch
+             */
+            name: string;
+            /**
+             * @description Branch code
+             * @example BR001
+             */
+            code: string;
+            /**
+             * @description Branch address
+             * @example 123 Main Street
+             */
+            address: string;
+            /**
+             * @description Branch city
+             * @example New York
+             */
+            city: string;
+            /**
+             * @description Branch country
+             * @example USA
+             */
+            country: string;
+            /**
+             * @description Branch phone number
+             * @example +1-555-123-4567
+             */
+            phoneNumber: string;
+            /**
+             * @description Branch email
+             * @example branch@example.com
+             */
+            email: string;
+            /**
+             * @description Branch website
+             * @example https://www.example.com/branch
+             */
+            website: string;
+            /**
+             * @description Whether this is the primary branch
+             * @example true
+             */
+            primary: boolean;
+            /**
+             * Format: date-time
+             * @description Creation timestamp
+             * @example 2024-03-20T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Last update timestamp
+             * @example 2024-03-20T10:00:00Z
+             */
+            updatedAt: string;
         };
         PaymentReceivedEntryResponseDto: {
             /**
@@ -8547,6 +7988,65 @@ export interface components {
             /** @description Stripe AccountLink object for onboarding */
             clientSecret: components["schemas"]["StripeAccountLinkResponseDto"];
         };
+        CreateSalesChannelDto: {
+            /** @example E-commerce */
+            name: string;
+            /** @example 0 */
+            sortOrder?: number;
+        };
+        EditSalesChannelDto: {
+            /** @example E-commerce */
+            name?: string;
+            /** @example 0 */
+            sortOrder?: number;
+        };
+        SalesByChannelRowDto: {
+            /** @example 1 */
+            salesChannelId: number | null;
+            /** @example E-commerce */
+            name: string;
+            /** @example false */
+            archived: boolean;
+            /** @example 12 */
+            invoiceCount: number;
+            /** @example 1200 */
+            subtotal: number;
+            /** @example 50 */
+            discounts: number;
+            /** @example 92 */
+            tax: number;
+            /** @example 1242 */
+            total: number;
+            /** @example 1000 */
+            paid: number;
+            /** @example 242 */
+            due: number;
+        };
+        SalesByChannelQueryDto: {
+            /** @example 2026-01-01 */
+            fromDate?: string;
+            /** @example 2026-12-31 */
+            toDate?: string;
+            /**
+             * @description Include draft invoices. Delivered invoices are used by default.
+             * @default false
+             */
+            includeDrafts: boolean;
+            /** @description Limit the report to one sales channel. */
+            salesChannelId?: number;
+        };
+        SalesByChannelReportMetaDto: {
+            /** @example USD */
+            baseCurrency: string;
+            /** @example Sales by Channel */
+            sheetName: string;
+        };
+        SalesByChannelReportResponseDto: {
+            data: components["schemas"]["SalesByChannelRowDto"][];
+            total: components["schemas"]["SalesByChannelRowDto"];
+            query: components["schemas"]["SalesByChannelQueryDto"];
+            meta: components["schemas"]["SalesByChannelReportMetaDto"];
+        };
         ValidateBulkDeleteItemCategoriesResponseDto: {
             /**
              * @description Number of item categories that can be deleted
@@ -9053,215 +8553,89 @@ export interface components {
              */
             attachments: string[];
         };
-        WarehouseTransferEntryResponseDto: {
+        BillLandedCostTransactionDto: {
             /**
-             * @description The ID of the warehouse transfer entry
+             * @description The unique identifier of the landed cost transaction
              * @example 1
              */
             id: number;
             /**
-             * @description The ID of the item being transferred
-             * @example 1
+             * @description The bill id the landed cost is allocated to
+             * @example 10
              */
-            itemId: number;
+            billId?: number;
             /**
-             * @description The quantity of items being transferred
-             * @example 100
+             * @description The id of the source transaction the cost was allocated from
+             * @example 5
              */
-            quantity: number;
+            fromTransactionId?: number;
             /**
-             * @description The cost per unit of the item
-             * @example 10.5
+             * @description The type of the source transaction (Bill or Expense)
+             * @example Expense
              */
-            cost: number;
+            fromTransactionType?: string;
             /**
-             * @description The total cost of the transfer entry
-             * @example 1050
-             */
-            total: number;
-            /**
-             * @description The formatted quantity of items being transferred
-             * @example 100.00
-             */
-            formattedQuantity: string;
-            /**
-             * @description The formatted cost per unit of the item
-             * @example $10.50
-             */
-            formattedCost: string;
-            /**
-             * @description The formatted total cost of the transfer entry
-             * @example $1,050.00
-             */
-            formattedTotal: string;
-            /** @description The item details */
-            item: Record<string, never>;
-        };
-        WarehouseTransferResponseDto: {
-            /**
-             * @description The ID of the warehouse transfer
-             * @example 1
-             */
-            id: number;
-            /**
-             * Format: date-time
-             * @description The date of the warehouse transfer
-             * @example 2024-03-20
-             */
-            date: string;
-            /**
-             * @description The formatted date of the warehouse transfer
-             * @example Mar 20, 2024
-             */
-            formattedDate: string;
-            /**
-             * @description The transaction number of the warehouse transfer
-             * @example WT-2024-001
-             */
-            transactionNumber: string;
-            /**
-             * @description The ID of the source warehouse
-             * @example 1
-             */
-            fromWarehouseId: number;
-            /**
-             * @description The ID of the destination warehouse
+             * @description The entry id of the source transaction
              * @example 2
              */
-            toWarehouseId: number;
+            fromTransactionEntryId?: number;
             /**
-             * Format: date-time
-             * @description The date when the transfer was initiated
-             * @example 2024-03-20T10:00:00Z
+             * @description The allocation method used to distribute the cost
+             * @example quantity
              */
-            transferInitiatedAt: string;
+            allocationMethod?: string;
             /**
-             * Format: date-time
-             * @description The date when the transfer was delivered
-             * @example 2024-03-21T15:00:00Z
+             * @description The translated label of the allocation method
+             * @example Quantity
              */
-            transferDeliveredAt: string;
+            allocationMethodFormatted?: string;
             /**
-             * @description Whether the transfer has been initiated
-             * @example true
+             * @description The cost account id the landed cost is posted to
+             * @example 1020
              */
-            isInitiated: boolean;
+            costAccountId?: number;
             /**
-             * @description Whether the transfer has been completed
-             * @example true
+             * @description The description of the landed cost transaction
+             * @example Freight charges
              */
-            isTransferred: boolean;
-            /** @description The source warehouse details */
-            fromWarehouse: Record<string, never>;
-            /** @description The destination warehouse details */
-            toWarehouse: Record<string, never>;
-            /** @description The entries of the warehouse transfer */
-            entries: components["schemas"]["WarehouseTransferEntryResponseDto"][];
+            description?: string;
             /**
-             * Format: date-time
-             * @description The creation date of the warehouse transfer
-             * @example 2024-03-20T09:00:00Z
+             * @description The allocated landed cost amount
+             * @example 150
              */
-            createdAt: string;
+            amount?: number;
             /**
-             * Format: date-time
-             * @description The last update date of the warehouse transfer
-             * @example 2024-03-21T15:00:00Z
+             * @description The allocated landed cost amount in the base currency
+             * @example 150
              */
-            updatedAt: string;
-        };
-        CreateWarehouseTransferDto: {
+            localAmount?: number;
             /**
-             * @description The id of the warehouse to transfer from
+             * @description The currency code of the landed cost transaction
+             * @example USD
+             */
+            currencyCode?: string;
+            /**
+             * @description The exchange rate applied to the amount
              * @example 1
              */
-            fromWarehouseId: number;
+            exchangeRate?: number;
             /**
-             * @description The id of the warehouse to transfer to
-             * @example 2
+             * @description The resolved name of the source item or expense account
+             * @example Widget A
              */
-            toWarehouseId: number;
+            name?: string;
             /**
-             * Format: date-time
-             * @description The date of the warehouse transfer
-             * @example 2021-01-01
+             * @description Formatted allocated amount
+             * @example $150.00
              */
-            date: string;
+            formattedAmount?: string;
             /**
-             * @description The transaction number of the warehouse transfer
-             * @example 123456
+             * @description Formatted allocated amount in the base currency
+             * @example $150.00
              */
-            transactionNumber: string;
-            /**
-             * @description Whether the warehouse transfer has been initiated
-             * @example false
-             */
-            transferInitiated: boolean;
-            /**
-             * @description Whether the warehouse transfer has been delivered
-             * @example false
-             */
-            transferDelivered: boolean;
-            /**
-             * @description The entries of the warehouse transfer
-             * @example [
-             *       {
-             *         "index": 1,
-             *         "itemId": 1,
-             *         "description": "This is a description",
-             *         "quantity": 100,
-             *         "cost": 100
-             *       }
-             *     ]
-             */
-            entries: string[];
+            formattedLocalAmount?: string;
         };
-        EditWarehouseTransferDto: {
-            /**
-             * @description The id of the warehouse to transfer from
-             * @example 1
-             */
-            fromWarehouseId: number;
-            /**
-             * @description The id of the warehouse to transfer to
-             * @example 2
-             */
-            toWarehouseId: number;
-            /**
-             * Format: date-time
-             * @description The date of the warehouse transfer
-             * @example 2021-01-01
-             */
-            date: string;
-            /**
-             * @description The transaction number of the warehouse transfer
-             * @example 123456
-             */
-            transactionNumber: string;
-            /**
-             * @description Whether the warehouse transfer has been initiated
-             * @example false
-             */
-            transferInitiated: boolean;
-            /**
-             * @description Whether the warehouse transfer has been delivered
-             * @example false
-             */
-            transferDelivered: boolean;
-            /**
-             * @description The entries of the warehouse transfer
-             * @example [
-             *       {
-             *         "index": 1,
-             *         "itemId": 1,
-             *         "description": "This is a description",
-             *         "quantity": 100,
-             *         "cost": 100
-             *       }
-             *     ]
-             */
-            entries: string[];
-        };
+        AllocateBillLandedCostDto: Record<string, never>;
         ValidateBulkDeleteCustomersResponseDto: {
             /**
              * @description Number of customers that can be deleted
@@ -10311,6 +9685,43 @@ export interface components {
              */
             defaultTemplateId: number | null;
         };
+        WarehouseResponseDto: {
+            /**
+             * @description The unique identifier of the warehouse
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description The name of the warehouse
+             * @example Main Warehouse
+             */
+            name: string;
+            /**
+             * @description The unique code identifier for the warehouse
+             * @example WH-001
+             */
+            code: string;
+            /**
+             * @description The city where the warehouse is located
+             * @example New York
+             */
+            city: string;
+            /**
+             * @description The country where the warehouse is located
+             * @example United States
+             */
+            country: string;
+            /**
+             * @description The full address of the warehouse
+             * @example 123 Warehouse Street, New York, NY 10001
+             */
+            address: string;
+            /**
+             * @description Indicates if this is the primary warehouse
+             * @example true
+             */
+            primary: boolean;
+        };
         SaleReceiptResponseDto: {
             /**
              * @description The unique identifier of the sale receipt
@@ -10609,6 +10020,11 @@ export interface components {
              * @example 1
              */
             adjustment: number;
+            /**
+             * @description Whether line-item tax is included in the entered rates
+             * @example false
+             */
+            isInclusiveTax?: boolean;
         };
         EditSaleReceiptDto: {
             /**
@@ -10705,6 +10121,11 @@ export interface components {
              * @example 1
              */
             adjustment: number;
+            /**
+             * @description Whether line-item tax is included in the entered rates
+             * @example false
+             */
+            isInclusiveTax?: boolean;
         };
         BillPaymentTransactionDto: {
             /**
@@ -11329,89 +10750,6 @@ export interface components {
              */
             adjustment?: number;
         };
-        BillLandedCostTransactionDto: {
-            /**
-             * @description The unique identifier of the landed cost transaction
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description The bill id the landed cost is allocated to
-             * @example 10
-             */
-            billId?: number;
-            /**
-             * @description The id of the source transaction the cost was allocated from
-             * @example 5
-             */
-            fromTransactionId?: number;
-            /**
-             * @description The type of the source transaction (Bill or Expense)
-             * @example Expense
-             */
-            fromTransactionType?: string;
-            /**
-             * @description The entry id of the source transaction
-             * @example 2
-             */
-            fromTransactionEntryId?: number;
-            /**
-             * @description The allocation method used to distribute the cost
-             * @example quantity
-             */
-            allocationMethod?: string;
-            /**
-             * @description The translated label of the allocation method
-             * @example Quantity
-             */
-            allocationMethodFormatted?: string;
-            /**
-             * @description The cost account id the landed cost is posted to
-             * @example 1020
-             */
-            costAccountId?: number;
-            /**
-             * @description The description of the landed cost transaction
-             * @example Freight charges
-             */
-            description?: string;
-            /**
-             * @description The allocated landed cost amount
-             * @example 150
-             */
-            amount?: number;
-            /**
-             * @description The allocated landed cost amount in the base currency
-             * @example 150
-             */
-            localAmount?: number;
-            /**
-             * @description The currency code of the landed cost transaction
-             * @example USD
-             */
-            currencyCode?: string;
-            /**
-             * @description The exchange rate applied to the amount
-             * @example 1
-             */
-            exchangeRate?: number;
-            /**
-             * @description The resolved name of the source item or expense account
-             * @example Widget A
-             */
-            name?: string;
-            /**
-             * @description Formatted allocated amount
-             * @example $150.00
-             */
-            formattedAmount?: string;
-            /**
-             * @description Formatted allocated amount in the base currency
-             * @example $150.00
-             */
-            formattedLocalAmount?: string;
-        };
-        AllocateBillLandedCostDto: Record<string, never>;
         ManualJournalEntryResponseDto: {
             /**
              * @description Entry index
@@ -11946,6 +11284,11 @@ export interface components {
              * @enum {string}
              */
             discountType: "percentage" | "amount";
+            /**
+             * @description Whether line-item tax is included in the entered rates
+             * @example false
+             */
+            isInclusiveTax?: boolean;
         };
         CreditNoteStateResponseDto: {
             /**
@@ -12034,6 +11377,11 @@ export interface components {
              * @enum {string}
              */
             discountType: "percentage" | "amount";
+            /**
+             * @description Whether line-item tax is included in the entered rates
+             * @example false
+             */
+            isInclusiveTax?: boolean;
         };
         RefundCreditAccountDto: {
             /** @example 10 */
@@ -12436,6 +11784,11 @@ export interface components {
              */
             exchangeRate: number;
             /**
+             * @description Whether line-item tax is included in the entered rates
+             * @example false
+             */
+            isInclusiveTax?: boolean;
+            /**
              * @description The vendor credit number
              * @example 123456
              */
@@ -12521,6 +11874,11 @@ export interface components {
              * @example 1
              */
             exchangeRate: number;
+            /**
+             * @description Whether line-item tax is included in the entered rates
+             * @example false
+             */
+            isInclusiveTax?: boolean;
             /**
              * @description The vendor credit number
              * @example 123456
@@ -16183,89 +15541,6 @@ export interface components {
             /** @description The permissions of the role */
             permissions: components["schemas"]["EditRolePermissionDto"][];
         };
-        SubscriptionResponseDto: {
-            /** @example main */
-            slug: string;
-            /**
-             * @example active
-             * @enum {string}
-             */
-            status: "active" | "inactive" | "on_trial" | "canceled";
-            /** @example true */
-            active: boolean;
-            /** @example false */
-            inactive: boolean;
-            /** @example false */
-            onTrial: boolean;
-            /** @example false */
-            canceled: boolean;
-            /** @example false */
-            ended: boolean;
-            /**
-             * @example succeed
-             * @enum {string}
-             */
-            paymentStatus: "succeed" | "failed";
-            /**
-             * Format: date-time
-             * @example 2024-01-01T00:00:00.000Z
-             */
-            startsAt?: string | null;
-            /**
-             * Format: date-time
-             * @example 2024-02-01T00:00:00.000Z
-             */
-            endsAt?: string | null;
-            /**
-             * Format: date-time
-             * @example null
-             */
-            canceledAt?: string | null;
-            /**
-             * Format: date-time
-             * @example 2024-01-07T00:00:00.000Z
-             */
-            trialEndsAt?: string | null;
-            /** @example Active */
-            statusFormatted: string;
-            /** @example null */
-            canceledAtFormatted?: string | null;
-            /** @example Jan 1, 2024 */
-            endsAtFormatted?: string | null;
-            /** @example null */
-            trialStartsAtFormatted?: string | null;
-            /** @example Jan 7, 2024 */
-            trialEndsAtFormatted?: string | null;
-            /** @example Standard */
-            planName: string;
-            /** @example standard */
-            planSlug: string;
-            /** @example 10 */
-            planPrice: number;
-            /** @example USD */
-            planPriceCurrency: string;
-            /** @example $10 */
-            planPriceFormatted: string;
-            /** @example month */
-            planPeriod: string;
-        };
-        SubscriptionsListResponseDto: {
-            subscriptions: components["schemas"]["SubscriptionResponseDto"][];
-        };
-        LemonSubscriptionUrlsDto: {
-            /** @example https://.../update-payment-method */
-            updatePaymentMethod?: string | null;
-            /** @example https://.../customer-portal */
-            customerPortal?: string | null;
-        };
-        LemonSubscriptionResponseDto: {
-            /** @example main */
-            slug: string;
-            urls: components["schemas"]["LemonSubscriptionUrlsDto"];
-        };
-        LemonSubscriptionsListResponseDto: {
-            lemonSubscriptions: components["schemas"]["LemonSubscriptionResponseDto"][];
-        };
         OrgBaseCurrencyMutateLockDto: {
             /**
              * @description The model name that prevents base currency mutation
@@ -16845,74 +16120,6 @@ export interface components {
              */
             updatedAt: string;
         };
-        CurrencyResponseDto: {
-            /**
-             * @description The unique identifier of the currency
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description The name of the currency
-             * @example US Dollar
-             */
-            currencyName: string;
-            /**
-             * @description The code of the currency
-             * @example USD
-             */
-            currencyCode: string;
-            /**
-             * @description The sign/symbol of the currency
-             * @example $
-             */
-            currencySign: string;
-            /**
-             * @description Whether this is the base currency for the organization
-             * @example true
-             */
-            isBaseCurrency: boolean;
-            /**
-             * Format: date-time
-             * @description The creation timestamp
-             * @example 2024-03-20T10:00:00Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description The last update timestamp
-             * @example 2024-03-20T10:00:00Z
-             */
-            updatedAt: string;
-        };
-        CreateCurrencyDto: {
-            /**
-             * @description The currency name
-             * @example USD
-             */
-            currencyName: string;
-            /**
-             * @description The currency code
-             * @example USD
-             */
-            currencyCode: string;
-            /**
-             * @description The currency sign
-             * @example $
-             */
-            currencySign: string;
-        };
-        EditCurrencyDto: {
-            /**
-             * @description The currency name
-             * @example USD
-             */
-            currencyName: string;
-            /**
-             * @description The currency sign
-             * @example $
-             */
-            currencySign: string;
-        };
         DateFormatResponseDto: {
             /** @example 03/09/2026 [MM/DD/YYYY] */
             label: string;
@@ -17102,23 +16309,6 @@ export interface components {
         GetAuditLogsResponseDto: {
             data: components["schemas"]["AuditLogListItemDto"][];
             pagination: components["schemas"]["PaginationMetaDto"];
-        };
-        ExchangeRateLatestResponseDto: {
-            /**
-             * @description The base currency code
-             * @example USD
-             */
-            baseCurrency: string;
-            /**
-             * @description The target currency code
-             * @example EUR
-             */
-            toCurrency: string;
-            /**
-             * @description The exchange rate value
-             * @example 0.85
-             */
-            exchangeRate: number;
         };
     };
     responses: never;
@@ -18003,439 +17193,6 @@ export interface operations {
         responses: {
             /** @description The inventory adjustment has been successfully published. */
             200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BranchesController_getBranches: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The branches have been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BranchResponseDto"][];
-                };
-            };
-        };
-    };
-    BranchesController_createBranch: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateBranchDto"];
-            };
-        };
-        responses: {
-            /** @description The branch has been successfully created. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BranchResponseDto"];
-                };
-            };
-            /** @description The branch not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BranchesController_getBranch: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The branch details have been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BranchResponseDto"];
-                };
-            };
-            /** @description The branch not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BranchesController_editBranch: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditBranchDto"];
-            };
-        };
-        responses: {
-            /** @description The branch has been successfully edited. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BranchResponseDto"];
-                };
-            };
-            /** @description The branch not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BranchesController_deleteBranch: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The branch has been successfully deleted. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description The branch not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BranchesController_activateBranches: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The branches feature has been successfully activated. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BranchesController_markBranchAsPrimary: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The branch has been successfully marked as primary. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BranchResponseDto"];
-                };
-            };
-            /** @description The branch not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WarehousesController_getWarehouses: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The warehouses have been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WarehouseResponseDto"][];
-                };
-            };
-        };
-    };
-    WarehousesController_createWarehouse: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateWarehouseDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WarehousesController_getWarehouse: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The warehouse details have been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WarehouseResponseDto"];
-                };
-            };
-        };
-    };
-    WarehousesController_editWarehouse: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditWarehouseDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WarehousesController_deleteWarehouse: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WarehousesController_activateWarehouses: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WarehousesController_markWarehousePrimary: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WarehouseItemsController_getItemWarehouses: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description The item id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The item associated warehouses have been successfully retrieved. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ItemWarehousesResponseDto"][];
-                };
-            };
-            /** @description The item not found. */
-            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -20786,6 +19543,174 @@ export interface operations {
             };
         };
     };
+    SalesChannelsController_list: {
+        parameters: {
+            query?: {
+                includeInactive?: boolean;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesChannelResponseDto"][];
+                };
+            };
+        };
+    };
+    SalesChannelsController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSalesChannelDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesChannelResponseDto"];
+                };
+            };
+        };
+    };
+    SalesChannelsController_edit: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditSalesChannelDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesChannelResponseDto"];
+                };
+            };
+        };
+    };
+    SalesChannelsController_archive: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesChannelResponseDto"];
+                };
+            };
+        };
+    };
+    SalesChannelsController_restore: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesChannelResponseDto"];
+                };
+            };
+        };
+    };
+    SalesByChannelReportController_report: {
+        parameters: {
+            query?: {
+                fromDate?: string;
+                toDate?: string;
+                /** @description Include draft invoices. Delivered invoices are used by default. */
+                includeDrafts?: boolean;
+                /** @description Limit the report to one sales channel. */
+                salesChannelId?: number;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+                accept: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesByChannelReportResponseDto"];
+                };
+            };
+        };
+    };
     ItemCategoryController_getItemCategories: {
         parameters: {
             query?: {
@@ -21222,7 +20147,7 @@ export interface operations {
             };
         };
     };
-    WarehouseTransfersController_getWarehousesTransfers: {
+    BillAllocateLandedCostController_getLandedCostTransactions: {
         parameters: {
             query?: never;
             header: {
@@ -21236,174 +20161,96 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description The warehouse transfer transactions have been retrieved successfully. */
+            /** @description List of landed cost transactions. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillAllocateLandedCostController_calculateLandedCost: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                billId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AllocateBillLandedCostDto"];
+            };
+        };
+        responses: {
+            /** @description Landed cost allocated successfully. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillAllocateLandedCostController_deleteAllocatedLandedCost: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                allocatedLandedCostId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Allocated landed cost deleted successfully. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BillAllocateLandedCostController_getBillLandedCostTransactions: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                billId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of bill landed cost transactions. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginatedResponseDto"] & {
-                        data?: components["schemas"]["WarehouseTransferResponseDto"][];
+                    "application/json": {
+                        billId?: number;
+                        data?: components["schemas"]["BillLandedCostTransactionDto"][];
                     };
                 };
-            };
-        };
-    };
-    WarehouseTransfersController_createWarehouseTransfer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateWarehouseTransferDto"];
-            };
-        };
-        responses: {
-            /** @description The warehouse transfer transaction has been created successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WarehouseTransfersController_getWarehouseTransfer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The warehouse transfer transaction details have been retrieved successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WarehouseTransferResponseDto"];
-                };
-            };
-        };
-    };
-    WarehouseTransfersController_editWarehouseTransfer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditWarehouseTransferDto"];
-            };
-        };
-        responses: {
-            /** @description The warehouse transfer transaction has been edited successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WarehouseTransfersController_deleteWarehouseTransfer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The warehouse transfer transaction has been deleted successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WarehouseTransfersController_initiateTransfer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The warehouse transfer has been initiated successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WarehouseTransfersController_deliverTransfer: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The warehouse transfer has been marked as transferred successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };
@@ -22169,45 +21016,6 @@ export interface operations {
             };
         };
     };
-    SaleEstimatesController_notifySaleEstimateBySms: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The sale estimate id */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SaleEstimatesController_getSaleEstimateSmsDetails: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     SaleEstimatesController_getSaleEstimateMail: {
         parameters: {
             query?: never;
@@ -22858,113 +21666,6 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
-            };
-        };
-    };
-    BillAllocateLandedCostController_getLandedCostTransactions: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of landed cost transactions. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillAllocateLandedCostController_calculateLandedCost: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                billId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AllocateBillLandedCostDto"];
-            };
-        };
-        responses: {
-            /** @description Landed cost allocated successfully. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillAllocateLandedCostController_deleteAllocatedLandedCost: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                allocatedLandedCostId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Allocated landed cost deleted successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    BillAllocateLandedCostController_getBillLandedCostTransactions: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                billId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of bill landed cost transactions. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        billId?: number;
-                        data?: components["schemas"]["BillLandedCostTransactionDto"][];
-                    };
-                };
             };
         };
     };
@@ -31120,149 +29821,6 @@ export interface operations {
             };
         };
     };
-    SubscriptionsController_getSubscriptions: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of subscriptions retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SubscriptionsListResponseDto"];
-                };
-            };
-        };
-    };
-    SubscriptionsController_getLemonSubscriptions: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Lemon subscription details retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LemonSubscriptionsListResponseDto"];
-                };
-            };
-        };
-    };
-    SubscriptionsController_getCheckoutUrl: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @description The variant ID for the subscription plan */
-                    variantId: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Checkout URL retrieved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SubscriptionsController_cancelSubscription: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Subscription canceled successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SubscriptionsController_resumeSubscription: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Subscription resumed successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SubscriptionsController_changeSubscriptionPlan: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @description The variant ID for the new subscription plan */
-                    variant_id: number;
-                };
-            };
-        };
-        responses: {
-            /** @description Subscription plan changed successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    SubscriptionsLemonWebhook_lemonWebhooks: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     OrganizationController_build: {
         parameters: {
             query?: never;
@@ -31763,181 +30321,6 @@ export interface operations {
             };
         };
     };
-    CurrenciesController_findAll: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of all currencies. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CurrencyResponseDto"][];
-                };
-            };
-        };
-    };
-    CurrenciesController_create: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateCurrencyDto"];
-            };
-        };
-        responses: {
-            /** @description The currency has been successfully created. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CurrencyResponseDto"];
-                };
-            };
-            /** @description Invalid input data. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CurrenciesController_edit: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description Currency ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditCurrencyDto"];
-            };
-        };
-        responses: {
-            /** @description The currency has been successfully updated. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CurrencyResponseDto"];
-                };
-            };
-            /** @description Invalid input data. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Currency not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CurrenciesController_delete: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description Currency code */
-                code: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The currency has been successfully deleted. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Currency not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CurrenciesController_findOne: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description Currency code */
-                currencyCode: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The currency details. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CurrencyResponseDto"];
-                };
-            };
-            /** @description Currency not found. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     MiscellaneousController_getDateFormats: {
         parameters: {
             query?: never;
@@ -32389,38 +30772,6 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["GetAuditLogsResponseDto"];
                 };
-            };
-        };
-    };
-    ExchangeRatesController_getLatestExchangeRate: {
-        parameters: {
-            query?: {
-                /** @description Source currency code (ISO 4217) */
-                from_currency?: string;
-                /** @description Target currency code (ISO 4217) */
-                to_currency?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully retrieved exchange rate */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ExchangeRateLatestResponseDto"];
-                };
-            };
-            /** @description Invalid currency code or service error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };

@@ -36,6 +36,7 @@ export class GetSaleInvoice {
       .withGraphFetched('entries.item')
       .withGraphFetched('entries.tax')
       .withGraphFetched('customer')
+      .withGraphFetched('salesChannel')
       .withGraphFetched('branch')
       .withGraphFetched('taxes.taxRate')
       .withGraphFetched('attachments')

@@ -41,10 +41,12 @@ import { Model } from 'objection';
 import { ClsModule } from 'nestjs-cls';
 import { TenantUser } from './models/TenantUser.model';
 import { ItemPriceTier } from '@/modules/Items/models/ItemPriceTier';
+import { SalesChannel } from '@/modules/SalesChannels/models/SalesChannel.model';
 
 const models = [
   Item,
   ItemPriceTier,
+  SalesChannel,
   Account,
   ItemEntry,
   AccountTransaction,

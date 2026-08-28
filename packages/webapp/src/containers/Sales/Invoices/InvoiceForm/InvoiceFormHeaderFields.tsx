@@ -22,6 +22,7 @@ import {
   FInputGroup,
   Icon,
   FDateInput,
+  FSelect,
 } from '@/components';
 
 const getInvoiceFieldsStyle = (theme: Theme & { bpPrefix?: string }) => css`
@@ -118,7 +119,34 @@ export function InvoiceFormHeaderFields() {
           data-testId="invoice-reference-input"
         />
       </FFormGroup>
+
+      {/* Internal classification only; excluded from invoice PDFs and emails. */}
+      <InvoiceSalesChannelSelect />
     </Stack>
+  );
+}
+
+function InvoiceSalesChannelSelect() {
+  const { salesChannels } = useInvoiceFormContext();
+
+  return (
+    <FFormGroup
+      name={'salesChannelId'}
+      label={intl.get('invoice.field.sales_channel')}
+      inline
+      fastField
+    >
+      <FSelect
+        name={'salesChannelId'}
+        items={salesChannels}
+        valueAccessor={'id'}
+        textAccessor={'name'}
+        placeholder={intl.get('invoice.sales_channel.select')}
+        popoverProps={{ minimal: true }}
+        filterable={false}
+        fastField
+      />
+    </FFormGroup>
   );
 }
 

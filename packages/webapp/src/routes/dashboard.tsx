@@ -326,6 +326,20 @@ export const getDashboardRoutes = () => [
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
+    path: `/financial-reports/sales-by-channel`,
+    component: lazy(() =>
+      import(
+        '@/containers/FinancialStatements/SalesByChannel/SalesByChannelReport'
+      ).then((m) => ({ default: m.SalesByChannelReport })),
+    ),
+    breadcrumb: intl.get('sales_by_channel'),
+    pageTitle: intl.get('sales_by_channel'),
+    hint: intl.get('sales_by_channel.description'),
+    backLink: true,
+    sidebarExpand: false,
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
+  {
     path: `/financial-reports/inventory-valuation`,
     component: lazy(() =>
       import(
@@ -1235,6 +1249,17 @@ export const getDashboardRoutes = () => [
       })),
     ),
     pageTitle: 'Tax Rates',
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
+  {
+    path: '/sales-channels',
+    component: lazy(() =>
+      import('@/containers/SalesChannels/SalesChannelsPage').then((m) => ({
+        default: m.SalesChannelsPage,
+      })),
+    ),
+    pageTitle: 'Sales Channels',
+    breadcrumb: 'Sales Channels',
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   // Bank Rules

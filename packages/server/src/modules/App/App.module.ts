@@ -98,6 +98,7 @@ import { SocketModule } from '../Socket/Socket.module';
 import { EEModule } from '../EE/EE.module';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { AppThrottleModule } from './AppThrottle.module';
+import { SalesChannelsModule } from '../SalesChannels/SalesChannels.module';
 
 @Module({
   imports: [
@@ -198,6 +199,7 @@ import { AppThrottleModule } from './AppThrottle.module';
     PdfTemplatesModule,
     CustomersModule,
     VendorsModule,
+    SalesChannelsModule,
     SaleInvoicesModule,
     SaleEstimatesModule,
     SaleReceiptsModule,

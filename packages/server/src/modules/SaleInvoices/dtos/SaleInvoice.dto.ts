@@ -78,6 +78,17 @@ class CommandSaleInvoiceDto {
   referenceNo?: string;
 
   @IsOptional()
+  @ToNumber()
+  @IsInt()
+  @ApiProperty({
+    description: 'Internal sales channel ID',
+    required: false,
+    nullable: true,
+    example: 1,
+  })
+  salesChannelId?: number | null;
+
+  @IsOptional()
   @IsBoolean()
   @ApiProperty({
     description: 'Whether the invoice is delivered',

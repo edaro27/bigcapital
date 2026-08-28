@@ -16,6 +16,7 @@ import { Customer } from '@/modules/Customers/models/Customer';
 import { events } from '@/common/events/events';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { CreateSaleInvoiceDto } from '../dtos/SaleInvoice.dto';
+import { SalesChannelValidator } from '@/modules/SalesChannels/SalesChannels.service';
 
 @Injectable()
 export class CreateSaleInvoice {
@@ -36,6 +37,7 @@ export class CreateSaleInvoice {
     private readonly transformerDTO: CommandSaleInvoiceDTOTransformer,
     private readonly eventPublisher: EventEmitter2,
     private readonly commandEstimateValidators: SaleEstimateValidators,
+    private readonly salesChannelValidator: SalesChannelValidator,
     private readonly uow: UnitOfWork,
 
     @Inject(SaleInvoice.name)
@@ -65,6 +67,10 @@ export class CreateSaleInvoice {
       .query()
       .findById(saleInvoiceDTO.customerId)
       .throwIfNotFound();
+
+    await this.salesChannelValidator.validateSelectable(
+      saleInvoiceDTO.salesChannelId,
+    );
 
     // Validate the from estimate id exists on the storage.
     if (saleInvoiceDTO.fromEstimateId) {

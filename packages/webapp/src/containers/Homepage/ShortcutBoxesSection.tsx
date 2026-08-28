@@ -6,13 +6,12 @@ import { For } from '@/components';
 import '@/style/pages/FinancialStatements/FinancialSheets.scss';
 import { useFilterShortcutBoxesSection } from './components';
 
-function ShortcutBox({ title, link, description }) {
+function ShortcutBox({ title, link }) {
   return (
     <div className={'financial-reports__item'}>
       <Link className="title" to={link}>
         {title}
       </Link>
-      <p className="desc">{description}</p>
     </div>
   );
 }

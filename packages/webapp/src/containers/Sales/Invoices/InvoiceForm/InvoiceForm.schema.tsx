@@ -22,6 +22,7 @@ const getSchema = () =>
       .max(DATATYPES_LENGTH.STRING)
       .label(intl.get('invoice_no_')),
     referenceNo: Yup.string().min(1).max(DATATYPES_LENGTH.STRING),
+    salesChannelId: Yup.number().nullable(),
     delivered: Yup.boolean(),
     fromEstimateId: Yup.string(),
     invoiceMessage: Yup.string()

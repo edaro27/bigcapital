@@ -14,6 +14,7 @@ import type {
   TaxRate,
   PdfTemplateResponse,
   GetPaymentServicesResponse,
+  SalesChannel,
 } from '@bigcapital/sdk-ts';
 import { Features } from '@/constants';
 import {
@@ -27,6 +28,7 @@ import {
   useSettingsInvoices,
   useEstimateDetail as useEstimate,
   useGetSaleInvoiceState,
+  useSalesChannels,
 } from '@/hooks/query';
 import { useGetPaymentServices } from '@/hooks/query/payment-services';
 import { useGetPdfTemplates } from '@/hooks/query/pdf-templates';
@@ -52,6 +54,7 @@ type InvoiceFormContextValue = {
   warehouses: Warehouse[];
   projects: unknown[];
   taxRates: TaxRate[];
+  salesChannels: SalesChannel[];
   brandingTemplates: PdfTemplateResponse[];
   paymentServices: GetPaymentServicesResponse | undefined;
 
@@ -66,6 +69,7 @@ type InvoiceFormContextValue = {
   isBranchesSuccess: boolean;
   isWarehousesSuccess: boolean;
   isTaxRatesLoading: boolean;
+  isSalesChannelsLoading: boolean;
   isBrandingTemplatesLoading: boolean;
   isInvoiceStateLoading: boolean;
   isPaymentServicesLoading: boolean;
@@ -113,6 +117,10 @@ function InvoiceFormProvider({
 
   // Fetch tax rates.
   const { data: taxRates, isLoading: isTaxRatesLoading } = useTaxRates();
+
+  // Include archived values so an older invoice keeps its historical channel.
+  const { data: allSalesChannels, isLoading: isSalesChannelsLoading } =
+    useSalesChannels(true);
 
   const isProjectsLoading = false;
 
@@ -193,7 +201,12 @@ function InvoiceFormProvider({
     isCustomersLoading ||
     isEstimateLoading ||
     isSettingsLoading ||
-    isInvoiceStateLoading;
+    isInvoiceStateLoading ||
+    isSalesChannelsLoading;
+
+  const salesChannels = (allSalesChannels ?? []).filter(
+    (channel) => channel.active || channel.id === invoice?.salesChannelId,
+  );
 
   const provider: InvoiceFormContextValue = {
     invoice,
@@ -207,6 +220,7 @@ function InvoiceFormProvider({
     warehouses: warehouses ?? [],
     projects: [],
     taxRates: taxRates ?? [],
+    salesChannels,
     brandingTemplates: brandingTemplates?.templates ?? [],
 
     isInvoiceLoading,
@@ -220,6 +234,7 @@ function InvoiceFormProvider({
     isBranchesSuccess,
     isWarehousesSuccess,
     isTaxRatesLoading,
+    isSalesChannelsLoading,
     isBrandingTemplatesLoading,
 
     createInvoiceMutate: createInvoiceMutate as (

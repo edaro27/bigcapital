@@ -15,6 +15,7 @@ import { SaleInvoice } from '../models/SaleInvoice';
 import { Customer } from '@/modules/Customers/models/Customer';
 import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { EditSaleInvoiceDto } from '../dtos/SaleInvoice.dto';
+import { SalesChannelValidator } from '@/modules/SalesChannels/SalesChannels.service';
 
 @Injectable()
 export class EditSaleInvoice {
@@ -32,6 +33,7 @@ export class EditSaleInvoice {
     private readonly eventPublisher: EventEmitter2,
     private readonly validators: CommandSaleInvoiceValidators,
     private readonly transformerDTO: CommandSaleInvoiceDTOTransformer,
+    private readonly salesChannelValidator: SalesChannelValidator,
     private readonly uow: UnitOfWork,
 
     @Inject(SaleInvoice.name)
@@ -112,6 +114,11 @@ export class EditSaleInvoice {
       .forUpdate()
       .withGraphFetched('entries')
       .throwIfNotFound();
+
+    await this.salesChannelValidator.validateSelectable(
+      saleInvoiceDTO.salesChannelId,
+      oldSaleInvoice.salesChannelId,
+    );
 
     // Validate customer existance.
     const customer = await this.customerModel()

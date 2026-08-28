@@ -8,6 +8,7 @@ import { CustomerResponseDto } from '@/modules/Customers/dtos/CustomerResponse.d
 import { PaymentMethodDto } from '../dtos/SaleInvoice.dto';
 import { SaleInvoiceTaxEntryDto } from './SaleInvoiceTaxEntry.dto';
 import { DiscountType } from '@/common/types/Discount';
+import { SalesChannelResponseDto } from '@/modules/SalesChannels/dtos/SalesChannel.dto';
 
 export class SaleInvoiceResponseDto {
   @ApiProperty({
@@ -40,6 +41,22 @@ export class SaleInvoiceResponseDto {
     required: false,
   })
   referenceNo?: string;
+
+  @ApiProperty({
+    description: 'Internal sales channel ID',
+    example: 1,
+    required: false,
+    nullable: true,
+  })
+  salesChannelId?: number | null;
+
+  @ApiProperty({
+    description: 'Internal sales channel',
+    type: SalesChannelResponseDto,
+    required: false,
+    nullable: true,
+  })
+  salesChannel?: SalesChannelResponseDto | null;
 
   @ApiProperty({
     description: 'The ID of the customer',

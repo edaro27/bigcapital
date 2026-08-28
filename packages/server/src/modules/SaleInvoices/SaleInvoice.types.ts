@@ -47,6 +47,7 @@ export interface ISaleInvoiceDTO {
   referenceNo: string;
   invoiceNo: string;
   customerId: number;
+  salesChannelId?: number | null;
   exchangeRate?: number;
   invoiceMessage: string;
   termsConditions: string;
