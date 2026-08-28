@@ -35,10 +35,9 @@ export class ContactMailNotification {
     const toOptions = customer.contactAddresses;
     const fromOptions = await this.mailTenancy.senders();
 
-    const toAddress = toOptions.find((a) => a.primary);
     const fromAddress = fromOptions.find((a) => a.primary);
 
-    const to = toAddress?.mail ? castArray(toAddress?.mail) : [];
+    const to = toOptions.map(({ mail }) => mail).filter(Boolean);
     const from = fromAddress?.mail ? castArray(fromAddress?.mail) : [];
 
     return { to, from, toOptions, fromOptions };

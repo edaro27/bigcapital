@@ -1,5 +1,28 @@
+import {
+  MAX_EMAIL_LIST_ADDRESSES,
+  MAX_EMAIL_LIST_LENGTH,
+  parseEmailList,
+} from '@bigcapital/utils';
 import intl from 'react-intl-universal';
 import * as Yup from 'yup';
+
+const singleEmailSchema = Yup.string().email();
+
+export const isValidCustomerEmailList = (value?: string | null): boolean => {
+  if (!value) {
+    return true;
+  }
+  if (value.length > MAX_EMAIL_LIST_LENGTH) {
+    return false;
+  }
+  const addresses = parseEmailList(value);
+
+  return (
+    addresses.length > 0 &&
+    addresses.length <= MAX_EMAIL_LIST_ADDRESSES &&
+    addresses.every((address) => singleEmailSchema.isValidSync(address))
+  );
+};
 
 const Schema = Yup.object().shape({
   customerType: Yup.string()
@@ -13,7 +36,13 @@ const Schema = Yup.object().shape({
   displayName: Yup.string().trim().required().label(intl.get('display_name_')),
   code: Yup.string().trim(),
 
-  email: Yup.string().email().nullable(),
+  email: Yup.string()
+    .nullable()
+    .test(
+      'email-list',
+      'Enter valid email addresses separated by commas.',
+      isValidCustomerEmailList,
+    ),
   workPhone: Yup.string().nullable(),
   personalPhone: Yup.string().nullable(),
   website: Yup.string().url().nullable(),

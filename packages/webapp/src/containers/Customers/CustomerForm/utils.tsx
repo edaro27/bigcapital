@@ -1,13 +1,14 @@
+import { normalizeEmailList } from '@bigcapital/utils';
 import { useFormikContext } from 'formik';
 import { first } from 'lodash';
 import moment from 'moment';
 import React from 'react';
+import { useCustomerFormContext } from './CustomerFormProvider';
 import type {
   CreateCustomerBody,
   Customer,
   EditCustomerBody,
 } from '@bigcapital/sdk-ts';
-import { useCustomerFormContext } from './CustomerFormProvider';
 import { useCurrentOrganizationBaseCurrency } from '@/hooks/query';
 import {
   defaultFastFieldShouldUpdate,
@@ -140,7 +141,7 @@ export const transformFormToCreateRequest = (
   companyName: values.companyName,
   code: values.code,
   website: values.website,
-  email: values.email,
+  email: normalizeEmailList(values.email),
   workPhone: values.workPhone,
   personalPhone: values.personalPhone,
   note: values.note,
@@ -183,7 +184,7 @@ export const transformFormToEditRequest = (
   companyName: values.companyName,
   code: values.code,
   website: values.website,
-  email: values.email,
+  email: normalizeEmailList(values.email),
   workPhone: values.workPhone,
   personalPhone: values.personalPhone,
   note: values.note,

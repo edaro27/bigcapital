@@ -5,14 +5,14 @@ import { CustomerMeta } from './Customer.meta';
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { CustomerDefaultViews } from '../constants';
 import { BaseQueryBuilder } from '@/models/Model';
-import { Knex } from 'knex';
+import { parseEmailList } from '@bigcapital/utils';
 
 export class CustomerQueryBuilder<
   M extends Model,
   R = M[],
 > extends BaseQueryBuilder<M, R> {
   constructor(...args) {
-    // @ts-ignore
+    // @ts-expect-error BaseQueryBuilder's generic constructor is variadic.
     super(...args);
 
     this.onBuild((builder) => {
@@ -126,13 +126,11 @@ export class Customer extends TenantBaseModel {
    *
    */
   get contactAddresses() {
-    return [
-      {
-        mail: this.email,
-        label: this.displayName,
-        primary: true,
-      },
-    ].filter((c) => c.mail);
+    return parseEmailList(this.email).map((mail, index) => ({
+      mail,
+      label: this.displayName,
+      primary: index === 0,
+    }));
   }
 
   /**

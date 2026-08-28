@@ -1,7 +1,11 @@
-import { IsBoolean, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { ContactAddressDto } from './ContactAddress.dto';
-import { IsOptional } from '@/common/decorators/Validators';
+import {
+  IsEmailList,
+  IsOptional,
+  NormalizeEmailList,
+} from '@/common/decorators/Validators';
 
 export class EditCustomerDto extends ContactAddressDto {
   @ApiProperty({ required: true, description: 'Customer type' })
@@ -39,9 +43,13 @@ export class EditCustomerDto extends ContactAddressDto {
   @IsString()
   website?: string;
 
-  @ApiProperty({ required: false, description: 'Email' })
+  @ApiProperty({
+    required: false,
+    description: 'Comma-separated customer email addresses',
+  })
   @IsOptional()
-  @IsEmail()
+  @NormalizeEmailList()
+  @IsEmailList()
   email?: string;
 
   @ApiProperty({ required: false, description: 'Work phone' })
