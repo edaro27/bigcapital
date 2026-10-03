@@ -27,6 +27,9 @@ export interface InvoiceCustomizeFormValues extends BrandingTemplateValues {
   showDueDate?: boolean;
   dueDateLabel?: string;
 
+  showPaymentTerm?: boolean;
+  paymentTermLabel?: string;
+
   // Addresses
   showBilledFromAddress?: boolean;
   showBillingToAddress?: boolean;

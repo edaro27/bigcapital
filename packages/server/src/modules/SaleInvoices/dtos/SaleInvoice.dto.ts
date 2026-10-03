@@ -15,10 +15,23 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
+import { InvoicePaymentTerm } from '@bigcapital/utils';
 
 enum DiscountType {
   Percentage = 'percentage',
   Amount = 'amount',
+}
+
+class SaleInvoiceItemEntryDto extends ItemEntryDto {
+  @IsNotEmpty()
+  @ToNumber()
+  @IsInt()
+  @ApiProperty({
+    description: 'The whole-unit quantity of the invoice item entry',
+    example: 1,
+    type: 'integer',
+  })
+  quantity: number;
 }
 
 export class PaymentMethodDto {
@@ -58,6 +71,16 @@ class CommandSaleInvoiceDto {
   @IsNotEmpty()
   @ApiProperty({ description: 'Due date', example: '2023-01-15T00:00:00Z' })
   dueDate: Date;
+
+  @IsOptional()
+  @IsEnum(InvoicePaymentTerm)
+  @ApiProperty({
+    description: 'Payment term or card used for the invoice',
+    enum: Object.values(InvoicePaymentTerm),
+    required: false,
+    example: InvoicePaymentTerm.Net30,
+  })
+  paymentTerm?: InvoicePaymentTerm;
 
   @IsOptional()
   @IsString()
@@ -109,7 +132,7 @@ class CommandSaleInvoiceDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    description: 'Terms and conditions',
+    description: 'Invoice conditions',
     required: false,
     example: 'Payment due within 14 days',
   })
@@ -156,14 +179,14 @@ class CommandSaleInvoiceDto {
 
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => ItemEntryDto)
+  @Type(() => SaleInvoiceItemEntryDto)
   @ArrayMinSize(1)
   @ApiProperty({
     description: 'Invoice line items',
-    type: [ItemEntryDto],
+    type: [SaleInvoiceItemEntryDto],
     minItems: 1,
   })
-  entries: ItemEntryDto[];
+  entries: SaleInvoiceItemEntryDto[];
 
   @IsOptional()
   @ToNumber()

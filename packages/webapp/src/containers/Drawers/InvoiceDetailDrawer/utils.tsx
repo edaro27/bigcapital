@@ -22,7 +22,7 @@ import {
   TextOverviewTooltipCell,
 } from '@/components';
 import { SaleInvoiceAction, AbilitySubject } from '@/constants/abilityOption';
-import { getColumnWidth } from '@/utils';
+import { formattedNumber, getColumnWidth } from '@/utils';
 
 interface InvoiceDetailsStatusProps {
   invoice: SaleInvoice;
@@ -38,6 +38,14 @@ interface BadDebtMenuItemPayload {
 interface BadDebtMenuItemProps {
   payload: BadDebtMenuItemPayload;
 }
+
+const formatInvoiceQuantity = (quantity: string | number) => {
+  const numericQuantity = Number(quantity);
+
+  return Number.isFinite(numericQuantity) && Number.isInteger(numericQuantity)
+    ? formattedNumber(numericQuantity, {})
+    : String(quantity ?? '');
+};
 
 /**
  * Retrieve invoice readonly details table columns.
@@ -65,12 +73,14 @@ export const useInvoiceReadonlyEntriesColumns = () => {
         textOverview: true,
       },
       {
+        id: 'quantity',
         Header: intl.get('quantity'),
-        accessor: 'quantityFormatted',
+        accessor: (entry: { quantity: string | number }) =>
+          formatInvoiceQuantity(entry.quantity),
         align: 'right',
         disableSortBy: true,
         textOverview: true,
-        width: getColumnWidth(entries, 'quantityFormatted', {
+        width: getColumnWidth(entries, 'quantity', {
           minWidth: 60,
           magicSpacing: 5,
         }),

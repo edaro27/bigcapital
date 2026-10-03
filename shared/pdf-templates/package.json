@@ -18,6 +18,7 @@
     }
   },
   "dependencies": {
+    "@bigcapital/utils": "workspace:*",
     "@emotion/cache": "^11.13.1",
     "@emotion/css": "^11.13.4",
     "@emotion/react": "^11.13.3",

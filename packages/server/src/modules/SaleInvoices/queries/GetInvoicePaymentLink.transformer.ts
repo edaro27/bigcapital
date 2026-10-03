@@ -87,6 +87,7 @@ export class GetInvoicePaymentLinkMetaTransformer extends SaleInvoiceTransformer
       new GetInvoicePaymentLinkEntryMetaTransformer(),
       {
         currencyCode: invoice.currencyCode,
+        quantityPrecision: 0,
       },
     );
   };

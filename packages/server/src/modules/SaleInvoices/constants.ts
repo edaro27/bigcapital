@@ -176,12 +176,19 @@ export const defaultInvoicePdfTemplateAttributes = {
   dueDateLabel: 'Date due',
   showDueDate: true,
 
+  paymentTermLabel: 'Terms',
+  showPaymentTerm: true,
+
   dateIssueLabel: 'Date of issue',
   showDateIssue: true,
 
   // # Invoice number,
   invoiceNumberLabel: 'Invoice number',
   showInvoiceNumber: true,
+
+  // # Customer purchase order number
+  purchaseOrderNumberLabel: 'PO Number',
+  showPurchaseOrderNumber: true,
 
   // # Customer address
   showCustomerAddress: true,
@@ -196,7 +203,7 @@ export const defaultInvoicePdfTemplateAttributes = {
   lineItemLabel: 'Item',
   lineQuantityLabel: 'Qty',
   lineRateLabel: 'Rate',
-  lineTotalLabel: 'Total',
+  lineTotalLabel: 'Amount',
 
   totalLabel: 'Total',
   subtotalLabel: 'Subtotal',
@@ -216,7 +223,7 @@ export const defaultInvoicePdfTemplateAttributes = {
   discount: '0.00',
 
   // Footer paragraphs.
-  termsConditionsLabel: 'Terms & Conditions',
+  termsConditionsLabel: 'Conditions',
   showTermsConditions: true,
 
   lines: [

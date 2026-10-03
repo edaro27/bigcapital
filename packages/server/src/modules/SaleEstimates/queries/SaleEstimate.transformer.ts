@@ -166,6 +166,7 @@ export class SaleEstimateTransfromer extends Transformer {
   protected entries = (estimate: SaleEstimate) => {
     return this.item(estimate.entries, new ItemEntryTransformer(), {
       currencyCode: estimate.currencyCode,
+      quantityPrecision: 0,
     });
   };
 

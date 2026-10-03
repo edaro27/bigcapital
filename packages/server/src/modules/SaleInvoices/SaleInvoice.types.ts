@@ -12,6 +12,7 @@ import {
   CreateSaleInvoiceDto,
   EditSaleInvoiceDto,
 } from './dtos/SaleInvoice.dto';
+import type { InvoicePaymentTerm } from '@bigcapital/utils';
 
 export interface PaymentIntegrationTransactionLink {
   id: number;
@@ -44,6 +45,7 @@ export interface PaymentIntegrationTransactionLinkDeleteEventPayload {
 export interface ISaleInvoiceDTO {
   invoiceDate: Date;
   dueDate: Date;
+  paymentTerm?: InvoicePaymentTerm | null;
   referenceNo: string;
   invoiceNo: string;
   customerId: number;
@@ -250,6 +252,10 @@ export interface InvoicePdfTemplateAttributes {
   dueDateLabel: string;
   showDueDate: boolean;
 
+  paymentTerm: string;
+  paymentTermLabel: string;
+  showPaymentTerm: boolean;
+
   dateIssue: string;
   dateIssueLabel: string;
   showDateIssue: boolean;
@@ -257,6 +263,10 @@ export interface InvoicePdfTemplateAttributes {
   invoiceNumberLabel: string;
   invoiceNumber: string;
   showInvoiceNumber: boolean;
+
+  purchaseOrderNumberLabel: string;
+  purchaseOrderNumber: string;
+  showPurchaseOrderNumber: boolean;
 
   // Customer Address
   showCustomerAddress: boolean;

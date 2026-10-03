@@ -22,6 +22,7 @@ import { SaleInvoiceMeta } from './SaleInvoice.meta';
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { SaleInvoiceDefaultViews } from '../constants';
 import type { SalesChannel } from '@/modules/SalesChannels/models/SalesChannel.model';
+import type { InvoicePaymentTerm } from '@bigcapital/utils';
 
 @InjectAttachable()
 @ExportableModel()
@@ -37,6 +38,7 @@ export class SaleInvoice extends TenantBaseModel {
   public isInclusiveTax: boolean;
 
   public dueDate: Date;
+  public paymentTerm?: InvoicePaymentTerm | null;
   public deliveredAt: Date | string;
   public currencyCode: string;
   public invoiceDate: Date;

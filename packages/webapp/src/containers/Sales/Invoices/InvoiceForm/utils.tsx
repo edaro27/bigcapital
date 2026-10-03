@@ -1,3 +1,8 @@
+import {
+  calculateInvoiceDueDate,
+  InvoicePaymentTerm,
+  type InvoicePaymentTerm as InvoicePaymentTermValue,
+} from '@bigcapital/utils';
 import { Intent } from '@blueprintjs/core';
 import { useFormikContext } from 'formik';
 import { omit, first, sumBy } from 'lodash';
@@ -55,6 +60,7 @@ export type InvoiceFormValues = {
   customerId: string | number;
   invoiceDate: string;
   dueDate: string;
+  paymentTerm: InvoicePaymentTermValue | '';
   invoiceNo: string;
   invoiceNoManually: string;
   referenceNo: string;
@@ -104,7 +110,11 @@ export const defaultInvoiceEntry: InvoiceEntry = {
 export const defaultInvoice: InvoiceFormValues = {
   customerId: '',
   invoiceDate: moment(new Date()).format('YYYY-MM-DD'),
-  dueDate: moment().format('YYYY-MM-DD'),
+  dueDate: calculateInvoiceDueDate(
+    moment().format('YYYY-MM-DD'),
+    InvoicePaymentTerm.Net30,
+  ),
+  paymentTerm: InvoicePaymentTerm.Net30,
   delivered: '',
   invoiceNo: '',
   inclusiveExclusiveTax: TaxType.Inclusive,
@@ -140,6 +150,18 @@ export const defaultReqInvoiceEntry = {
 };
 
 /**
+ * Removes database scale from quantities that are already whole numbers.
+ * Genuine legacy fractions remain unchanged so they are never silently rounded.
+ */
+export const normalizeInvoiceQuantity = (quantity: string | number) => {
+  const numericQuantity = Number(quantity);
+
+  return Number.isFinite(numericQuantity) && Number.isInteger(numericQuantity)
+    ? numericQuantity
+    : quantity;
+};
+
+/**
  * Transform invoice to initial values in edit mode.
  *
  * Accepts a partial invoice shape: the provider seeds a new invoice from a
@@ -150,9 +172,14 @@ export function transformToEditForm(
   invoice: Partial<SaleInvoice> & { entries: SaleInvoice['entries'] },
 ): InvoiceFormValues {
   const initialEntries = [
-    ...invoice.entries.map((entry) => ({
-      ...transformToForm(entry, defaultInvoiceEntry),
-    })),
+    ...invoice.entries.map((entry) => {
+      const transformedEntry = transformToForm(entry, defaultInvoiceEntry);
+
+      return {
+        ...transformedEntry,
+        quantity: normalizeInvoiceQuantity(transformedEntry.quantity),
+      };
+    }),
     ...repeatValue(
       defaultInvoiceEntry,
       Math.max(MIN_LINES_NUMBER - invoice.entries.length, 0),
@@ -166,6 +193,11 @@ export function transformToEditForm(
   return {
     ...defaultInvoice,
     ...(transformToForm(invoice, defaultInvoice) as Partial<InvoiceFormValues>),
+    // Existing legacy invoices must be classified when next edited, while a
+    // new invoice seeded from an estimate should still default to Net 30.
+    paymentTerm: invoice.id
+      ? (invoice.paymentTerm ?? '')
+      : (invoice.paymentTerm ?? defaultInvoice.paymentTerm),
     inclusiveExclusiveTax: invoice.isInclusiveTax
       ? TaxType.Inclusive
       : TaxType.Exclusive,

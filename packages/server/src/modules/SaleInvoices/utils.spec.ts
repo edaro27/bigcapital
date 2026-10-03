@@ -8,8 +8,10 @@ describe('invoice internal fields', () => {
       salesChannelId: 1,
       salesChannel: { id: 1, name: 'Phone' },
       dueDateFormatted: '2026-08-31',
+      paymentTerm: 'net_30',
       invoiceDateFormatted: '2026-08-27',
       invoiceNo: 'INV-1',
+      referenceNo: 'PO-1001',
       totalFormatted: '$100.00',
       subtotalFormatted: '$100.00',
       paymentAmountFormatted: '$0.00',
@@ -26,6 +28,8 @@ describe('invoice internal fields', () => {
     expect(output).not.toHaveProperty('salesChannel');
     expect(output).not.toHaveProperty('salesChannelId');
     expect(JSON.stringify(output)).not.toContain('Phone');
+    expect(output).toHaveProperty('paymentTerm', 'Net 30');
+    expect(output).toHaveProperty('purchaseOrderNumber', 'PO-1001');
   });
 
   it('does not include the sales channel in invoice email attributes', () => {

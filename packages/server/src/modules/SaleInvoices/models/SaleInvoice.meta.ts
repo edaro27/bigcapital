@@ -39,6 +39,18 @@ export const SaleInvoiceMeta = {
       column: 'due_date',
       fieldType: 'date',
     },
+    payment_term: {
+      name: 'invoice.field.payment_term',
+      column: 'payment_term',
+      fieldType: 'enumeration',
+      options: [
+        { key: 'net_30', label: 'invoice.payment_term.net_30' },
+        { key: 'discover', label: 'invoice.payment_term.discover' },
+        { key: 'amex', label: 'invoice.payment_term.amex' },
+        { key: 'visa', label: 'invoice.payment_term.visa' },
+        { key: 'mastercard', label: 'invoice.payment_term.mastercard' },
+      ],
+    },
     invoice_no: {
       name: 'invoice.field.invoice_no',
       column: 'invoice_no',
@@ -115,6 +127,11 @@ export const SaleInvoiceMeta = {
       name: 'invoice.field.due_date',
       type: 'date',
       accessor: 'dueDateFormatted',
+    },
+    paymentTerm: {
+      name: 'invoice.field.payment_term',
+      type: 'text',
+      accessor: 'paymentTermFormatted',
     },
     referenceNo: {
       name: 'invoice.field.reference_no',
@@ -224,6 +241,17 @@ export const SaleInvoiceMeta = {
       name: 'invoice.field.due_date',
       fieldType: 'date',
       required: true,
+    },
+    paymentTerm: {
+      name: 'invoice.field.payment_term',
+      fieldType: 'enumeration',
+      options: [
+        { key: 'net_30', label: 'invoice.payment_term.net_30' },
+        { key: 'discover', label: 'invoice.payment_term.discover' },
+        { key: 'amex', label: 'invoice.payment_term.amex' },
+        { key: 'visa', label: 'invoice.payment_term.visa' },
+        { key: 'mastercard', label: 'invoice.payment_term.mastercard' },
+      ],
     },
     referenceNo: {
       name: 'invoice.field.reference_no',

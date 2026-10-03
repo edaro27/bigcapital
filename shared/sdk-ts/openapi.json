@@ -25873,6 +25873,19 @@
             "description": "The due date of the invoice",
             "example": "2023-01-15T00:00:00Z"
           },
+          "paymentTerm": {
+            "type": "string",
+            "description": "Payment term or card used for the invoice",
+            "enum": [
+              "net_30",
+              "discover",
+              "amex",
+              "visa",
+              "mastercard"
+            ],
+            "nullable": true,
+            "example": "net_30"
+          },
           "invoiceNo": {
             "type": "string",
             "description": "The invoice number",
@@ -25920,7 +25933,7 @@
           },
           "termsConditions": {
             "type": "string",
-            "description": "Terms and conditions of the invoice",
+            "description": "Conditions of the invoice",
             "example": "Payment due within 14 days"
           },
           "isInclusiveTax": {
@@ -26091,6 +26104,11 @@
             "description": "Formatted due date",
             "example": "2023-01-15"
           },
+          "paymentTermFormatted": {
+            "type": "string",
+            "description": "Formatted payment term",
+            "example": "Net 30"
+          },
           "createdAtFormatted": {
             "type": "string",
             "description": "Formatted created at date",
@@ -26249,6 +26267,18 @@
             "description": "Due date",
             "example": "2023-01-15T00:00:00Z"
           },
+          "paymentTerm": {
+            "type": "string",
+            "description": "Payment term or card used for the invoice",
+            "enum": [
+              "net_30",
+              "discover",
+              "amex",
+              "visa",
+              "mastercard"
+            ],
+            "example": "net_30"
+          },
           "invoiceNo": {
             "type": "string",
             "description": "Invoice number",
@@ -26277,7 +26307,7 @@
           },
           "termsConditions": {
             "type": "string",
-            "description": "Terms and conditions",
+            "description": "Invoice conditions",
             "example": "Payment due within 14 days"
           },
           "exchangeRate": {
@@ -26391,6 +26421,18 @@
             "description": "Due date",
             "example": "2023-01-15T00:00:00Z"
           },
+          "paymentTerm": {
+            "type": "string",
+            "description": "Payment term or card used for the invoice",
+            "enum": [
+              "net_30",
+              "discover",
+              "amex",
+              "visa",
+              "mastercard"
+            ],
+            "example": "net_30"
+          },
           "invoiceNo": {
             "type": "string",
             "description": "Invoice number",
@@ -26419,7 +26461,7 @@
           },
           "termsConditions": {
             "type": "string",
-            "description": "Terms and conditions",
+            "description": "Invoice conditions",
             "example": "Payment due within 14 days"
           },
           "exchangeRate": {
@@ -29351,8 +29393,8 @@
           },
           "email": {
             "type": "string",
-            "description": "Email",
-            "example": "contact@acmecorp.com"
+            "description": "Comma-separated customer email addresses",
+            "example": "owner@acmecorp.com, accounting@acmecorp.com"
           },
           "workPhone": {
             "type": "string",
@@ -29481,7 +29523,7 @@
           },
           "email": {
             "type": "string",
-            "description": "Email"
+            "description": "Comma-separated customer email addresses"
           },
           "workPhone": {
             "type": "string",

@@ -6441,6 +6441,12 @@ export interface components {
              */
             dueDate: string;
             /**
+             * @description Payment term or card used for the invoice
+             * @example net_30
+             * @enum {string|null}
+             */
+            paymentTerm?: "net_30" | "discover" | "amex" | "visa" | "mastercard" | null;
+            /**
              * @description The invoice number
              * @example INV-001
              */
@@ -6478,7 +6484,7 @@ export interface components {
              */
             invoiceMessage?: string;
             /**
-             * @description Terms and conditions of the invoice
+             * @description Conditions of the invoice
              * @example Payment due within 14 days
              */
             termsConditions?: string;
@@ -6622,6 +6628,11 @@ export interface components {
              */
             dueDateFormatted: string;
             /**
+             * @description Formatted payment term
+             * @example Net 30
+             */
+            paymentTermFormatted?: string;
+            /**
              * @description Formatted created at date
              * @example 2023-01-01
              */
@@ -6733,6 +6744,12 @@ export interface components {
              */
             dueDate: string;
             /**
+             * @description Payment term or card used for the invoice
+             * @example net_30
+             * @enum {string}
+             */
+            paymentTerm?: "net_30" | "discover" | "amex" | "visa" | "mastercard";
+            /**
              * @description Invoice number
              * @example INV-001
              */
@@ -6758,7 +6775,7 @@ export interface components {
              */
             invoiceMessage?: string;
             /**
-             * @description Terms and conditions
+             * @description Invoice conditions
              * @example Payment due within 14 days
              */
             termsConditions?: string;
@@ -6846,6 +6863,12 @@ export interface components {
              */
             dueDate: string;
             /**
+             * @description Payment term or card used for the invoice
+             * @example net_30
+             * @enum {string}
+             */
+            paymentTerm?: "net_30" | "discover" | "amex" | "visa" | "mastercard";
+            /**
              * @description Invoice number
              * @example INV-001
              */
@@ -6871,7 +6894,7 @@ export interface components {
              */
             invoiceMessage?: string;
             /**
-             * @description Terms and conditions
+             * @description Invoice conditions
              * @example Payment due within 14 days
              */
             termsConditions?: string;
@@ -8769,8 +8792,8 @@ export interface components {
              */
             website?: string;
             /**
-             * @description Email
-             * @example contact@acmecorp.com
+             * @description Comma-separated customer email addresses
+             * @example owner@acmecorp.com, accounting@acmecorp.com
              */
             email?: string;
             /**
@@ -8840,7 +8863,7 @@ export interface components {
             displayName: string;
             /** @description Website */
             website?: string;
-            /** @description Email */
+            /** @description Comma-separated customer email addresses */
             email?: string;
             /** @description Work phone */
             workPhone?: string;

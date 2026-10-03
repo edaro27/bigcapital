@@ -107,6 +107,7 @@ export class GetSaleInvoiceMailStateTransformer extends SaleInvoiceTransformer {
       new GetSaleInvoiceMailStateEntryTransformer(),
       {
         currencyCode: invoice.currencyCode,
+        quantityPrecision: 0,
       },
     );
   };

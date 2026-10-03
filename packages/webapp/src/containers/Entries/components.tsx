@@ -91,7 +91,8 @@ const LandedCostHeaderCell = () => {
  */
 export function useEditableItemsEntriesColumns() {
   const { featureCan } = useFeatureCan();
-  const { landedCost, enableTaxRates } = useItemEntriesTableContext();
+  const { landedCost, enableTaxRates, quantityIntegerOnly } =
+    useItemEntriesTableContext();
 
   const isProjectsFeatureEnabled = featureCan(Features.Projects);
 
@@ -119,6 +120,15 @@ export function useEditableItemsEntriesColumns() {
         Header: intl.get('quantity'),
         accessor: 'quantity',
         Cell: NumericInputCell,
+        integerOnly: quantityIntegerOnly,
+        numericInputProps: quantityIntegerOnly
+          ? {
+              stepSize: 1,
+              minorStepSize: null,
+              clampValueOnBlur: true,
+              inputMode: 'numeric',
+            }
+          : undefined,
         disableSortBy: true,
         width: 70,
         align: Align.Right,
@@ -196,6 +206,6 @@ export function useEditableItemsEntriesColumns() {
         align: Align.Center,
       },
     ],
-    [],
+    [quantityIntegerOnly],
   );
 }

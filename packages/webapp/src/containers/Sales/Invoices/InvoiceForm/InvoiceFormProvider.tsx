@@ -16,6 +16,7 @@ import type {
   GetPaymentServicesResponse,
   SalesChannel,
 } from '@bigcapital/sdk-ts';
+import type { SettingsGroup } from '@bigcapital/sdk-ts';
 import { Features } from '@/constants';
 import {
   useInvoice,
@@ -34,7 +35,6 @@ import { useGetPaymentServices } from '@/hooks/query/payment-services';
 import { useGetPdfTemplates } from '@/hooks/query/pdf-templates';
 import { useTaxRates } from '@/hooks/query/tax-rates';
 import { useFeatureCan } from '@/hooks/state';
-import type { SettingsGroup } from '@bigcapital/sdk-ts';
 
 type InvoiceFormSubmitPayload = {
   redirect?: boolean;

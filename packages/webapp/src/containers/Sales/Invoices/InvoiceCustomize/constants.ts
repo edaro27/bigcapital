@@ -24,6 +24,9 @@ export const initialValues = {
   showDueDate: true,
   dueDateLabel: 'Due Date',
 
+  showPaymentTerm: true,
+  paymentTermLabel: 'Terms',
+
   // Addresses
   showCustomerAddress: true,
   showCompanyAddress: true,
@@ -33,7 +36,7 @@ export const initialValues = {
   itemNameLabel: 'Item',
   itemDescriptionLabel: 'Description',
   itemRateLabel: 'Rate',
-  itemTotalLabel: 'Total',
+  itemTotalLabel: 'Amount',
 
   // Totals
   showSubtotal: true,
@@ -56,7 +59,7 @@ export const initialValues = {
   showDueAmount: true,
 
   // Footer paragraphs.
-  termsConditionsLabel: 'Terms & Conditions',
+  termsConditionsLabel: 'Conditions',
   showTermsConditions: true,
 
   // Statement
@@ -82,6 +85,11 @@ export const fieldsGroups = [
         labelKey: 'dueDateLabel',
         enableKey: 'showDueDate',
         label: 'Due Date',
+      },
+      {
+        labelKey: 'paymentTermLabel',
+        enableKey: 'showPaymentTerm',
+        label: 'Terms',
       },
       {
         enableKey: 'showCustomerAddress',
@@ -127,7 +135,7 @@ export const fieldsGroups = [
       {
         labelKey: 'termsConditionsLabel',
         enableKey: 'showTermsConditions',
-        label: 'Terms & Conditions',
+        label: 'Conditions',
       },
       {
         labelKey: 'statementLabel',

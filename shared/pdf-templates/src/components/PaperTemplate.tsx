@@ -70,16 +70,25 @@ interface PaperTemplateLogoProps {
 
 PaperTemplate.Logo = ({ logoUri }: PaperTemplateLogoProps) => {
   return (
-    <x.div overflow={'hidden'}>
-      <x.img
-        width={'100%'}
-        height={'100%'}
-        maxWidth={'260px'}
-        maxHeight={'100px'}
+    <div
+      style={{
+        maxWidth: '260px',
+        maxHeight: '100px',
+        flexShrink: 0,
+      }}
+    >
+      <img
+        style={{
+          display: 'block',
+          width: 'auto',
+          height: 'auto',
+          maxWidth: '260px',
+          maxHeight: '100px',
+        }}
         alt=""
         src={logoUri}
       />
-    </x.div>
+    </div>
   );
 };
 

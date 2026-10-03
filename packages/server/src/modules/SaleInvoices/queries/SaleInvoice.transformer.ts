@@ -4,6 +4,7 @@ import { ItemEntryTransformer } from '../../TransactionItemEntry/ItemEntry.trans
 import { AttachmentTransformer } from '../../Attachments/Attachment.transformer';
 import { SaleInvoiceTaxEntryTransformer } from './SaleInvoiceTaxEntry.transformer';
 import { DiscountType } from '@/common/types/Discount';
+import { formatInvoicePaymentTerm } from '@bigcapital/utils';
 
 export class SaleInvoiceTransformer extends Transformer {
   /**
@@ -14,6 +15,7 @@ export class SaleInvoiceTransformer extends Transformer {
     return [
       'invoiceDateFormatted',
       'dueDateFormatted',
+      'paymentTermFormatted',
       'createdAtFormatted',
       'dueAmountFormatted',
       'paymentAmountFormatted',
@@ -51,6 +53,13 @@ export class SaleInvoiceTransformer extends Transformer {
    */
   protected dueDateFormatted = (invoice: SaleInvoice): string => {
     return this.formatDate(invoice.dueDate);
+  };
+
+  /**
+   * Retrieve the human-readable payment term.
+   */
+  protected paymentTermFormatted = (invoice: SaleInvoice): string => {
+    return formatInvoicePaymentTerm(invoice.paymentTerm);
   };
 
   /**
@@ -240,6 +249,7 @@ export class SaleInvoiceTransformer extends Transformer {
   protected entries = (invoice: SaleInvoice) => {
     return this.item(invoice.entries, new ItemEntryTransformer(), {
       currencyCode: invoice.currencyCode,
+      quantityPrecision: 0,
     });
   };
 

@@ -481,6 +481,7 @@ export interface GetSaleInvoiceBrandingTemplateResponse {
     discountLabel?: string;
     dueAmountLabel?: string;
     dueDateLabel?: string;
+    paymentTermLabel?: string;
     invoiceNumberLabel?: string;
     itemDescriptionLabel?: string;
     itemNameLabel?: string;
@@ -496,6 +497,7 @@ export interface GetSaleInvoiceBrandingTemplateResponse {
     showDiscount?: boolean;
     showDueAmount?: boolean;
     showDueDate?: boolean;
+    showPaymentTerm?: boolean;
     showInvoiceNumber?: boolean;
     showPaymentMade?: boolean;
     showStatement?: boolean;

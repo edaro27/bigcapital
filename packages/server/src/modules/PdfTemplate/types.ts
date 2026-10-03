@@ -21,6 +21,9 @@ export interface ICreateInvoicePdfTemplateDTO {
   showDueDate?: boolean;
   dueDateLabel?: string;
 
+  showPaymentTerm?: boolean;
+  paymentTermLabel?: string;
+
   // Company name
   companyName?: string;
 

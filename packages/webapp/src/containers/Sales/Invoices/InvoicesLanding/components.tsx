@@ -278,7 +278,7 @@ export function useInvoicesTableColumns(): DataTableColumn<InvoiceTableRow>[] {
         },
         {
           id: 'reference_no',
-          Header: intl.get('reference_no'),
+          Header: intl.get('po_number'),
           accessor: 'referenceNo',
           width: 90,
           clickable: true,

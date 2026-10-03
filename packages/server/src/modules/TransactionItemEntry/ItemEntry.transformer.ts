@@ -3,6 +3,7 @@ import { ItemEntry } from './models/ItemEntry';
 
 interface ItemEntryTransformerContext {
   currencyCode: string;
+  quantityPrecision?: number;
 }
 
 export class ItemEntryTransformer extends Transformer<
@@ -28,7 +29,11 @@ export class ItemEntryTransformer extends Transformer<
    * @returns {string}
    */
   protected quantityFormatted = (entry: ItemEntry): string => {
-    return this.formatNumber(entry.quantity, { money: false });
+    return this.formatNumber(entry.quantity, {
+      money: false,
+      precision:
+        this.options.quantityPrecision ?? this.context.quantityPrecision ?? 2,
+    });
   };
 
   /**
@@ -38,7 +43,7 @@ export class ItemEntryTransformer extends Transformer<
    */
   protected rateFormatted = (entry: ItemEntry): string => {
     return this.formatNumber(entry.rate, {
-      currencyCode: this.context.currencyCode,
+      currencyCode: this.options.currencyCode ?? this.context.currencyCode,
       money: false,
     });
   };

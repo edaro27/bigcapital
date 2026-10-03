@@ -1,3 +1,4 @@
+import { InvoicePaymentTerm } from '@bigcapital/utils';
 import moment from 'moment';
 import intl from 'react-intl-universal';
 import * as Yup from 'yup';
@@ -18,6 +19,10 @@ const getSchema = () =>
       )
       .required()
       .label(intl.get('due_date_')),
+    paymentTerm: Yup.string()
+      .oneOf(Object.values(InvoicePaymentTerm))
+      .required()
+      .label(intl.get('invoice.field.payment_term')),
     invoiceNo: Yup.string()
       .max(DATATYPES_LENGTH.STRING)
       .label(intl.get('invoice_no_')),
@@ -47,6 +52,7 @@ const getSchema = () =>
       Yup.object().shape({
         quantity: Yup.number()
           .nullable()
+          .integer()
           .max(DATATYPES_LENGTH.INT_10)
           .when(['rate'], {
             is: (rate) => rate,

@@ -9,6 +9,7 @@ import { PaymentMethodDto } from '../dtos/SaleInvoice.dto';
 import { SaleInvoiceTaxEntryDto } from './SaleInvoiceTaxEntry.dto';
 import { DiscountType } from '@/common/types/Discount';
 import { SalesChannelResponseDto } from '@/modules/SalesChannels/dtos/SalesChannel.dto';
+import { InvoicePaymentTerm } from '@bigcapital/utils';
 
 export class SaleInvoiceResponseDto {
   @ApiProperty({
@@ -28,6 +29,15 @@ export class SaleInvoiceResponseDto {
     example: '2023-01-15T00:00:00Z',
   })
   dueDate: Date;
+
+  @ApiProperty({
+    description: 'Payment term or card used for the invoice',
+    enum: Object.values(InvoicePaymentTerm),
+    required: false,
+    nullable: true,
+    example: InvoicePaymentTerm.Net30,
+  })
+  paymentTerm?: InvoicePaymentTerm | null;
 
   @ApiProperty({
     description: 'The invoice number',
@@ -86,7 +96,7 @@ export class SaleInvoiceResponseDto {
   invoiceMessage?: string;
 
   @ApiProperty({
-    description: 'Terms and conditions of the invoice',
+    description: 'Conditions of the invoice',
     example: 'Payment due within 14 days',
     required: false,
   })
@@ -291,6 +301,13 @@ export class SaleInvoiceResponseDto {
     example: '2023-01-15',
   })
   dueDateFormatted: string;
+
+  @ApiProperty({
+    description: 'Formatted payment term',
+    example: 'Net 30',
+    required: false,
+  })
+  paymentTermFormatted?: string;
 
   @ApiProperty({
     description: 'Formatted created at date',

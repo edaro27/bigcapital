@@ -1,3 +1,7 @@
+import {
+  calculateInvoiceDueDate,
+  InvoicePaymentTermOptions,
+} from '@bigcapital/utils';
 import { Position, Classes } from '@blueprintjs/core';
 import { css } from '@emotion/css';
 import { Theme, useTheme } from '@emotion/react';
@@ -6,12 +10,12 @@ import { useFormikContext } from 'formik';
 import React from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
-import type { Customer } from '@bigcapital/sdk-ts';
 import { InvoiceExchangeRateInputField } from './components';
 import { InvoiceFormInvoiceNumberField } from './InvoiceFormInvoiceNumberField';
 import { useInvoiceFormContext } from './InvoiceFormProvider';
 import { customerNameFieldShouldUpdate } from './utils';
 import type { InvoiceFormValues } from './utils';
+import type { Customer } from '@bigcapital/sdk-ts';
 import {
   FFormGroup,
   FormattedMessage as T,
@@ -47,13 +51,17 @@ const getInvoiceFieldsStyle = (theme: Theme & { bpPrefix?: string }) => css`
  */
 export function InvoiceFormHeaderFields() {
   const theme = useTheme();
-  const { values } = useFormikContext<InvoiceFormValues>();
   const invoiceFieldsClassName = getInvoiceFieldsStyle(theme);
 
   return (
     <Stack spacing={18} flex={1} className={invoiceFieldsClassName}>
+      <InvoicePaymentTermDueDateSync />
+
       {/* ----------- Customer name ----------- */}
       <InvoiceFormCustomerSelect />
+
+      {/* ----------- Customer billing address ----------- */}
+      <InvoiceCustomerBillingAddress />
 
       {/* Manual compatibility for legacy foreign-currency customers. */}
       <InvoiceExchangeRateInputField />
@@ -69,7 +77,9 @@ export function InvoiceFormHeaderFields() {
         <FDateInput
           name={'invoiceDate'}
           formatDate={(date) => date.toLocaleDateString()}
-          parseDate={(str) => new Date(str)}
+          parseDate={parseFormDate}
+          formFormatDate={formatFormDate}
+          formParseDate={parseFormDate}
           popoverProps={{
             position: Position.BOTTOM_LEFT,
             minimal: true,
@@ -79,6 +89,26 @@ export function InvoiceFormHeaderFields() {
             leftIcon: <Icon icon={'date-range'} />,
           }}
           fill
+          fastField
+        />
+      </FFormGroup>
+
+      {/* ----------- Payment terms ----------- */}
+      <FFormGroup
+        name={'paymentTerm'}
+        label={intl.get('invoice.field.payment_term')}
+        labelInfo={<FieldRequiredHint />}
+        inline
+        fastField
+      >
+        <FSelect
+          name={'paymentTerm'}
+          items={InvoicePaymentTermOptions}
+          valueAccessor={'value'}
+          textAccessor={'label'}
+          placeholder={intl.get('invoice.payment_term.select')}
+          popoverProps={{ minimal: true }}
+          filterable={false}
           fastField
         />
       </FFormGroup>
@@ -94,7 +124,9 @@ export function InvoiceFormHeaderFields() {
         <FDateInput
           name={'dueDate'}
           formatDate={(date) => date.toLocaleDateString()}
-          parseDate={(str) => new Date(str)}
+          parseDate={parseFormDate}
+          formFormatDate={formatFormDate}
+          formParseDate={parseFormDate}
           popoverProps={{
             position: Position.BOTTOM_LEFT,
             minimal: true,
@@ -112,8 +144,8 @@ export function InvoiceFormHeaderFields() {
       {/* ----------- Invoice number ----------- */}
       <InvoiceFormInvoiceNumberField />
 
-      {/* ----------- Reference ----------- */}
-      <FFormGroup name={'referenceNo'} label={intl.get('reference')} inline>
+      {/* The invoice reference stores the customer's purchase-order number. */}
+      <FFormGroup name={'referenceNo'} label={intl.get('po_number')} inline>
         <FInputGroup
           name={'referenceNo'}
           data-testId="invoice-reference-input"
@@ -124,6 +156,64 @@ export function InvoiceFormHeaderFields() {
       <InvoiceSalesChannelSelect />
     </Stack>
   );
+}
+
+function InvoicePaymentTermDueDateSync() {
+  const { values, setFieldValue } = useFormikContext<InvoiceFormValues>();
+  const previousAutomaticInputs = React.useRef({
+    invoiceDate: values.invoiceDate,
+    paymentTerm: values.paymentTerm,
+  });
+
+  React.useEffect(() => {
+    const previousInputs = previousAutomaticInputs.current;
+    const automaticInputsChanged =
+      previousInputs.invoiceDate !== values.invoiceDate ||
+      previousInputs.paymentTerm !== values.paymentTerm;
+
+    previousAutomaticInputs.current = {
+      invoiceDate: values.invoiceDate,
+      paymentTerm: values.paymentTerm,
+    };
+
+    // Preserve an existing invoice's manually customized due date. New invoice
+    // defaults are already calculated in `defaultInvoice`.
+    if (!automaticInputsChanged) return;
+    if (!values.invoiceDate || !values.paymentTerm) return;
+
+    const dueDate = calculateInvoiceDueDate(
+      values.invoiceDate,
+      values.paymentTerm,
+    );
+
+    setFieldValue('dueDate', dueDate, false);
+  }, [values.invoiceDate, values.paymentTerm, setFieldValue]);
+
+  return null;
+}
+
+/**
+ * Parses an API date-only value as a local calendar date. `new Date('YYYY-MM-DD')`
+ * is parsed as UTC and renders as the previous day in timezones west of UTC.
+ */
+function parseFormDate(value: string): Date | null {
+  if (!value) return null;
+
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
+  const date = match
+    ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]))
+    : new Date(value);
+
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+/** Keeps Formik date values in the API's date-only format. */
+function formatFormDate(date: Date): string {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0'),
+  ].join('-');
 }
 
 function InvoiceSalesChannelSelect() {
@@ -200,7 +290,61 @@ function InvoiceFormCustomerSelect() {
   );
 }
 
+/** Displays the selected customer's billing address for invoice entry. */
+function InvoiceCustomerBillingAddress() {
+  const { values } = useFormikContext<InvoiceFormValues>();
+  const { customers } = useInvoiceFormContext();
+
+  if (!values.customerId) return null;
+
+  const customer = customers.find(
+    ({ id }) => String(id) === String(values.customerId),
+  );
+  const locality = [customer?.billingAddressCity, customer?.billingAddressState]
+    .filter(Boolean)
+    .join(', ');
+  const localityAndPostcode = [locality, customer?.billingAddressPostcode]
+    .filter(Boolean)
+    .join(' ');
+  const addressLines = [
+    customer?.billingAddress1,
+    customer?.billingAddress2,
+    localityAndPostcode,
+    customer?.billingAddressCountry,
+  ].filter((line): line is string => Boolean(line));
+
+  return (
+    <FFormGroup
+      name={'billingAddressDisplay'}
+      label={intl.get('billing_address')}
+      inline
+    >
+      <BillingAddressDisplay
+        className={classNames(Classes.TEXT_MUTED)}
+        aria-live="polite"
+        data-testId="invoice-customer-billing-address"
+      >
+        {addressLines.length > 0
+          ? addressLines.map((line, index) => (
+              <div key={`${index}-${line}`}>{line}</div>
+            ))
+          : intl.get('invoice.no_billing_address')}
+      </BillingAddressDisplay>
+    </FFormGroup>
+  );
+}
+
 const CustomerButtonLink = styled(CustomerDrawerLink)`
   font-size: 11px;
   margin-top: 6px;
+`;
+
+const BillingAddressDisplay = styled.div`
+  width: 100%;
+  min-height: 32px;
+  padding: 7px 10px;
+  border: 1px solid rgba(92, 112, 128, 0.25);
+  border-radius: 3px;
+  background: rgba(191, 204, 214, 0.12);
+  line-height: 1.45;
 `;

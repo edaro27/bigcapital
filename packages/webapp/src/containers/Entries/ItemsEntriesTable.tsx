@@ -32,6 +32,7 @@ interface ItemsEntriesTableProps {
   isInclusiveTax?: boolean;
   landedCost?: boolean;
   enablePriceTiers?: boolean;
+  quantityIntegerOnly?: boolean;
 }
 
 /**

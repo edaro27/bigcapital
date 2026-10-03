@@ -9,7 +9,7 @@ import { CLASSES } from '@/constants/classes';
  */
 export default function NumericInputCell({
   row: { index },
-  column: { id },
+  column: { id, integerOnly = false, numericInputProps = {} },
   cell: { value: controlledInputValue },
   payload,
 }: any) {
@@ -20,6 +20,13 @@ export default function NumericInputCell({
     valueAsNumber: number,
     valueAsString: string,
   ) => {
+    if (valueAsString.trim() === '') {
+      setValueAsNumber(null);
+      return;
+    }
+    if (integerOnly && !/^-?\d+$/.test(valueAsString)) {
+      return;
+    }
     setValueAsNumber(valueAsNumber);
   };
   const handleInputBlur = () => {
@@ -41,6 +48,7 @@ export default function NumericInputCell({
       <NumericInput
         asyncControl
         value={controlledInputValue}
+        {...numericInputProps}
         onValueChange={handleInputValueChange}
         onBlur={handleInputBlur}
         buttonPosition={'none'}

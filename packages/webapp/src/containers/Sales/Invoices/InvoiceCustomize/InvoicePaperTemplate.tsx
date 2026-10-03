@@ -1,3 +1,4 @@
+import { RJ_BUSINESS_FORMS_LOGO_DATA_URI } from '@bigcapital/utils';
 import { Classes, Text } from '@blueprintjs/core';
 import {
   PaperTemplate,
@@ -38,6 +39,10 @@ export interface InvoicePaperTemplateProps extends PaperTemplateProps {
   invoiceNumber?: string;
   invoiceNumberLabel?: string;
 
+  showPurchaseOrderNumber?: boolean;
+  purchaseOrderNumber?: string;
+  purchaseOrderNumberLabel?: string;
+
   showDateIssue?: boolean;
   dateIssue?: string;
   dateIssueLabel?: string;
@@ -45,6 +50,10 @@ export interface InvoicePaperTemplateProps extends PaperTemplateProps {
   showDueDate?: boolean;
   dueDate?: string;
   dueDateLabel?: string;
+
+  showPaymentTerm?: boolean;
+  paymentTerm?: string;
+  paymentTermLabel?: string;
 
   companyName?: string;
   bigtitle?: string;
@@ -114,6 +123,10 @@ export function InvoicePaperTemplate({
   dueDateLabel = 'Date due',
   showDueDate = true,
 
+  paymentTerm = 'Net 30',
+  paymentTermLabel = 'Terms',
+  showPaymentTerm = true,
+
   dateIssue = 'September 3, 2024',
   dateIssueLabel = 'Date of issue',
   showDateIssue = true,
@@ -122,6 +135,10 @@ export function InvoicePaperTemplate({
   invoiceNumberLabel = 'Invoice number',
   invoiceNumber = '346D3D40-0001',
   showInvoiceNumber = true,
+
+  purchaseOrderNumberLabel = 'PO Number',
+  purchaseOrderNumber = 'PO-1001',
+  showPurchaseOrderNumber = true,
 
   // Address
   showCustomerAddress = true,
@@ -136,7 +153,7 @@ export function InvoicePaperTemplate({
   lineItemLabel = 'Item',
   lineQuantityLabel = 'Qty',
   lineRateLabel = 'Rate',
-  lineTotalLabel = 'Total',
+  lineTotalLabel = 'Amount',
 
   totalLabel = 'Total',
   subtotalLabel = 'Subtotal',
@@ -160,7 +177,7 @@ export function InvoicePaperTemplate({
   balanceDue = '$562.75',
 
   // Footer paragraphs.
-  termsConditionsLabel = 'Terms & Conditions',
+  termsConditionsLabel = 'Conditions',
   showTermsConditions = true,
   termsConditions = DefaultPdfTemplateTerms,
 
@@ -183,6 +200,9 @@ export function InvoicePaperTemplate({
   statement = DefaultPdfTemplateStatement,
   ...props
 }: InvoicePaperTemplateProps) {
+  const resolvedCompanyLogoUri =
+    companyLogoUri?.trim() || RJ_BUSINESS_FORMS_LOGO_DATA_URI;
+
   return (
     <PaperTemplate
       primaryColor={primaryColor}
@@ -190,14 +210,20 @@ export function InvoicePaperTemplate({
       {...props}
     >
       <Stack spacing={24}>
-        <Group align="start" spacing={10}>
-          <Stack flex={1}>
-            <PaperTemplate.BigTitle title={'Invoice'} />
-
+        <Group align="start" position="apart" spacing={32} noWrap>
+          <Stack spacing={12}>
+            {showCompanyLogo && (
+              <PaperTemplate.Logo logoUri={resolvedCompanyLogoUri} />
+            )}
             <PaperTemplate.TermsList>
               {showInvoiceNumber && (
                 <PaperTemplate.TermsItem label={invoiceNumberLabel}>
                   {invoiceNumber}
+                </PaperTemplate.TermsItem>
+              )}
+              {showPurchaseOrderNumber && purchaseOrderNumber && (
+                <PaperTemplate.TermsItem label={purchaseOrderNumberLabel}>
+                  {purchaseOrderNumber}
                 </PaperTemplate.TermsItem>
               )}
               {showDateIssue && (
@@ -210,12 +236,17 @@ export function InvoicePaperTemplate({
                   {dueDate}
                 </PaperTemplate.TermsItem>
               )}
+              {showPaymentTerm && paymentTerm && (
+                <PaperTemplate.TermsItem label={paymentTermLabel}>
+                  {paymentTerm}
+                </PaperTemplate.TermsItem>
+              )}
             </PaperTemplate.TermsList>
           </Stack>
 
-          {companyLogoUri && showCompanyLogo && (
-            <PaperTemplate.Logo logoUri={companyLogoUri} />
-          )}
+          <Box textAlign="right">
+            <PaperTemplate.BigTitle title={'Invoice'} />
+          </Box>
         </Group>
 
         <PaperTemplate.AddressesGroup>
@@ -250,7 +281,6 @@ export function InvoicePaperTemplate({
                 ),
               },
               { label: lineQuantityLabel, accessor: 'quantity' },
-              { label: lineRateLabel, accessor: 'rate', align: 'right' },
               { label: lineTotalLabel, accessor: 'total', align: 'right' },
             ]}
             data={lines}
