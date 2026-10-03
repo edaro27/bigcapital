@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import * as path from 'path';
 import { promises as fs } from 'fs';
 import { PageProperties, PdfFormat } from '@/libs/chromiumly/_types';
 import { UrlConverter } from '@/libs/chromiumly/UrlConvert';
@@ -56,7 +55,7 @@ export class ChromiumlyHtmlConvert {
     const [filename, cleanupTempFile] = await this.writeTempHtmlFile(html);
     const fileDir = getPdfFilesStorageDir(filename);
 
-    const url = path.join(Chromiumly.GOTENBERG_DOCS_ENDPOINT, fileDir);
+    const url = Chromiumly.getDocumentUrl(fileDir);
     const urlConverter = new UrlConverter();
 
     const buffer = await urlConverter.convert({

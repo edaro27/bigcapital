@@ -1,14 +1,29 @@
 import { ChromiumRoute, LibreOfficeRoute, PdfEngineRoute } from './_types';
 
 export class Chromiumly {
-  public static readonly GOTENBERG_ENDPOINT = process.env.GOTENBERG_URL || '';
+  public static get GOTENBERG_ENDPOINT(): string {
+    return process.env.GOTENBERG_URL || '';
+  }
 
   public static readonly CHROMIUM_PATH = 'forms/chromium/convert';
   public static readonly PDF_ENGINES_PATH = 'forms/pdfengines';
   public static readonly LIBRE_OFFICE_PATH = 'forms/libreoffice';
 
-  public static readonly GOTENBERG_DOCS_ENDPOINT =
-    process.env.GOTENBERG_DOCS_URL || '';
+  public static get GOTENBERG_DOCS_ENDPOINT(): string {
+    return process.env.GOTENBERG_DOCS_URL || '';
+  }
+
+  public static getDocumentUrl(filePath: string): string {
+    const endpoint = Chromiumly.GOTENBERG_DOCS_ENDPOINT;
+
+    if (!endpoint) {
+      throw new Error('GOTENBERG_DOCS_URL is not configured.');
+    }
+    const baseUrl = `${endpoint.replace(/\/+$/, '')}/`;
+    const relativePath = filePath.replace(/^\/+/, '');
+
+    return new URL(relativePath, baseUrl).href;
+  }
 
   public static readonly CHROMIUM_ROUTES = {
     url: ChromiumRoute.URL,
