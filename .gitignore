@@ -8,6 +8,12 @@ node_modules/
 
 test-results/
 .qodo
+.DS_Store
+
+# Locally generated PDF previews and Chromium HTML inputs.
+output/
+tmp/
+packages/server/public/pdf/document-print-*.html
 
 # Local database backups contain private business data.
 backups/

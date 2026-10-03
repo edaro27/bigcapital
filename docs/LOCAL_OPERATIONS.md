@@ -17,6 +17,21 @@ The development web and server processes still run from their existing
 the server with `GOTENBERG_URL=http://127.0.0.1:9000` and
 `GOTENBERG_DOCS_URL=http://host.docker.internal:3000/public/`.
 
+## Development email
+
+Development email is captured locally by Mailpit and is never delivered to a
+real recipient. Its web inbox is available at <http://127.0.0.1:8025>. The
+development server uses the following SMTP settings in its ignored
+`packages/server/.env` file:
+
+- host `127.0.0.1`
+- port `1025`
+- no username or password
+- TLS disabled
+
+Mailpit belongs only to `docker-compose.yml`; it is not part of the production
+Compose environment.
+
 ## Production backup
 
 - `npm run backup:prod` creates a private, compressed backup under
