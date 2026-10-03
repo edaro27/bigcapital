@@ -78,7 +78,6 @@ function AccountTransactionsActionsBarInner({
   // #withAlerts
   openAlert,
 }: AccountTransactionsActionsBarInnerProps) {
-
   const history = useHistory();
   const { accountId, currentAccount } = useAccountTransactionsContext();
 

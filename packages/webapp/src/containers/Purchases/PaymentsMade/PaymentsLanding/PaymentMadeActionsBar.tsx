@@ -147,7 +147,6 @@ function PaymentMadeActionsBarInner({
           text={<T id={'export'} />}
           onClick={handleExportBtnClick}
         />
-
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>
         <Button

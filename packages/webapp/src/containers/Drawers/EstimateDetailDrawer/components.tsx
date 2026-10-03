@@ -69,7 +69,6 @@ interface EstimateMoreMenuItemsInnerProps extends WithAlertActionsProps {}
 function EstimateMoreMenuItemsInner({
   // # withAlertActions,
   openAlert,
-
 }: EstimateMoreMenuItemsInnerProps) {
   const { estimateId, estimate } = useEstimateDetailDrawerContext();
 

@@ -36,7 +36,7 @@ export class CommandManualJournalValidators {
     const invalidEntry = manualJournalDTO.entries.some((entry) => {
       const debit = entry.debit || 0;
       const credit = entry.credit || 0;
-      return debit < 0 || credit < 0 || (debit > 0) === (credit > 0);
+      return debit < 0 || credit < 0 || debit > 0 === credit > 0;
     });
     if (invalidEntry) {
       throw new ServiceError(ERRORS.CREDIT_DEBIT_NOT_EQUAL_ZERO);

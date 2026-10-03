@@ -2,6 +2,15 @@ packages:
   # all packages in direct subdirs of packages/
   - "packages/*"
   - "shared/*"
+allowBuilds:
+  '@nestjs/core': false
+  core-js: false
+  core-js-pure: false
+  es5-ext: false
+  esbuild: true
+  msgpackr-extract: true
+  nx: true
+  react-intl-universal: false
 minimumReleaseAgeExclude:
   - pnpm@11.23.0
 overrides:

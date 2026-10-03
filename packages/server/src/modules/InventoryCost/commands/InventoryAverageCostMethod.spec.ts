@@ -2,8 +2,8 @@ import { InventoryAverageCostMethod } from './InventoryAverageCostMethod';
 
 describe('InventoryAverageCostMethod precision', () => {
   it('retains four-decimal unit cost through inventory valuation', () => {
-    const transactions = new InventoryAverageCostMethod().trackingCostTransactions(
-      [
+    const transactions =
+      new InventoryAverageCostMethod().trackingCostTransactions([
         {
           id: 1,
           direction: 'IN',
@@ -16,8 +16,7 @@ describe('InventoryAverageCostMethod precision', () => {
           quantity: 250,
           rate: 1,
         },
-      ] as any,
-    );
+      ] as any);
 
     expect(transactions[0].cost).toBeCloseTo(176.5, 8);
     expect(transactions[1].cost).toBeCloseTo(44.125, 8);

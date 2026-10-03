@@ -71,8 +71,7 @@ export class CategorizeTransactionAsExpense {
             index: 1,
             expenseAccountId: transactionDTO.creditAccountId,
             amount: transaction.amount,
-            description:
-              transactionDTO.description || transaction.description,
+            description: transactionDTO.description || transaction.description,
           },
         ],
       };

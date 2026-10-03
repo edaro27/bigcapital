@@ -18,8 +18,9 @@ describe('BillDTOTransformer landed costs', () => {
       ],
     };
 
-    expect(
-      (transformer as any).getBillLandedCostAmount(billDTO),
-    ).toBeCloseTo(2.469, 8);
+    expect((transformer as any).getBillLandedCostAmount(billDTO)).toBeCloseTo(
+      2.469,
+      8,
+    );
   });
 });

@@ -133,7 +133,6 @@ function PaymentReceiveFormProvider({
     isSuccess: isBranchesSuccess,
   } = useBranches(query, { enabled: isBranchFeatureCan });
 
-
   // Fetches branding templates of payment received module.
   const { data: brandingTemplates, isLoading: isBrandingTemplatesLoading } =
     useGetPdfTemplates({ resource: 'PaymentReceive' });

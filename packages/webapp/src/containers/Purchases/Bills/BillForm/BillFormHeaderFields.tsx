@@ -118,7 +118,6 @@ function BillFormHeader() {
       >
         <FInputGroup name={'referenceNo'} />
       </FFormGroup>
-
     </Stack>
   );
 }

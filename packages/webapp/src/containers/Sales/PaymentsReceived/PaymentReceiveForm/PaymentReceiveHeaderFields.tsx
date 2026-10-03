@@ -204,7 +204,6 @@ export function PaymentReceiveHeaderFields() {
       >
         <FInputGroup name={'referenceNo'} fill />
       </FFormGroup>
-
     </Stack>
   );
 }

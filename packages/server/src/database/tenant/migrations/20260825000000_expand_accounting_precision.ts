@@ -86,9 +86,7 @@ const expandedColumns: ColumnPrecision[] = [
   },
   {
     tableName: 'inventory_transactions',
-    columns: [
-      { name: 'rate', precision: 15, scale: 5, unsigned: true },
-    ],
+    columns: [{ name: 'rate', precision: 15, scale: 5, unsigned: true }],
   },
   {
     tableName: 'inventory_cost_lot_tracker',

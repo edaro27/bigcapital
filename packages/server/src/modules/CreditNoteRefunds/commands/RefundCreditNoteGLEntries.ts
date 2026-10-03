@@ -70,8 +70,7 @@ export class RefundCreditNoteGLEntries {
 
     return {
       ...commonEntry,
-      debit:
-        refundCreditNote.amount * refundCreditNote.creditNote.exchangeRate,
+      debit: refundCreditNote.amount * refundCreditNote.creditNote.exchangeRate,
       accountId: ARAccountId,
       contactId: refundCreditNote.creditNote.customerId,
       index: 1,

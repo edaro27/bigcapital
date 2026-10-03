@@ -18,10 +18,7 @@ import type { WithItemsProps } from './withItems';
 import type { WithItemsActionsProps } from './withItemsActions';
 import type { IFilterRole } from '@/components/AdvancedFilter/interfaces';
 import type { WithDialogActionsProps } from '@/containers/Dialog/withDialogActions';
-import {
-  DashboardActionsBar,
-  FormattedMessage as T,
-} from '@/components';
+import { DashboardActionsBar, FormattedMessage as T } from '@/components';
 import {
   Can,
   Icon,

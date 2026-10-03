@@ -73,7 +73,8 @@ export class RefundVendorCreditGLEntries {
     return {
       ...commonEntry,
       credit:
-        refundVendorCredit.amount * refundVendorCredit.vendorCredit.exchangeRate,
+        refundVendorCredit.amount *
+        refundVendorCredit.vendorCredit.exchangeRate,
       accountId: APAccountId,
       contactId: refundVendorCredit.vendorCredit.vendorId,
       index: 1,

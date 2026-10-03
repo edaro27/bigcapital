@@ -38,11 +38,10 @@ export class DeleteApplyVendorCreditToBillService {
   public async deleteApplyVendorCreditToBills(appliedCreditToBillId: number) {
     // Deletes vendor credit apply under unit-of-work environment.
     return this.uow.withTransaction(async (trx) => {
-      const oldCreditAppliedToBill =
-        await this.vendorCreditAppliedBillModel()
-          .query(trx)
-          .findById(appliedCreditToBillId)
-          .forUpdate();
+      const oldCreditAppliedToBill = await this.vendorCreditAppliedBillModel()
+        .query(trx)
+        .findById(appliedCreditToBillId)
+        .forUpdate();
 
       if (!oldCreditAppliedToBill) {
         throw new ServiceError(ERRORS.VENDOR_CREDIT_APPLY_TO_BILLS_NOT_FOUND);

@@ -10,11 +10,7 @@ import React from 'react';
 import { projectTranslations } from './common';
 import { ProjectTransactionsSelect } from './components';
 import { useProjectDetailContext } from './ProjectDetailProvider';
-import {
-  Icon,
-  FormattedMessage as T,
-  DashboardActionsBar,
-} from '@/components';
+import { Icon, FormattedMessage as T, DashboardActionsBar } from '@/components';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { compose } from '@/utils';
 
