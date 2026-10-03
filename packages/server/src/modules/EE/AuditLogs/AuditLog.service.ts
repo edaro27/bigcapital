@@ -14,7 +14,7 @@ export interface RecordAuditLogParams {
   trx?: Knex.Transaction;
   action: string;
   subject: string;
-  subjectId?: number | null;
+  subjectId?: number | string | null;
   metadata?: Record<string, unknown> | null;
 }
 
@@ -38,19 +38,37 @@ export class AuditLogService {
     const ip = (this.cls.get<string>('ip') as string) ?? null;
     const executor = params.trx ?? this.tenantKnex();
     const metadata = this.normalizeMetadata(params.metadata);
+    const subjectId = this.normalizeSubjectId(params.subjectId);
 
-    await this.auditLogModel()
-      .query(executor)
-      .insert({
-        userId,
-        action: params.action,
-        subject: params.subject,
-        subjectId: params.subjectId ?? null,
-        metadata,
-        ip,
-        // MySQL DATETIME expects `YYYY-MM-DD HH:mm:ss`, not ISO-8601 with `T`/`Z`.
-        createdAt: moment().toMySqlDateTime(),
-      });
+    await this.auditLogModel().query(executor).insert({
+      userId,
+      action: params.action,
+      subject: params.subject,
+      subjectId,
+      metadata,
+      ip,
+      // MySQL DATETIME expects `YYYY-MM-DD HH:mm:ss`, not ISO-8601 with `T`/`Z`.
+      createdAt: moment().toMySqlDateTime(),
+    });
+  }
+
+  /**
+   * Route parameters reach Nest services as strings unless a controller pipe
+   * converts them. Audit rows store integer subject IDs, so normalize at this
+   * boundary to prevent an otherwise successful business action from losing
+   * its audit entry.
+   */
+  private normalizeSubjectId(
+    subjectId: number | string | null | undefined,
+  ): number | null {
+    if (subjectId == null) return null;
+
+    const normalized = Number(subjectId);
+
+    if (!Number.isSafeInteger(normalized)) {
+      throw new Error(`Invalid audit log subject ID: ${subjectId}`);
+    }
+    return normalized;
   }
 
   private normalizeMetadata(
