@@ -33,6 +33,7 @@ interface ItemsEntriesTableProps {
   landedCost?: boolean;
   enablePriceTiers?: boolean;
   quantityIntegerOnly?: boolean;
+  enableAmountEditing?: boolean;
 }
 
 /**

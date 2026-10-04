@@ -40,6 +40,7 @@ export function InvoiceItemsEntriesEditorField() {
           isInclusiveTax={values.inclusiveExclusiveTax === TaxType.Inclusive}
           enablePriceTiers
           quantityIntegerOnly
+          enableAmountEditing
         />
       )}
     </FastField>

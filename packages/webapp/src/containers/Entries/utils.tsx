@@ -3,6 +3,7 @@ import { sumBy, isEmpty, last, keyBy, groupBy } from 'lodash';
 import * as R from 'ramda';
 import React, { useCallback } from 'react';
 import { useItemEntriesTableContext } from './ItemEntriesTableProvider';
+import { calcItemEntryRateFromTotal } from './lineAmount';
 import { updateEntryQuantityPrice } from './priceTiers';
 import { useItem } from '@/hooks/query';
 import {
@@ -47,6 +48,19 @@ export function updateItemsEntriesTotal(rows) {
     amount: calcItemEntryTotal(row.discount, row.quantity, row.rate),
   }));
 }
+
+/**
+ * Updates a line's rate from an explicitly entered total.
+ */
+export const updateItemEntryRateFromTotal = (rowIndex, total) => (rows) =>
+  rows.map((row, index) => {
+    if (index !== rowIndex) {
+      return row;
+    }
+    const rate = calcItemEntryRateFromTotal(total, row.quantity, row.discount);
+
+    return rate === null ? row : { ...row, rate };
+  });
 
 /**
  * Retrieve total of the given items entries.
@@ -251,15 +265,18 @@ export const useComposeRowsOnEditTableCell = () => {
     localValue,
     defaultEntry,
     enablePriceTiers,
+    enableAmountEditing,
     items,
   } = useItemEntriesTableContext();
 
   return useCallback(
     (rowIndex, columnId, value) => {
       const updateCell =
-        enablePriceTiers && columnId === 'quantity'
-          ? updateEntryQuantityPrice(rowIndex, value, items)
-          : updateTableCell(rowIndex, columnId, value);
+        enableAmountEditing && columnId === 'amount'
+          ? updateItemEntryRateFromTotal(rowIndex, value)
+          : enablePriceTiers && columnId === 'quantity'
+            ? updateEntryQuantityPrice(rowIndex, value, items)
+            : updateTableCell(rowIndex, columnId, value);
 
       return R.compose(
         assignEntriesTaxAmount(isInclusiveTax),
@@ -276,6 +293,7 @@ export const useComposeRowsOnEditTableCell = () => {
       localValue,
       defaultEntry,
       enablePriceTiers,
+      enableAmountEditing,
       items,
     ],
   );

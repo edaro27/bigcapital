@@ -75,6 +75,28 @@ export function TotalCell({ payload: { currencyCode }, value }) {
 }
 
 /**
+ * Editable currency total that keeps the form display at currency precision.
+ * The underlying rate can still retain four decimal places.
+ */
+export function EditableTotalCell(props) {
+  const numericValue = Number(props.cell.value);
+  const value =
+    props.cell.value && Number.isFinite(numericValue)
+      ? numericValue.toFixed(2)
+      : '';
+
+  return (
+    <MoneyFieldCell
+      {...props}
+      cell={{
+        ...props.cell,
+        value,
+      }}
+    />
+  );
+}
+
+/**
  * Landed cost header cell.
  */
 const LandedCostHeaderCell = () => {
@@ -91,8 +113,12 @@ const LandedCostHeaderCell = () => {
  */
 export function useEditableItemsEntriesColumns() {
   const { featureCan } = useFeatureCan();
-  const { landedCost, enableTaxRates, quantityIntegerOnly } =
-    useItemEntriesTableContext();
+  const {
+    landedCost,
+    enableTaxRates,
+    quantityIntegerOnly,
+    enableAmountEditing,
+  } = useItemEntriesTableContext();
 
   const isProjectsFeatureEnabled = featureCan(Features.Projects);
 
@@ -164,7 +190,8 @@ export function useEditableItemsEntriesColumns() {
       {
         Header: intl.get('total'),
         accessor: 'amount',
-        Cell: TotalCell,
+        Cell: enableAmountEditing ? EditableTotalCell : TotalCell,
+        moneyInputGroupProps: { decimalsLimit: 2, precision: 2 },
         disableSortBy: true,
         width: 100,
         align: Align.Right,
@@ -206,6 +233,12 @@ export function useEditableItemsEntriesColumns() {
         align: Align.Center,
       },
     ],
-    [quantityIntegerOnly],
+    [
+      enableAmountEditing,
+      enableTaxRates,
+      isProjectsFeatureEnabled,
+      landedCost,
+      quantityIntegerOnly,
+    ],
   );
 }
