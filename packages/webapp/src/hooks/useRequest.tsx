@@ -92,7 +92,7 @@ export default function useApiRequest() {
       },
     );
     return instance;
-  }, [token, organizationId, setGlobalErrors, setLogout]);
+  }, [token, organizationId, currentLocale, setGlobalErrors, setLogout]);
 
   return React.useMemo(
     () => ({
@@ -159,7 +159,7 @@ export function useApiFetcher(options?: {
       baseUrl: '',
       init: { headers },
       disableCamelCaseTransform: !options?.enableCamelCaseTransform,
-      // onError,
+      onError,
     });
   }, [
     token,
